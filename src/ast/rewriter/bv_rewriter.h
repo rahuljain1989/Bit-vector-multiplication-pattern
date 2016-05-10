@@ -89,6 +89,7 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
     br_status mk_bv_ext_rotate_left(expr * arg1, expr * arg2, expr_ref & result);
     br_status mk_bv_ext_rotate_right(expr * arg1, expr * arg2, expr_ref & result);
     br_status mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result);
+    br_status check_pattern(unsigned num_args, expr * const * args, expr_ref & result);
     br_status mk_bv_add(expr * arg1, expr * arg2, expr_ref & result) {
         expr * args[2] = { arg1, arg2 };
         return mk_bv_add(2, args, result);
