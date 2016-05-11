@@ -1,0 +1,123 @@
+diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
+index def05f0..b7fe2c8 100755
+--- a/src/ast/rewriter/bv_rewriter.cpp
++++ b/src/ast/rewriter/bv_rewriter.cpp
+@@ -1634,6 +1634,94 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+     return BR_REWRITE2;
+ }
+ 
++br_status bv_rewriter::check_pattern(unsigned num_args, expr *const *args,
++                                     expr_ref &result) {
++  unsigned _num_args;
++  expr *const *_args;
++  _num_args = num_args;
++  _args = args;
++  vector<expr *> container[7];         // Containers to capture all bvmul args
++  unsigned sz = get_bv_size(_args[0]); // Size of each bvadd
++
++  // Todo : Collecting all bvadd arguments from the expression if they
++  // form a tree. Assuming all args are bvadd arguments for the time beeing.
++
++  // Going through each bvadd at a time
++
++  for (int i = 0; i < _num_args; i++) {
++    app *cur_add_arg = to_app(_args[i]); // current bvadd
++
++    if (m_util.is_concat(cur_add_arg)) {
++      expr *concat_args[5];                      // Individual concat elements
++      int concat_args_size[5] = {0, 0, 0, 0, 0}; // Size of each concatenation
++      int concat_arg_count =
++          to_app(cur_add_arg)->get_num_args(); // Number of concatenations
++
++      // Collect individual concat elements and their size
++      for (int j = 0; j < concat_arg_count; j++) {
++        concat_args[j] = to_app(cur_add_arg)->get_arg(j);
++        concat_args_size[j] = get_bv_size(concat_args[j]);
++      }
++
++      int pos_count = 0;
++
++      // Collect all bvmul args in appropriate container
++      for (int j = 0; j < concat_arg_count; j++) {
++        // If zero, do nothing, just count position
++        if (is_zero(concat_args[j])) {
++          pos_count += get_bv_size(concat_args[j]);
++        }
++
++        // If mul, collect args of mul in appropriate container
++        else if (m_util.is_bv_mul(concat_args[j])) {
++          container[pos_count / 2].push_back(
++              to_app(concat_args[j])->get_arg(0));
++          container[pos_count / 2].push_back(
++              to_app(concat_args[j])->get_arg(1));
++          pos_count += get_bv_size(concat_args[j]);
++        }
++      }
++    }
++  }
++
++  for (int i = 0; i < 7; i++) {
++    int size = container[i].size();
++    int x = size;
++  }
++
++  // Match the container elements appropriately and delete matching.
++  for (int i = 0; i < 4; i++) {
++    for (int j = 0; j < container[i].size(); j++) {
++      // Check for bad state
++      for (int k = i + 1; k < i + 4; k++) {
++        vector<expr *>::iterator position = std::find(
++            container[k].begin(), container[k].end(), container[i][j]);
++        if (position == container[k].end()) {
++          // bad state
++          int x = 5;
++        }
++      }
++
++      // No bad state in current iteration, go ahead with deletion
++      for (int k = i + 1; k < i + 4; k++) {
++        vector<expr *>::iterator position = std::find(
++            container[k].begin(), container[k].end(), container[i][j]);
++        if (position !=
++            container[k]
++                .end()) // == container[k].end() means the element was not found
++          container[k].erase(position);
++      }
++    }
++  }
++
++  // Check final container sizes
++  for (int i = 0; i < 7; i++) {
++    int size = container[i].size();
++    int x = size;
++  }
++  return BR_FAILED;
++}
++
+ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
+     br_status st = mk_add_core(num_args, args, result);
+     if (st != BR_FAILED && st != BR_DONE)
+@@ -1682,6 +1770,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+     }
+     if (_num_args < 2)
+         return st;
++
++    st = check_pattern(num_args, args, result);
++    if (st != BR_FAILED && st != BR_DONE)
++        return st;
++
+     unsigned sz = get_bv_size(_args[0]);
+     for (unsigned i = 0; i < sz; i++) {
+         bool found_non_zero = false;
+diff --git a/src/ast/rewriter/bv_rewriter.h b/src/ast/rewriter/bv_rewriter.h
+index 7135c52..a8e20c5 100755
+--- a/src/ast/rewriter/bv_rewriter.h
++++ b/src/ast/rewriter/bv_rewriter.h
+@@ -89,6 +89,7 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
+     br_status mk_bv_ext_rotate_left(expr * arg1, expr * arg2, expr_ref & result);
+     br_status mk_bv_ext_rotate_right(expr * arg1, expr * arg2, expr_ref & result);
+     br_status mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result);
++    br_status check_pattern(unsigned num_args, expr *const *args, expr_ref &result);
+     br_status mk_bv_add(expr * arg1, expr * arg2, expr_ref & result) {
+         expr * args[2] = { arg1, arg2 };
+         return mk_bv_add(2, args, result);
