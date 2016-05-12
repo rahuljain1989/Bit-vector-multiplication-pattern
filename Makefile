@@ -6,27 +6,27 @@ all : debug
 
 .PHONY :  debug clean patch
 
-debug : build/buildd/Makefile
+debug : z3/buildd/Makefile
 
-build/buildd/Makefile: build/z3/buildd/libz3.so
+z3/buildd/Makefile: z3/buildd/libz3.so
 
-build/z3/buildd/libz3.so : build/z3/patched
-	rm -rf $(BUILDDIR)/z3/buildd
-	cd $(BUILDDIR)/z3; python scripts/mk_make.py --staticlib -d -b buildd
-	make -C $(BUILDDIR)/z3/buildd
+z3/buildd/libz3.so : z3/patched
+	rm -rf z3/buildd
+	cd z3; python scripts/mk_make.py --staticlib -d -t -b buildd
+	make -C z3/buildd
 
-build/z3/patched : bv.patch build/z3/README
-	cd $(BUILDDIR)/z3; $(git) stash clear && $(git) stash save && $(git) apply --whitespace=fix $(PWD)/bv.patch
-	touch $(BUILDDIR)/z3/patched
+z3/patched : bv.patch z3/README
+	cd z3; $(git) stash clear && $(git) stash save && $(git) apply --whitespace=fix $(PWD)/bv.patch
+	touch z3/patched
 
-build/z3/README : 
-	mkdir -p $(BUILDDIR)
-	cd $(BUILDDIR);$(git) clone https://github.com/Z3Prover/z3.git
-	cd $(BUILDDIR);$(git) init z3
-	cd $(BUILDDIR)/z3;$(git) add -A; $(git) diff-index --quiet HEAD || $(git) commit -m "clean z3 version"
+z3/README : 
+	cd z3 && $(git) pull || git clone https://github.com/Z3Prover/z3.git
+	cd z3; $(git) reset --hard 0ddf2d92fec40487c6433dabe046661cdbb1e114
+	$(git) init z3
+	cd z3;$(git) add -A; $(git) diff-index --quiet HEAD || $(git) commit -m "clean z3 version"
 
 clean :
-	rm -rf $(BUILDDIR)
+	rm -rf $(PWD)/z3/
 
 patch :
 	cd z3; $(git) diff > ../bv.patch
