@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..3128016 100644
+index def05f0..00ba59c 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,210 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,223 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -193,27 +193,40 @@ index def05f0..3128016 100644
 +        vector<expr *>::iterator position = std::find(
 +            left_container.begin(), left_container.end(), container[i][j]);
 +        if (position != left_container.end())
-+            lhs_args[i+1] = to_app(container[i][j]);
++        {
++            if (m_util.is_concat(to_app(container[i][j])))
++            {
++                    lhs_args[i+1] = to_app(container[i][j])->get_arg(1);
++            }
++        }
++
++
 +        position = std::find(right_container.begin(), right_container.end(), container[i][j]);
 +        if (position != right_container.end())
-+            rhs_args[i+1] = to_app(container[i][j]);
++        {
++            if (m_util.is_concat(to_app(container[i][j])))
++            {
++                    rhs_args[i+1] = to_app(container[i][j])->get_arg(1);
++            }
++        }
 +    }
 +  }
++
 +
 +  expr* concat1 = m_util.mk_concat(5,lhs_args);
 +  expr* concat2 = m_util.mk_concat(5,rhs_args);
 +
 +  expr* mul_args[2] = {concat1,concat2};
 +  //return(mk_bv_mul(2,mul_args,result));
-+  //result = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
-+  //return BR_REWRITE1;
-+  return BR_FAILED;
++  result = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
++  return BR_REWRITE1;
++  // return BR_FAILED;
 +}
 +
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +1886,12 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +1899,12 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
