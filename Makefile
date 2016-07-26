@@ -19,8 +19,9 @@ z3/patched : bv.patch z3/README
 	cd z3; $(git) stash clear && $(git) stash save && $(git) apply --whitespace=fix $(PWD)/bv.patch
 	touch z3/patched
 
-z3/README : 
-	cd z3 && $(git) pull || git clone https://github.com/Z3Prover/z3.git
+z3/README :
+	rm -rf z3
+	git clone https://github.com/Z3Prover/z3.git
 	cd z3; $(git) reset --hard 0ddf2d92fec40487c6433dabe046661cdbb1e114
 	$(git) init z3
 	cd z3;$(git) add -A; $(git) diff-index --quiet HEAD || $(git) commit -m "clean z3 version"
