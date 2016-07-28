@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..e979cf7 100644
+index def05f0..e4d22ba 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,223 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,226 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -33,18 +33,21 @@ index def05f0..e979cf7 100644
 +  vector<expr *> container[7];  // Containers to capture all bvmul args
 +  vector<expr *> left_container; // To capture all lhs arguments
 +  vector<expr *> right_container; // To capture all rhs arguments
++  vector<expr *> bvargs; // To capture all rhs arguments
 +
-+
-+  // For now we only consider 4*4 test cases
-+  if (_num_args < 7)
-+  {
-+      return BR_FAILED;
-+  }
-+
-+  // Check whether all bvadd args are concat, proceed only then
++  // Collect bvadd args
 +  for (unsigned i = 0; i < _num_args; i++)
 +  {
-+      if (!m_util.is_concat(to_app(_args[i])))
++     traverse_bvadd_args(_args[i], bvargs);
++
++  }
++
++  int bvargs_size = bvargs.size();
++
++  // Check whether all bvadd args are concat, proceed only then
++  for (unsigned i = 0; i < bvargs_size; i++)
++  {
++      if (!m_util.is_concat(to_app(bvargs[i])))
 +      {
 +          return BR_FAILED;
 +      }
@@ -53,7 +56,7 @@ index def05f0..e979cf7 100644
 +
 +  // Now that we know all args are concat, we go through each bvadd at a time
 +  for (unsigned i = 0; i < _num_args; i++) {
-+    app *cur_add_arg = to_app(_args[i]); // current bvadd
++    app *cur_add_arg = to_app(bvargs[i]); // current bvadd
 +
 +    if (m_util.is_concat(cur_add_arg)) {
 +      expr *concat_args[5];                      // Individual concat elements
@@ -226,7 +229,7 @@ index def05f0..e979cf7 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +1899,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +1902,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
