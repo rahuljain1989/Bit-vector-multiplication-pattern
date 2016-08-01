@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..9ba4d2e 100644
+index def05f0..08891ac 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,167 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,158 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -74,14 +74,15 @@ index def05f0..9ba4d2e 100644
 +
 +  app *first_arg = to_app(flat_args[0]); // first bvadd argument
 +  unsigned arg_count = to_app(first_arg)->get_num_args();
++  unsigned bvadd_arg_size = get_bv_size(first_arg);
 +  unsigned pp_bv_size = 0;
 +
 +  // Code to get bv size of partial product
 +  for (unsigned i = 0; i < arg_count; i++) {
 +      expr *concat_arg = to_app(first_arg)->get_arg(i);
 +      if (m_util.is_bv_mul(concat_arg)) {
-+      pp_bv_size = get_bv_size(concat_arg);
-+      break;
++        pp_bv_size = get_bv_size(concat_arg);
++        break;
 +      }
 +  }
 +
@@ -106,7 +107,7 @@ index def05f0..9ba4d2e 100644
 +              return BR_FAILED;
 +        }
 +
-+        // If mul, collect args of mul in appropriate container
++        // If mul, check if it is same size as captured before
 +        else if (m_util.is_bv_mul(concat_arg)) {
 +          unsigned pp_size = get_bv_size(concat_arg);
 +          // All partial product sizes should be equal
@@ -117,10 +118,6 @@ index def05f0..9ba4d2e 100644
 +  }
 +
 +
-+
-+
-+
-+
 +  // Now that we know all args have right number of zeros,
 +  // and same pp bv size, we go through each bvadd arg at a time
 +
@@ -128,49 +125,43 @@ index def05f0..9ba4d2e 100644
 +    app *cur_add_arg = to_app(flat_args[i]); // current bvadd arg
 +
 +    if (m_util.is_concat(cur_add_arg)) {
-+      expr *concat_args[5];                      // Individual concat elements
-+      unsigned concat_args_size[5] = {0, 0, 0, 0, 0}; // Size of each concatenation
 +      unsigned concat_arg_count =
 +          to_app(cur_add_arg)->get_num_args(); // Number of concatenations
 +
-+      // Collect individual concat elements and their size
-+      for (unsigned j = 0; j < concat_arg_count; j++) {
-+        concat_args[j] = to_app(cur_add_arg)->get_arg(j);
-+        concat_args_size[j] = get_bv_size(concat_args[j]);
-+      }
-+
 +      int pos_count = 0;
-+
 +      // Collect all partial products in appropriate container
 +      for (unsigned j = 0; j < concat_arg_count; j++) {
++        expr *concat_arg = to_app(cur_add_arg)->get_arg(j);
++
 +        // If zero, do nothing, just count position
-+        if (is_zero(concat_args[j])) {
-+          pos_count += get_bv_size(concat_args[j]);
++        if (is_zero(concat_arg)) {
++          pos_count += get_bv_size(concat_arg);
 +        }
 +
 +        // If mul, collect args of mul in appropriate container
-+        else if (m_util.is_bv_mul(concat_args[j])) {
-+          container[pos_count / 2].push_back(
-+              to_app(concat_args[j]));
-+          pos_count += get_bv_size(concat_args[j]);
++        else if (m_util.is_bv_mul(concat_arg)) {
++          container[(pos_count / pp_bv_size_half)+1].push_back(
++              to_app(concat_arg));
++          pos_count += get_bv_size(concat_arg);
 +        }
 +      }
 +    }
 +  }
 +
++  unsigned no_of_containers = bvadd_arg_size/pp_bv_size_half;
 +  unsigned size;
-+  for (unsigned i = 0; i < 8; i++) {
++  for (unsigned i = 0; i < no_of_containers; i++) {
 +      size = container[i].size();
 +  }
 +
 +
-+   return BR_FAILED;
++  return BR_FAILED;
 +}
 +
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +1843,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +1834,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
