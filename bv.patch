@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..08891ac 100644
+index def05f0..a4b0546 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,158 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,207 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -31,7 +31,7 @@ index def05f0..08891ac 100644
 +  // _num_args = num_args;
 +  // _args = args;
 +
-+  vector<expr *> container[7];  // Containers to capture all bvmul args
++  vector<expr *> container[8];  // Containers to capture all bvmul args
 +  vector<expr *> left_container; // To capture all lhs arguments
 +  vector<expr *> right_container; // To capture all rhs arguments
 +  vector<expr *> flat_args; // To capture all concat arguments
@@ -69,6 +69,24 @@ index def05f0..08891ac 100644
 +
 +  if (flat_args_size <= 4)
 +      return BR_FAILED;
++
++  // Every bvarg should be a concat of zeroes and partial products
++  for (unsigned i = 0; i < flat_args_size; i++) {
++      app *cur_add_arg = to_app(flat_args[i]); // current bvadd arg
++      // Every bvarg should be concat
++      if(!m_util.is_concat(cur_add_arg))
++          return BR_FAILED;
++
++      unsigned concat_arg_count =
++          to_app(cur_add_arg)->get_num_args(); // Number of concatenations
++      for (unsigned j = 0; j < concat_arg_count; j++) {
++        expr *concat_arg = to_app(cur_add_arg)->get_arg(j);
++        // Every concat arg should be zero or a bvmul
++        if (!is_zero(concat_arg)  && !m_util.is_bv_mul(concat_arg)) {
++            return BR_FAILED;
++        }
++      }
++  }
 +
 +  // Code to check feasible number of zeros in every bvadd argument
 +
@@ -108,50 +126,81 @@ index def05f0..08891ac 100644
 +        }
 +
 +        // If mul, check if it is same size as captured before
++        // and if each bvmul has enough padding
 +        else if (m_util.is_bv_mul(concat_arg)) {
 +          unsigned pp_size = get_bv_size(concat_arg);
 +          // All partial product sizes should be equal
 +          if (pp_size != pp_bv_size)
 +              return BR_FAILED;
++          // Check for whether first half of each bvmul arg is zero
++          unsigned bvmul_arg_count =
++              to_app(concat_arg)->get_num_args();
++          if (bvmul_arg_count != 2)
++              return BR_FAILED;
++          for (unsigned i = 0; i < bvmul_arg_count; i++)
++          {
++              expr *bvmul_arg = to_app(concat_arg)->get_arg(i);
++              unsigned sz = get_bv_size(bvmul_arg);
++
++              for (unsigned j = sz/2; j < sz; j++) {
++                  if (!is_zero_bit(bvmul_arg, j))
++                  {
++                      // bad state;
++                      return BR_FAILED;
++                  }
++              }
++          }
 +        }
 +      }
 +  }
 +
 +
-+  // Now that we know all args have right number of zeros,
-+  // and same pp bv size, we go through each bvadd arg at a time
++  /* Now that we know all args have right number of zeros,
++     and same pp bv size, we go through each bvadd arg at a time
++     and collect them in appropriate container
++     */
 +
 +  for (unsigned i = 0; i < flat_args_size; i++) {
 +    app *cur_add_arg = to_app(flat_args[i]); // current bvadd arg
 +
-+    if (m_util.is_concat(cur_add_arg)) {
-+      unsigned concat_arg_count =
-+          to_app(cur_add_arg)->get_num_args(); // Number of concatenations
++    unsigned concat_arg_count =
++        to_app(cur_add_arg)->get_num_args(); // Number of concatenations
 +
-+      int pos_count = 0;
-+      // Collect all partial products in appropriate container
-+      for (unsigned j = 0; j < concat_arg_count; j++) {
-+        expr *concat_arg = to_app(cur_add_arg)->get_arg(j);
++    int pos_count = 0;
++    // Collect all partial products in appropriate container
++    for (unsigned j = 0; j < concat_arg_count; j++) {
++      expr *concat_arg = to_app(cur_add_arg)->get_arg(j);
 +
-+        // If zero, do nothing, just count position
-+        if (is_zero(concat_arg)) {
-+          pos_count += get_bv_size(concat_arg);
-+        }
++      // If zero, do nothing, just count position
++      if (is_zero(concat_arg)) {
++        pos_count += get_bv_size(concat_arg);
++      }
 +
-+        // If mul, collect args of mul in appropriate container
-+        else if (m_util.is_bv_mul(concat_arg)) {
-+          container[(pos_count / pp_bv_size_half)+1].push_back(
-+              to_app(concat_arg));
-+          pos_count += get_bv_size(concat_arg);
-+        }
++      // If mul, collect bvmul in appropriate container
++      else if (m_util.is_bv_mul(concat_arg)) {
++        container[(pos_count / pp_bv_size_half)+1].push_back(
++            to_app(concat_arg));
++        pos_count += get_bv_size(concat_arg);
 +      }
 +    }
 +  }
 +
++
 +  unsigned no_of_containers = bvadd_arg_size/pp_bv_size_half;
 +  unsigned size;
-+  for (unsigned i = 0; i < no_of_containers; i++) {
++
++  // Check max size of containers
++
++  for (unsigned i = 0; i < no_of_containers/2; i++) {
 +      size = container[i].size();
++      if (size > i)
++          return BR_FAILED;
++  }
++
++  for (unsigned i = no_of_containers/2; i < no_of_containers; i++) {
++      size = container[i].size();
++      if (size > no_of_containers - i)
++          return BR_FAILED;
 +  }
 +
 +
@@ -161,12 +210,12 @@ index def05f0..08891ac 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +1834,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +1883,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
 +
-+  st = check_pattern(num_args, args, result);
++ st = check_pattern(num_args, args, result);
 +    if (st != BR_FAILED && st != BR_DONE)
 +        return st;
 +
