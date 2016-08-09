@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..a4b0546 100644
+index def05f0..1570443 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,207 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,297 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -30,15 +30,9 @@ index def05f0..a4b0546 100644
 +  // expr *const *_args;
 +  // _num_args = num_args;
 +  // _args = args;
-+
-+  vector<expr *> container[8];  // Containers to capture all bvmul args
-+  vector<expr *> left_container; // To capture all lhs arguments
-+  vector<expr *> right_container; // To capture all rhs arguments
-+  vector<expr *> flat_args; // To capture all concat arguments
-+  vector<expr *> non_concat_args; // To capture all concat arguments
-+
-+
++  // vector<expr *> non_concat_args; // To capture all concat arguments
 +  // unsigned sz    = get_bv_size(args[0]);
++
 +
 +  /* // Code to flatten
 +  for (unsigned i = 0; i < num_args; i++)
@@ -60,6 +54,7 @@ index def05f0..a4b0546 100644
 +
 +  }
 +
++  vector<expr *> flat_args; // To capture all concat arguments
 +  for (unsigned i = 0; i < num_args; i++)
 +  {
 +      flat_args.push_back(args[i]);
@@ -160,6 +155,8 @@ index def05f0..a4b0546 100644
 +     and collect them in appropriate container
 +     */
 +
++  vector<expr *> container[8];  // Containers to capture all bvmul args
++
 +  for (unsigned i = 0; i < flat_args_size; i++) {
 +    app *cur_add_arg = to_app(flat_args[i]); // current bvadd arg
 +
@@ -186,7 +183,7 @@ index def05f0..a4b0546 100644
 +  }
 +
 +
-+  unsigned no_of_containers = bvadd_arg_size/pp_bv_size_half;
++  const unsigned no_of_containers = bvadd_arg_size/pp_bv_size_half;
 +  unsigned size;
 +
 +  // Check max size of containers
@@ -203,14 +200,107 @@ index def05f0..a4b0546 100644
 +          return BR_FAILED;
 +  }
 +
++  // Look for the first non empty container
++  unsigned i;
++  for (i = 0; i < no_of_containers; i++)
++  {
++      size = container[i].size();
++      if (size != 0)
++      {
++          break;
++      }
++  }
++
++  if (container[i].size() != 1 || i >= no_of_containers)
++      return BR_FAILED;
++
++  unsigned first_non_empty_container_index = i;
++
++  /* Now that we know the first non empty container, and that it has only
++   * partial product, lets see if both the arguments are same
++   */
++
++  expr *bvmul = container[first_non_empty_container_index][0];
++  expr *bvmul_arg1 = to_app(bvmul)->get_arg(0);
++  expr *bvmul_arg2 = to_app(bvmul)->get_arg(1);
++
++  bool same_first_args;
++
++  if (bvmul_arg1 == bvmul_arg2)
++      same_first_args = true;
++  else
++      same_first_args = false;
++
++  vector<expr *> left_container; // To capture all lhs arguments
++  vector<expr *> right_container; // To capture all rhs arguments
++
++  left_container.push_back(to_app(bvmul_arg1));
++  right_container.push_back(to_app(bvmul_arg2));
++
++  for (i = first_non_empty_container_index+1; i < no_of_containers; i++)
++  bool check = check_container(same_first_args,
++                               first_non_empty_container_index,
++                              // first_non_empty_container_index+1,
++                               i,
++                               container,
++                               left_container,
++                               right_container
++                               );
++
 +
 +  return BR_FAILED;
 +}
 +
++int bv_rewriter::check_container(bool const same_first_args,
++                                 unsigned const first_non_empty_container_index,
++                                 unsigned const current_container_index,
++                                 vector<expr *> const (&container)[8],
++                                 vector<expr *> const &left_container,
++                                 vector<expr *> const &right_container) {
++    // Create a copy of the current container
++    vector<expr *> current_container(container[current_container_index]);
++    int offset = current_container_index - first_non_empty_container_index;
++    int sz = current_container.size();
++
++    // Remove known partial products from current container
++    for (unsigned i = 1; i <= offset - 1; i++)
++    {
++        expr * l = left_container[i];
++        expr * r = right_container[offset - i];
++
++        unsigned sz = current_container.size();
++
++        if (!is_zero(l) && !is_zero(r))
++        {
++            unsigned flag = 0;
++            for (unsigned j = 0; j < sz; j++)
++            {
++                expr *bvmul = current_container[j];
++                expr *bvmul_arg1 = to_app(bvmul)->get_arg(0);
++                expr *bvmul_arg2 = to_app(bvmul)->get_arg(1);
++
++                if ((l == bvmul_arg1 && r == bvmul_arg2) ||
++                        (l == bvmul_arg2 && r == bvmul_arg1))
++                {
++                    flag = 1;
++                    current_container.erase(current_container.begin() + j);
++                    break;
++                }
++            }
++
++            if (flag == 0)
++                return 0;
++        }
++    }
++
++    return 0;
++}
++
++
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +1883,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +1973,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
@@ -223,15 +313,21 @@ index def05f0..a4b0546 100644
      for (unsigned i = 0; i < sz; i++) {
          bool found_non_zero = false;
 diff --git a/src/ast/rewriter/bv_rewriter.h b/src/ast/rewriter/bv_rewriter.h
-index 7135c52..f63f157 100644
+index 7135c52..3363627 100644
 --- a/src/ast/rewriter/bv_rewriter.h
 +++ b/src/ast/rewriter/bv_rewriter.h
-@@ -89,6 +89,8 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
+@@ -89,6 +89,14 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
      br_status mk_bv_ext_rotate_left(expr * arg1, expr * arg2, expr_ref & result);
      br_status mk_bv_ext_rotate_right(expr * arg1, expr * arg2, expr_ref & result);
      br_status mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result);
 +    br_status check_pattern(unsigned num_args, expr *const *args, expr_ref &result);
 +    void traverse_bvadd_args(expr * cur_arg, vector<expr *> &bv_args);
++    int check_container(bool const same_first_args,
++                                     const unsigned first_non_empty_container_index,
++                                     const unsigned current_container_index,
++                                     vector<expr *> const (&container)[8],
++                                     vector<expr *> const &left_container,
++                                     vector<expr *> const &right_container);
      br_status mk_bv_add(expr * arg1, expr * arg2, expr_ref & result) {
          expr * args[2] = { arg1, arg2 };
          return mk_bv_add(2, args, result);
