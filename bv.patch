@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..612270e 100644
+index def05f0..218f8a1 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,753 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,920 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -325,6 +325,9 @@ index def05f0..612270e 100644
 +        expr *l2 = to_app(bvmul2)->get_arg(0);
 +        expr *r2 = to_app(bvmul2)->get_arg(1);
 +
++        vector<expr *> left_container_copy(left_container);
++        vector<expr *> right_container_copy(right_container);
++
 +        // Check whether both first arguments are present in the pps
 +
 +        bool present = false;
@@ -440,7 +443,11 @@ index def05f0..612270e 100644
 +        if (check)
 +            return 1;
 +        else
++        {
++            left_container = left_container_copy;
++            right_container = right_container_copy;
 +            return 0;
++        }
 +
 +    }
 +
@@ -505,7 +512,11 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
++                }
 +
 +            }
 +        }
@@ -543,7 +554,11 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
++                }
 +
 +            }
 +        }
@@ -581,7 +596,11 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
++                }
 +
 +            }
 +        }
@@ -619,12 +638,14 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
++                }
 +
 +            }
 +        }
-+
-+
 +    }
 +
 +    // Case 3: first arguments are different and current container has 1 pps
@@ -639,7 +660,140 @@ index def05f0..612270e 100644
 +              l == right_container[0] || r == right_container[0]))
 +            return 0;
 +
++        // Subcase 1: Both bvmul args are first arguments
 +
++        if ((l == left_container[0] && r == right_container[0]) ||
++            (r == left_container[0] && l == right_container[0]))
++        {
++            if (l == left_container[0] && r == right_container[0])
++            {
++                vector<expr *> left_container_copy(left_container);
++                vector<expr *> right_container_copy(right_container);
++                left_container.push_back(l);
++                right_container.push_back(zero);
++
++                bool check = check_container(no_of_containers,
++                                             first_non_empty_container_index,
++                                             current_container_index+1,
++                                             container,
++                                             left_container,
++                                             right_container
++                                             );
++                if (check)
++                    return 1;
++                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
++                    left_container.push_back(zero);
++                    right_container.push_back(r);
++                    bool check = check_container(no_of_containers,
++                                                 first_non_empty_container_index,
++                                                 current_container_index+1,
++                                                 container,
++                                                 left_container,
++                                                 right_container
++                                                 );
++                    if (check)
++                        return 1;
++                    else
++                    {
++                        left_container = left_container_copy;
++                        right_container = right_container_copy;
++                        return 0;
++                    }
++                }
++            }
++
++            else if (r == left_container[0] && l == right_container[0])
++            {
++                vector<expr *> left_container_copy(left_container);
++                vector<expr *> right_container_copy(right_container);
++                left_container.push_back(r);
++                right_container.push_back(zero);
++
++                bool check = check_container(no_of_containers,
++                                             first_non_empty_container_index,
++                                             current_container_index+1,
++                                             container,
++                                             left_container,
++                                             right_container
++                                             );
++                if (check)
++                    return 1;
++                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
++                    left_container.push_back(zero);
++                    right_container.push_back(l);
++                    bool check = check_container(no_of_containers,
++                                                 first_non_empty_container_index,
++                                                 current_container_index+1,
++                                                 container,
++                                                 left_container,
++                                                 right_container
++                                                 );
++                    if (check)
++                        return 1;
++                    else
++                    {
++                        left_container = left_container_copy;
++                        right_container = right_container_copy;
++                        return 0;
++                    }
++
++                }
++            }
++
++        }
++
++        // Subcase 2: Only one bvmul arg is first argument
++        else
++        {
++            vector<expr *> left_container_copy(left_container);
++            vector<expr *> right_container_copy(right_container);
++
++            if (l == left_container[0])
++            {
++            left_container.push_back(zero);
++            right_container.push_back(r);
++            }
++
++            else if (r == left_container[0])
++            {
++            left_container.push_back(zero);
++            right_container.push_back(l);
++            }
++
++            else if (l == right_container[0])
++            {
++            left_container.push_back(r);
++            right_container.push_back(zero);
++            }
++
++            else if (r == right_container[0])
++            {
++            left_container.push_back(l);
++            right_container.push_back(zero);
++            }
++
++            bool check = check_container(no_of_containers,
++                                         first_non_empty_container_index,
++                                         current_container_index+1,
++                                         container,
++                                         left_container,
++                                         right_container
++                                         );
++            if (check)
++                return 1;
++            else
++            {
++                left_container = left_container_copy;
++                right_container = right_container_copy;
++                return 0;
++            }
++        }
 +
 +    }
 +
@@ -686,10 +840,12 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
-+
++                }
 +            }
-+
 +        }
 +
 +        else if (r == left_container[0])
@@ -724,7 +880,11 @@ index def05f0..612270e 100644
 +                if (check)
 +                    return 1;
 +                else
++                {
++                    left_container = left_container_copy;
++                    right_container = right_container_copy;
 +                    return 0;
++                }
 +
 +            }
 +        }
@@ -733,6 +893,9 @@ index def05f0..612270e 100644
 +    // Case 5: current container has 0 pps
 +    else if (sz == 0)
 +    {
++        vector<expr *> left_container_copy(left_container);
++        vector<expr *> right_container_copy(right_container);
++
 +        left_container.push_back(zero);
 +        right_container.push_back(zero);
 +        bool check = check_container(no_of_containers,
@@ -745,7 +908,11 @@ index def05f0..612270e 100644
 +        if (check)
 +            return 1;
 +        else
++        {
++            left_container = left_container_copy;
++            right_container = right_container_copy;
 +            return 0;
++        }
 +    }
 +
 +
@@ -756,7 +923,7 @@ index def05f0..612270e 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +2429,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +2596,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
