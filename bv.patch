@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..218f8a1 100644
+index def05f0..2c064e2 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,920 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,1024 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -103,7 +103,7 @@ index def05f0..218f8a1 100644
 +  if (pp_bv_size % 2 == 1)
 +      return BR_FAILED;
 +
-+  unsigned pp_bv_size_half = pp_bv_size/2;
++  unsigned const pp_bv_size_half = pp_bv_size/2;
 +
 +  // Check bv sizes of all partial products and zeros
 +
@@ -247,13 +247,117 @@ index def05f0..218f8a1 100644
 +                               right_container
 +                               );
 +
-+  unsigned left_container_size = left_container.size();
-+  unsigned right_container_size = right_container.size();
++  if (!check)
++      return BR_FAILED;
++
++  unsigned const left_container_size = left_container.size();
++  unsigned const right_container_size = right_container.size();
++
++  // Should be equal as insertions have been done for both at every point
++  if (left_container_size != right_container_size)
++      return BR_FAILED;
++
++  // Strip off extra zero args from the right
++  for (signed i = left_container_size - 1; i>=0; i--)
++  {
++      if (is_zero(left_container[i]) && is_zero(right_container[i]))
++      {
++          left_container.erase(left_container.begin() + i);
++          right_container.erase(right_container.begin() + i);
++      }
++
++      else
++      {
++          break;
++      }
++  }
++
++  // Code to reconstuct the mulptiplicand and multiplier
++  // Find the number of empty containers on the right
++  unsigned no_of_empty_containers_right = 0;
++
++  for (signed i = no_of_containers - 1; i >= 0; i--)
++  {
++      if (container[i].size() == 0)
++      {
++          no_of_empty_containers_right++;
++      }
++
++      else
++          break;
++  }
++
++  // Calculate number of trailing and leading zero args in m1 and m2
++
++  unsigned const no_of_args = no_of_containers/2;
++  unsigned m1_trailing_zero, m2_trailing_zero;
++  for (unsigned i = 0; i <= no_of_args; i++)
++  {
++      int flag = 0;
++      for (unsigned j = 0; j <= no_of_args; j++)
++      {
++          if((left_container.size() + i <= no_of_args) &&
++             (left_container.size() + i <= no_of_args) &&
++             ((i+j) == no_of_empty_containers_right))
++          {
++              m1_trailing_zero = i;
++              m2_trailing_zero = j;
++              flag = 1;
++              break;
++          }
++      }
++
++      if (flag == 1)
++          break;
++  }
++
++  unsigned m1_leading_zero = no_of_args - left_container.size() - m1_trailing_zero;
++  unsigned m2_leading_zero = no_of_args - left_container.size() - m2_trailing_zero;
 +
 +
++  // Code to add front zero padding
++  unsigned number_of_front_zeros = pp_bv_size_half * no_of_args;
++  expr * zero_padding = m_util.mk_numeral(numeral(0), number_of_front_zeros);
 +
-+  return BR_FAILED;
-+}
++  vector<expr *> m1;
++  vector<expr *> m2;
++
++  m1.push_back(zero_padding);
++  m2.push_back(zero_padding);
++
++  // Code to add leading zeros
++
++  expr * zero = m_util.mk_numeral(numeral(0), pp_bv_size_half);
++
++  for (unsigned i = 0; i < m1_leading_zero; i++)
++      m1.push_back(zero);
++  for (unsigned i = 0; i < m2_leading_zero; i++)
++      m2.push_back(zero);
++
++  // Code to add m1 and m2 found
++  for (unsigned i = 0; i < left_container.size(); i++)
++  {
++      m1.push_back(m_mk_extract(pp_bv_size_half-1, 0, left_container[i]));
++      m2.push_back(m_mk_extract(pp_bv_size_half-1, 0, right_container[i]));
++  }
++
++  // Code to add trailing zeros
++
++  for (unsigned i = 0; i < m1_trailing_zero; i++)
++      m1.push_back(zero);
++  for (unsigned i = 0; i < m2_trailing_zero; i++)
++      m2.push_back(zero);
++
++  expr *const *l = &m1[0];
++  expr *const *r = &m2[0];
++
++  expr* concat1 = m_util.mk_concat(m1.size(),l);
++  expr* concat2 = m_util.mk_concat(m2.size(),r);
++
++  expr* mul_args[2] = {concat1,concat2};
++  result = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
++  return BR_REWRITE1;
++  }
 +
 +int bv_rewriter::check_container(unsigned const no_of_containers,
 +                                 unsigned const first_non_empty_container_index,
@@ -923,7 +1027,7 @@ index def05f0..218f8a1 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +2596,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +2700,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
