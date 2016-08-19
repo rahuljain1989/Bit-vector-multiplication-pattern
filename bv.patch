@@ -1,5 +1,5 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..424a0fd 100644
+index def05f0..13846f7 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
 @@ -1634,6 +1634,1042 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
@@ -551,8 +551,8 @@ index def05f0..424a0fd 100644
 +                 (l2 == right_container[0] || r2 == right_container[0]) &&
 +                 (l1 == right_container[0] || r1 == right_container[0]))
 +        {
-+            left_container.push_back(right_container[0]);
-+            right_container.push_back(left_container[0]);
++            left_container.push_back(left_container[0]);
++            right_container.push_back(right_container[0]);
 +        }
 +
 +        bool check = check_container(no_of_containers,
