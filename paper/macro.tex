@@ -1,0 +1,147 @@
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\usepackage{mathtools}
+% \usepackage[english]{babel}
+\usepackage{enumerate}  % enumarate styles
+\usepackage{url}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{galois}
+\usepackage{mathabx}
+\usepackage{todonotes}
+\usepackage{paralist}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+\usepackage{fancyvrb}
+\usepackage{lscape}
+\usepackage{listings}
+\usepackage{pdflscape}
+\usepackage{wrapfig}
+\usepackage{etoolbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{arrows}
+\usetikzlibrary{positioning}
+\usetikzlibrary{automata}
+\usetikzlibrary{calc}
+
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+
+% \lstset{
+%   language=C
+% }
+
+\sloppy
+% comment the following line to bring back the margins
+\IfFileExists{./tmp/rm-margin.tex}{\input{tmp/rm-margin}}{}
+% \usepackage[paperheight=19.5cm,paperwidth=12.4cm,margin=.1cm]{geometry}
+
+% \usepackage{algorithm2e}
+
+\makeatletter
+\newcommand{\dashedrightarrow}[1][2pt]{%
+  \settowidth{\@tempdima}{$\rightarrow$}\rightarrow% typeset arrow
+  \makebox[-\@tempdima]{\hskip-1.5ex\color{white}\rule[0.5ex]{#1}{1pt}}% typeset overlay
+  \phantom{\rightarrow}% advance appropriate horizontal distance
+}
+\makeatother
+
+\newcommand{\ashu}[1]{ {\textcolor{magenta} {Ashutosh: #1}} }
+\newcommand{\supratik}[1]{ {\textcolor{red} {Supratik: #1}} }
+\newcommand{\divesh}[1]{ {\textcolor{blue} {Divyesh: #1}} }
+
+\newcommand{\naturals}{\mathbb{N}}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\ordinals}{\mathbb{O}}
+\newcommand{\numarals}{\mathbb{I}}
+
+\newtheorem{df}{Definition}
+\newcommand{\program}{P}
+\newcommand{\sassign}{\;\mathtt{:=}\;}
+\newcommand{\defeq}{\triangleq}
+\newcommand{\assume}{\mathtt{assume}}
+\newcommand{\formulas}{\Sigma}
+\newcommand{\terms}{\mathcal{T}}
+
+\newcommand{\ltrue}{\mathbf{tt}}
+\newcommand{\lfalse}{\mathbf{ff}}
+\newcommand{\limplies}{\Rightarrow}
+\newcommand{\lxor}{\oplus}
+\newcommand{\Land}{\bigwedge}
+\newcommand{\Lor}{\bigvee}
+\newcommand{\Lxor}{\bigoplus}
+\newcommand{\lequiv}{\Leftrightarrow}
+\newcommand{\landplus}{\mathrel{:\hspace{-3pt}\land\hspace{-3pt}=}}
+\newcommand{\lorplus}{\mathrel{:\hspace{-3pt}\lor\hspace{-3pt}=}}
+
+\newcommand{\maps}{\rightarrow}
+
+\newcommand{\union}{{\cup} }
+\newcommand{\Union}{{\bigcup} }
+\newcommand{\powerset}{\mathcal{P}}
+\newcommand{\intersection}{{\cap} }
+\newcommand{\Intersection}{{\bigcap} }
+\newcommand{\compose}{{\circ} }
+
+\newcommand{\locationOf}[1]{loc(#1)}
+
+\newcommand{\formula}{\phi}
+\newcommand{\preds}{\pi}
+\newcommand{\domain}{\mathcal{D}}
+
+\newcommand{\smem}{\mathcal{S}}
+\newcommand{\tout}{TO}
+
+
+%algorithm names
+\newcommand{\concolic}{concolic}
+
+\newcommand{\correct}{\textsc{CORRECT}}
+
+%tool names
+% \newcommand{\ourtool}{$\crest^{+}$}
+\newcommand{\ourtool}{\textsc{Crabs}}
+\newcommand{\zthree}{\textsc{Z3}}
+\newcommand{\crest}{\textsc{Crest}}
+\newcommand{\synergy}{\textsc{Synergy}}
+\newcommand{\cpachecker}{\textsc{CpaChecker}}
+\newcommand{\fshell}{\textsc{Fshell}}
+\newcommand{\svcomp}{\textsc{SvComp}}
+\newcommand{\tiger}{\textsc{CpaTiger}}
+\newcommand{\tara}{\textsc{Tara}}
+\newcommand{\doublemp}{\mathtt{double\text{-}mp}}
+
+\newcommand{\musketeer}{\textsc{Musketeer}}
+\newcommand{\fender}{\textsc{Fender}}
+\newcommand{\blender}{\textsc{Blender}}
+\newcommand{\dfence}{\textsc{Dfence}}
+\newcommand{\remmex}{\textsc{Remmex}}
+\newcommand{\memorax}{\textsc{Memorax}}
+\newcommand{\pensieve}{\textsc{Pensieve}}
+\newcommand{\trencher}{\textsc{Trencher}}
+\newcommand{\persist}{\textsc{Persist}}
+\newcommand{\glue}{\textsc{Glue}}
+
+\newcommand{\intel}{\textsc{Intel}}
+\newcommand{\arm}{\textsc{ARM}}
+\newcommand{\sparc}{\textsc{Sparc}}
+
+\newtheorem{thm}{Theorem}
+
+\newcommand{\rndbr}{RndBr}
+\newcommand{\unfrnd}{UnfRnd}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
