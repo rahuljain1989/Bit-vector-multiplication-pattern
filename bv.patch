@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..2c064e2 100644
+index def05f0..13846f7 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,1024 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,1042 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -260,9 +260,21 @@ index def05f0..2c064e2 100644
 +  // Strip off extra zero args from the right
 +  for (signed i = left_container_size - 1; i>=0; i--)
 +  {
-+      if (is_zero(left_container[i]) && is_zero(right_container[i]))
++      if (is_zero(left_container[i]))
 +      {
 +          left_container.erase(left_container.begin() + i);
++      }
++
++      else
++      {
++          break;
++      }
++  }
++
++  for (signed i = right_container_size - 1; i>=0; i--)
++  {
++      if (is_zero(right_container[i]))
++      {
 +          right_container.erase(right_container.begin() + i);
 +      }
 +
@@ -272,7 +284,9 @@ index def05f0..2c064e2 100644
 +      }
 +  }
 +
-+  // Code to reconstuct the mulptiplicand and multiplier
++
++
++  // Code to reconstuct the multiplicand and multiplier
 +  // Find the number of empty containers on the right
 +  unsigned no_of_empty_containers_right = 0;
 +
@@ -312,7 +326,7 @@ index def05f0..2c064e2 100644
 +  }
 +
 +  unsigned m1_leading_zero = no_of_args - left_container.size() - m1_trailing_zero;
-+  unsigned m2_leading_zero = no_of_args - left_container.size() - m2_trailing_zero;
++  unsigned m2_leading_zero = no_of_args - right_container.size() - m2_trailing_zero;
 +
 +
 +  // Code to add front zero padding
@@ -338,6 +352,10 @@ index def05f0..2c064e2 100644
 +  for (unsigned i = 0; i < left_container.size(); i++)
 +  {
 +      m1.push_back(m_mk_extract(pp_bv_size_half-1, 0, left_container[i]));
++  }
++
++  for (unsigned i = 0; i < right_container.size(); i++)
++  {
 +      m2.push_back(m_mk_extract(pp_bv_size_half-1, 0, right_container[i]));
 +  }
 +
@@ -533,8 +551,8 @@ index def05f0..2c064e2 100644
 +                 (l2 == right_container[0] || r2 == right_container[0]) &&
 +                 (l1 == right_container[0] || r1 == right_container[0]))
 +        {
-+            left_container.push_back(right_container[0]);
-+            right_container.push_back(left_container[0]);
++            left_container.push_back(left_container[0]);
++            right_container.push_back(right_container[0]);
 +        }
 +
 +        bool check = check_container(no_of_containers,
@@ -1027,7 +1045,7 @@ index def05f0..2c064e2 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +2700,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +2718,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
