@@ -1,0 +1,8 @@
+(set-logic QF_BV)
+(declare-fun v1 () (_ BitVec 8)) 
+(declare-fun v2 () (_ BitVec 8)) 
+(define-fun $e3 () (_ BitVec 16) (bvmul (concat #b00000000 v2) (concat #b00000000 v1)))
+(define-fun $e4 () (_ BitVec 40) (concat #b000000000000000000000000 $e3))
+(assert (not (= (bvadd (concat (concat $e3 $e3) #b00000000000000000000000000000000) (bvadd (concat (concat (concat #b00000000 $e3) $e3) #b000000000000000000000000) (bvadd (bvadd (bvadd (bvadd (bvadd (concat #b000000000000000000000000000000000000000000000000 $e3) (concat (concat #b0000000000000000000000000000000000000000 $e3) #b00000000)) (concat (concat #b00000000000000000000000000000000 $e3) #b0000000000000000)) (concat $e4 #b000000000000000000000000)) (concat (concat $e4 $e3) #b00000000)) (concat (concat (concat #b0000000000000000 $e3) $e3) #b0000000000000000)))) (bvmul (concat (concat (concat (concat #b00000000000000000000000000000000 v2) v2) v2) v2) (concat (concat (concat (concat #b00000000000000000000000000000000 v1) #b00000000) v1) v1))))) 
+(check-sat)
+(exit)
