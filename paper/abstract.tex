@@ -1,4 +1,25 @@
-This is a test.
+%
+On an input bit-vector formula,
+a typical SMT solver proceeds by applying several
+simplification rules and then bit-blasting.
+%
+The bit-vector formulas with multiplications
+are particularly hard for SMT solvers.
+%
+Therefore, the simplification more importantly needs
+to detect some high level structures
+in the input and use it in solving the formulas.
+%
+In this paper, we present a class of simplifications
+that may be needed in the multiplication related problems
+and no leading solver implements it. 
+%
+We have modified $\zthree$ to enable the simplification
+and applied a handcrafted benchmark.
+%
+Our modification solves several formulas that are
+intractable by any other leading solver.
+%
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
