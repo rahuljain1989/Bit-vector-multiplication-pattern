@@ -1,25 +1,42 @@
 % Bit-vector is important
-Many hardware and software verification problems are translated to the satisfiability
-of quantifier free bit-vector(QF\_BV) formulas~\cite{hardware,cbmc,more}.
+%
+Many hardware and software verification problems are translated to the
+satisfiability of quantifier free bit-vector(QF\_BV)
+formulas~\cite{hardware,cbmc,more}.
 %
 There are several SMT solvers that implement satisfiability of 
 QF\_BV formulas, e. g., $\zthree$~\cite{z3}, $\cvcfour$~\cite{cvc4}, 
 and many others.
 %
-A typical SMT solver proceeds by applying several
-simplification rules on the input formula.
+A typical SMT solver proceeds by applying several simplification rules
+on the input formula.
 %
-and then bit-blasting.
+If the solver can not simplify a formula anymore and then it
+translates the formula bit-blasting.
 
 % Multiplication is widely used
-In several applications such as control software multiplication
-of bit-vectors is widely used.
 %
-The bit-vector formulas with multiplications
-are particularly hard for SMT solvers.
-
+In several applications, such as control and microprocessor designs,
+the multiplications of bit-vectors are widely used.
+%
+The bit-vector multiplications are particularly hard for SMT solvers.
+%
 
 % A multiplication may be implemented in pieces 
+%
+Since multiplication an expensive operation, it is often broken down
+in small pieces and the results are added with appropriates offsets.
+%
+There are several algorithms for breaking down multiplications, for
+example, high-school grade multiplier, \ashu{other multipliers}, Booth
+multiplier, etc.
+%
+If a multiplication is implemented using one of the algorithm then the
+solver may not be able to recognize that the net effect of the
+algorithm is the multiplication of some bit-vectors.
+%
+ 
+
 
 
 % SMT solvers do not recognize the pieces and the assembly of pieces
