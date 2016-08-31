@@ -1,5 +1,5 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..3885c19 100644
+index def05f0..2296439 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
 @@ -1634,6 +1634,1071 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
@@ -393,8 +393,8 @@ index def05f0..3885c19 100644
 +      tout << result;
 +      tout << ")";
 +      tout << "\n\n";
++      returned_axiom = NULL;
 +  }
-+
 +  exit(1);
 +  return BR_FAILED;
 +
@@ -1106,3 +1106,107 @@ index 7135c52..9ce4c71 100644
      br_status mk_bv_add(expr * arg1, expr * arg2, expr_ref & result) {
          expr * args[2] = { arg1, arg2 };
          return mk_bv_add(2, args, result);
+diff --git a/src/ast/rewriter/poly_rewriter.h b/src/ast/rewriter/poly_rewriter.h
+index ea0b9e8..d11e479 100644
+--- a/src/ast/rewriter/poly_rewriter.h
++++ b/src/ast/rewriter/poly_rewriter.h
+@@ -159,6 +159,9 @@ public:
+         expr* args[2] = { a1, a2 };
+         mk_sub(2, args, result);
+     }
++  //ashu-----
++  expr* returned_axiom;
++  //ashu-----
+ };
+ 
+ 
+diff --git a/src/ast/rewriter/rewriter.h b/src/ast/rewriter/rewriter.h
+index 44f436f..e198b57 100644
+--- a/src/ast/rewriter/rewriter.h
++++ b/src/ast/rewriter/rewriter.h
+@@ -118,6 +118,9 @@ public:
+     void display_stack(std::ostream & out, unsigned pp_depth);
+ #endif
+     unsigned get_cache_size() const;
++  //ashu-----
++  expr* returned_axiom;
++  //ashu-----
+ };
+ 
+ class var_shifter_core : public rewriter_core {
+@@ -381,6 +384,9 @@ struct default_rewriter_cfg {
+     bool get_subst(expr * s, expr * & t, proof * & t_pr) { return false; }
+     void reset() {}
+     void cleanup() {}
++  //ashu-----
++  expr* returned_axiom;
++  //ashu-----
+ };
+ 
+ struct beta_reducer_cfg : public default_rewriter_cfg {
+diff --git a/src/ast/rewriter/rewriter_def.h b/src/ast/rewriter/rewriter_def.h
+index 4d55632..78b9326 100644
+--- a/src/ast/rewriter/rewriter_def.h
++++ b/src/ast/rewriter/rewriter_def.h
+@@ -221,6 +221,9 @@ void rewriter_tpl<Config>::process_app(app * t, frame & fr) {
+                 m_pr  = m().mk_congruence(t, new_t, num_prs, result_pr_stack().c_ptr() + fr.m_spos);
+             }
+         }
++        //ashu-----
++        m_cfg.returned_axiom = returned_axiom;
++        //ashu-----
+         br_status st = m_cfg.reduce_app(f, new_num_args, new_args, m_r, m_pr2);
+         SASSERT(st != BR_DONE || m().get_sort(m_r) == m().get_sort(t));
+         TRACE("reduce_app", 
+diff --git a/src/ast/rewriter/th_rewriter.cpp b/src/ast/rewriter/th_rewriter.cpp
+index 6f6daf8..551b139 100644
+--- a/src/ast/rewriter/th_rewriter.cpp
++++ b/src/ast/rewriter/th_rewriter.cpp
+@@ -157,6 +157,9 @@ struct th_rewriter_cfg : public default_rewriter_cfg {
+     }
+ 
+     br_status reduce_app_core(func_decl * f, unsigned num, expr * const * args, expr_ref & result) {
++      //ashu-----
++      m_bv_rw.returned_axiom = returned_axiom;
++      //ashu-----
+         family_id fid = f->get_family_id();
+         if (fid == null_family_id)
+             return BR_FAILED;
+@@ -764,6 +767,9 @@ void th_rewriter::operator()(expr * t, expr_ref & result) {
+ }
+ 
+ void th_rewriter::operator()(expr * t, expr_ref & result, proof_ref & result_pr) {
++  //ashu-----
++    m_imp->returned_axiom = returned_axiom;
++  //ashu-----
+     m_imp->operator()(t, result, result_pr);
+ }
+ 
+diff --git a/src/ast/rewriter/th_rewriter.h b/src/ast/rewriter/th_rewriter.h
+index bd5ce9c..ffe2ad4 100644
+--- a/src/ast/rewriter/th_rewriter.h
++++ b/src/ast/rewriter/th_rewriter.h
+@@ -58,6 +58,9 @@ public:
+     // Remark: reset_used_dependecies will reset the internal cache if get_used_dependencies() != 0
+     expr_dependency * get_used_dependencies();
+     void reset_used_dependencies();
++  //ashu-----
++  expr* returned_axiom;
++  //ashu-----
+ };
+ 
+ #endif
+diff --git a/src/tactic/core/simplify_tactic.cpp b/src/tactic/core/simplify_tactic.cpp
+index be89d35..b836c47 100644
+--- a/src/tactic/core/simplify_tactic.cpp
++++ b/src/tactic/core/simplify_tactic.cpp
+@@ -56,6 +56,9 @@ struct simplify_tactic::imp {
+             if (g.inconsistent())
+                 break;
+             expr * curr = g.form(idx);
++            //ashu-----
++            m_r.returned_axiom = (expr *)5;
++            //ashu-----
+             m_r(curr, new_curr, new_pr);
+             m_num_steps += m_r.get_num_steps();
+             if (g.proofs_enabled()) {
