@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..2296439 100644
+index def05f0..fd855a8 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,6 +1634,1071 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,6 +1634,1073 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -387,15 +387,17 @@ index def05f0..2296439 100644
 +      expr *e1 = m().mk_app(get_fid(), OP_BADD, num_args, args);
 +      expr *e2 = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
 +      result = m().mk_eq(e1, e2);
-+
-+      tout << "\n; Adding new assert\n";
-+      tout << "(assert";
-+      tout << result;
-+      tout << ")";
-+      tout << "\n\n";
-+      returned_axiom = NULL;
++      expr *e3 = m().mk_eq(e1, e2);
++      *returned_axiom = e3;
++      tout << returned_axiom;
++      //tout << "\n; Adding new assert\n";
++      //tout << "(assert";
++      //tout << result;
++      //tout << ")";
++      //tout << "\n\n";
++      return BR_FAILED;
 +  }
-+  exit(1);
++  // exit(1);
 +  return BR_FAILED;
 +
 +  }
@@ -1074,7 +1076,7 @@ index def05f0..2296439 100644
  br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result) {
      br_status st = mk_add_core(num_args, args, result);
      if (st != BR_FAILED && st != BR_DONE)
-@@ -1682,6 +2747,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +2749,11 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
@@ -1107,7 +1109,7 @@ index 7135c52..9ce4c71 100644
          expr * args[2] = { arg1, arg2 };
          return mk_bv_add(2, args, result);
 diff --git a/src/ast/rewriter/poly_rewriter.h b/src/ast/rewriter/poly_rewriter.h
-index ea0b9e8..d11e479 100644
+index ea0b9e8..98c3bbf 100644
 --- a/src/ast/rewriter/poly_rewriter.h
 +++ b/src/ast/rewriter/poly_rewriter.h
 @@ -159,6 +159,9 @@ public:
@@ -1115,13 +1117,13 @@ index ea0b9e8..d11e479 100644
          mk_sub(2, args, result);
      }
 +  //ashu-----
-+  expr* returned_axiom;
++  expr** returned_axiom;
 +  //ashu-----
  };
  
  
 diff --git a/src/ast/rewriter/rewriter.h b/src/ast/rewriter/rewriter.h
-index 44f436f..e198b57 100644
+index 44f436f..a793f05 100644
 --- a/src/ast/rewriter/rewriter.h
 +++ b/src/ast/rewriter/rewriter.h
 @@ -118,6 +118,9 @@ public:
@@ -1129,7 +1131,7 @@ index 44f436f..e198b57 100644
  #endif
      unsigned get_cache_size() const;
 +  //ashu-----
-+  expr* returned_axiom;
++  expr** returned_axiom;
 +  //ashu-----
  };
  
@@ -1139,7 +1141,7 @@ index 44f436f..e198b57 100644
      void reset() {}
      void cleanup() {}
 +  //ashu-----
-+  expr* returned_axiom;
++  expr** returned_axiom;
 +  //ashu-----
  };
  
@@ -1183,7 +1185,7 @@ index 6f6daf8..551b139 100644
  }
  
 diff --git a/src/ast/rewriter/th_rewriter.h b/src/ast/rewriter/th_rewriter.h
-index bd5ce9c..ffe2ad4 100644
+index bd5ce9c..5ea0fdb 100644
 --- a/src/ast/rewriter/th_rewriter.h
 +++ b/src/ast/rewriter/th_rewriter.h
 @@ -58,6 +58,9 @@ public:
@@ -1191,22 +1193,34 @@ index bd5ce9c..ffe2ad4 100644
      expr_dependency * get_used_dependencies();
      void reset_used_dependencies();
 +  //ashu-----
-+  expr* returned_axiom;
++  expr** returned_axiom;
 +  //ashu-----
  };
  
  #endif
 diff --git a/src/tactic/core/simplify_tactic.cpp b/src/tactic/core/simplify_tactic.cpp
-index be89d35..b836c47 100644
+index be89d35..9bb32c7 100644
 --- a/src/tactic/core/simplify_tactic.cpp
 +++ b/src/tactic/core/simplify_tactic.cpp
-@@ -56,6 +56,9 @@ struct simplify_tactic::imp {
+@@ -56,6 +56,10 @@ struct simplify_tactic::imp {
              if (g.inconsistent())
                  break;
              expr * curr = g.form(idx);
 +            //ashu-----
-+            m_r.returned_axiom = (expr *)5;
++            expr * s;
++            m_r.returned_axiom = &s;
 +            //ashu-----
              m_r(curr, new_curr, new_pr);
              m_num_steps += m_r.get_num_steps();
              if (g.proofs_enabled()) {
+@@ -63,7 +67,10 @@ struct simplify_tactic::imp {
+                 new_pr     = m().mk_modus_ponens(pr, new_pr);
+             }
+             g.update(idx, new_curr, new_pr, g.dep(idx));
++            g.assert_expr(s);
+         }
++        tout << m_r.returned_axiom;
++        //g.assert_expr(s);
+         TRACE("after_simplifier_bug", g.display(tout););
+         g.elim_redundancies();
+         TRACE("after_simplifier", g.display(tout););
