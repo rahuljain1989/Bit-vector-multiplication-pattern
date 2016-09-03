@@ -41,6 +41,7 @@
 (define-fun $e40 () (_ BitVec 1) (bvand $e38 $e39))
 (define-fun $e41 () (_ BitVec 1) (bvand $e37 $e40))
 (define-fun $e42 () (_ BitVec 7) (concat (concat (concat (concat (concat (concat $e13 (bvand $e14 (bvnot $e19))) (bvand $e21 (bvnot $e26))) (bvnot (bvand (bvnot (bvand $e27 $e34)) (bvand (bvnot (bvand (bvnot $e32) $e34)) (bvnot (bvand $e27 (bvnot $e32))))))) $e41) (bvand (bvnot $e41) (bvnot (bvand (bvnot $e37) (bvnot $e40))))) (bvand (bvnot $e40) (bvnot (bvand (bvnot $e38) (bvnot $e39))))))
-(assert (not (= (bvadd (concat (concat (concat (concat (concat #b0 (bvand (bvnot $e13) (bvnot (bvand (bvnot $e11) (bvnot $e12))))) (ite (= $e14 $e19) #b1 #b0)) (ite (= $e21 $e26) #b1 #b0)) (bvand (bvnot (bvand (bvnot $e27) (bvnot (ite $e35 #b1 #b0)))) (bvnot (bvand $e27 (ite $e35 #b1 #b0))))) #b000) (bvand (concat $e42 v4) (concat $e42 v8))) (bvmul (concat (concat (concat (concat #b0000 v5) v6) v7) v8) (concat (concat (concat (concat #b0000 v1) v2) v3) v4)))))
+(assert (not (= (bvadd (concat (concat (concat (concat (concat #b0 (bvand (bvnot $e13) (bvnot (bvand (bvnot $e11) (bvnot $e12))))) (ite (= $e14 $e19) #b1 #b0)) (ite (= $e21 $e26) #b1 #b0)) (bvand (bvnot (bvand (bvnot $e27) (bvnot (ite $e35 #b1 #b0)))) (bvnot (bvand $e27 (ite $e35 #b1 #b0))))) #b000) (bvand (concat $e42 v4) (concat $e42 v8))) (bvmul (concat (concat (concat (concat #b0000 v5) v6) v7) v8) (concat (concat (concat (concat #b0000 v1) v2) v3) v4))))) 
 (check-sat)
 (exit)
+

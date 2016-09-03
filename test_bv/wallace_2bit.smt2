@@ -3,14 +3,9 @@
 (declare-fun v2 () (_ BitVec 1)) 
 (declare-fun v3 () (_ BitVec 1)) 
 (declare-fun v4 () (_ BitVec 1)) 
-(define-fun $e5 () (_ BitVec 1) (bvand v1 v4))
-(define-fun $e6 () (_ BitVec 1) (bvand v2 v3))
-(define-fun $e7 () (_ BitVec 1) (bvand $e5 $e6))
-(define-fun $e8 () (_ BitVec 1) (bvand v1 v3))
-(define-fun $e9 () (_ BitVec 1) (bvand $e7 $e8))
-(assert (not (=  
-
-(concat (concat $e9 (bvand (bvnot $e9) (bvnot (bvand (bvnot $e7) (bvnot $e8))))) (bvand (bvnot $e7) (bvnot (bvand (bvnot $e5) (bvnot $e6)))))
- ((_ extract 3 1) (bvmul (concat (concat #b00 v3) v4) (concat (concat #b00 v1) v2))))))
+(define-fun $e5 () (_ BitVec 3) (concat #b00 v3))
+(define-fun $e6 () (_ BitVec 2) (bvand (concat #b0 v1) (concat #b0 v3)))
+(define-fun $e7 () (_ BitVec 3) (bvand (concat $e6 v1) (concat $e6 v4)))
+(assert (not (= (bvadd (concat (bvand (concat #b00 v2) $e5) #b0) (bvand (concat $e7 v2) (concat $e7 v4))) (bvmul (concat $e5 v4) (concat (concat #b00 v1) v2)))))
 (check-sat)
 (exit)
