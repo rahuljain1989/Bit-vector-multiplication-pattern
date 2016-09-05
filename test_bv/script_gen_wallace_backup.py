@@ -1,6 +1,6 @@
 import subprocess
 from shutil import copyfile
-import sys
+import sys 
 import fileinput
 import os
 n_str = sys.argv[1]
@@ -8,7 +8,7 @@ n_int = int(n_str)
 
 main_folder_name = "gen_wallace_tree_mult_" + n_str + "_bits"
 
-subprocess.call(['rm', '-rf', main_folder_name])
+subprocess.call(['rm', '-rf', main_folder_name]) 
 subprocess.call(['mkdir', main_folder_name])
 #subprocess.call(['cd', main_folder_name])
 os.chdir(main_folder_name)
@@ -48,7 +48,6 @@ f_ant.write("T; clk ; 0b1; 4 ; 5\nT; clk ; 0b0; 5 ; 6\nT; put ; 0b1; 5 ; 6\nT; g
 f_ant.write("T; idata[" + str(n_int - 1) + ":0]; idata@5_" + str(n_int - 1) + "_0; 5; 6\n")
 f_ant.write("T; clk ; 0b1; 6 ; 7\nT; clk ; 0b0; 7 ; 8\nT; put ; 0b0; 7 ; 8\nT; get ; 0b1; 7 ; 8\nT; clk ; 0b1; 8 ; 9\nT; clk ; 0b0; 9 ; 10\nT; rst_b ; 0b0; 0 ; 2\nT; rst_b ; 0b1; 2 ; 4\nT; rst_b ; 0b1; 4 ; 6\nT; rst_b ; 0b1; 6 ; 8")
 f_ant.close()
-
 
 #code to generate command
 
@@ -108,9 +107,9 @@ f_wal.write("logic p [" + str(n_int - 1) + ":0][" + str(n_int - 1) + ":0];      
 f_wal.write("genvar i,j;\n\n")
 f_wal.write("logic [" + str(2*n_int - 1) + ":0] result1,result2;\n")
 
-f_wal.write("logic [200:0] wt1")
+f_wal.write("logic [100:0] wt1")
 
-for i in range(2,2*n_int+1):
+for i in range(2,2*n_int):
         f_wal.write(", wt" + str(i))
 f_wal.write(";\n\n")
 
@@ -129,8 +128,8 @@ f_wal.write("           assign p[i][j] = a[i] & b[j];\nendgenerate\n\n")
 
 
 #python code
-wt = [[] for i in range(0, 2*n_int+1)]
-wt_temp = [[] for i in range(0, 2*n_int+1)]
+wt = [[] for i in range(0, 2*n_int)]
+wt_temp = [[] for i in range(0, 2*n_int)]
 
 for i in range(0, n_int):
         for j in range(0, n_int):
@@ -140,18 +139,19 @@ for i in range(0, n_int):
 #for i in range(0, 2*n_int):
 #       print wt[i]
 
-wt_count = [0 for i in range(0, 2*n_int+1)]
+wt_count = [0 for i in range(0, 2*n_int)]
 
 ha_count = 1
 fa_count = 1
 red_layer = 1
+
 
 def wallace(wt, wt_temp):
         global ha_count, fa_count, red_layer
         f_wal.write("\n // Reduction Layer " + str(red_layer) + "\n\n")
         red_layer+=1
         #print wt
-        for i in range(0, 2*n_int):
+        for i in range(0, 2*n_int - 1):  #change
                 while len(wt[i]) > 0:
                         while len(wt[i]) >= 3:
                                 f_wal.write("FA fa_" + str(fa_count) + " (.a(" + wt[i][0] + "), .b(" + wt[i][1] + "), .c(" + wt[i][2] + "), .sum(wt" + str(i) + "[" + str(wt_count[i]) + "]), .carry(wt" + str(i+1) + "[" + str(wt_count[i+1]) + "]));\n\n")
@@ -174,16 +174,17 @@ def wallace(wt, wt_temp):
                                 del wt[i][0]
                                 del wt[i][0]
 
-                        if len(wt[i]) == 1:
+			elif len(wt[i]) == 1:
                                 wt_temp[i].append(wt[i][0])
                                 del wt[i][0]
+
 
 
 #print wt                               
 loop_count = 0
 while True:
         flag = 0
-        for i in range(0, 2*n_int):
+        for i in range(0, 2*n_int - 1):   #change
                 if len(wt[i]) > 2:
                         flag = 1
                         break
@@ -192,12 +193,12 @@ while True:
         else:
                 wallace(wt, wt_temp)
                 wt = wt_temp
-                wt_temp = [[] for i in range(0, 2*n_int+1)]
+                wt_temp = [[] for i in range(0, 2*n_int)]
 
 f_wal.write("assign result1 = {");
 
 
-
+#for w in reversed(wt):
 
 for i in range(len(wt)-1, 0, -1):
         if len(wt[i]) >= 1:
@@ -210,7 +211,7 @@ f_wal.write(wt[0][0] + "};\n")
 del wt[0][0]
 
 f_wal.write("assign result2 = {");
-for i in range(len(wt)-2, 0, -1):
+for i in range(len(wt)-1, 0, -1):
         if len(wt[i]) >= 1:
                 f_wal.write(wt[i][0] + ",")
                 del wt[i][0]
@@ -220,3 +221,4 @@ for i in range(len(wt)-2, 0, -1):
 f_wal.write("1'b0};\n\n")
 f_wal.write("assign res = result1 + result2;\n\nendmodule")
 f_wal.close()
+
