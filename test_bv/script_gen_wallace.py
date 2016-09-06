@@ -199,7 +199,7 @@ f_wal.write("assign result1 = {");
 
 
 
-for i in range(len(wt)-1, 0, -1):
+for i in range(len(wt)-2, 0, -1):
         if len(wt[i]) >= 1:
                 f_wal.write(wt[i][0] + ",")
                 del wt[i][0]
