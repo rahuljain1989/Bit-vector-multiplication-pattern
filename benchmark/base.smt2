@@ -1,3 +1,4 @@
+;(set-option :produce-proofs true)
 (set-logic QF_BV)
 (declare-fun v1 () (_ BitVec 2))
 (declare-fun v2 () (_ BitVec 2))

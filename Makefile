@@ -6,14 +6,14 @@ all : debug
 
 .PHONY :  debug clean patch
 
-debug : z3/buildd/Makefile
+debug : z3/buildd/libz3.so
 
-z3/buildd/Makefile: z3/buildd/libz3.so
+z3/buildd/libz3.so : z3/patched z3/buildd/Makefile
+	make -C z3/buildd
 
-z3/buildd/libz3.so : z3/patched
+z3/buildd/Makefile: $(shell find ./z3/scripts/ -type f -name '*')
 	rm -rf z3/buildd
 	cd z3; python scripts/mk_make.py --staticlib -d -t -b buildd
-	make -C z3/buildd
 
 z3/patched : bv.patch z3/README.md
 	cd z3; $(git) stash clear && $(git) stash save && $(git) apply --whitespace=fix $(PWD)/bv.patch

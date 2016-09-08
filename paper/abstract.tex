@@ -6,15 +6,13 @@ simplification rules and then bit-blasting.
 The bit-vector formulas with multiplications
 are particularly hard for SMT solvers.
 %
-Therefore, the simplification more importantly needs
-to detect some high level structures
-in the input and use it in solving the formulas.
+Therefore, it becomes more important that the simplification detects
+high level structures in the formulas in order to solve it faster.
 %
-In this paper, we present a class of simplifications
-that may be needed in solving formulas containing
-multiplications and no leading solver implements it, and
-an efficient algorithm to recognize the simplification
-pattern. 
+In this paper, we present a class of simplifications that may be
+needed in solving formulas containing multiplications and no leading
+solver implements it, and an efficient algorithm to recognize the
+simplification pattern. 
 %
 We have added the algorithm in rewriting engine of $\zthree$
 and applied on benchmarks.
