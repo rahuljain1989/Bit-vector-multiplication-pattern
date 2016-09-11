@@ -1,0 +1,55 @@
+\begin{algorithm}[t]
+ \caption{\textsc{getMultOperandRec}($Cs$)}
+ \label{alg:hb}
+ \begin{algorithmic}[1]
+   \Ensure $Cs$ : array of sets of the partial products
+   \State $m$ : candidate multiplier $\sassign$ []
+   \State $n$ : candidate multiplicand $\sassign$ []
+   \State Choose largest $k$ such that $Cs_k\neq \emptyset$
+   \State $i := k$
+   \If{$Cs_k == \{a*b\} $}
+   \State $m_k := a; n_k := b$; $backtrack_k := (m_k == n_k)$; 
+   \Else
+   \State {\bf goto }{\textsc{Backtrack}}
+   \EndIf
+   \While{ $i > 0$}
+   \State $i = i - 1 $
+   \State $C := Cs_i$
+   \For{ $j \in (k-1)..(i+1)$}
+   \If{$m_{j} \neq 0$ and $n_{k+i-j} \neq 0$}
+   \IIf{ $m_j*m_{k+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
+   \State $C := C - \{m_j*m_{k+i-j}\}$
+   \EndIf
+   \EndFor
+   \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}
+   \State {\bf match} $C$ {\bf with}
+   \State\quad $\mid$ $\{m_k*b,n_k*d\}$ $\rightarrow$ $m_i := d; n_i := b$;
+   $backtrack_i := (m_k == n_k)$; 
+   \State\quad $\mid$ $\{m_k*n_k\}$ $\rightarrow$ $m_i := 0; n_i := m_k;$
+   $backtrack_i := \ltrue$; 
+   \State \quad$\mid$ $\{m_k*b\}$ $\rightarrow$ $m_i := 0; n_i := b;$
+   $backtrack_i := (m_k == n_k)$; 
+   \State \quad $\mid$ $\{n_k*b\}$ $\rightarrow$ $m_i := b; n_i := 0;$\
+   $backtrack_i := \lfalse$; 
+   \State \quad $\mid$ $\{\}$ $\rightarrow$ $m_i := 0; n_i := 0;$\
+   $backtrack_i := \lfalse$; 
+   \State {\bf continue;}
+   \State \textsc{Backtrack:}
+   \State \quad Choose smallest $i$ such that $backtrack_i == \ltrue$
+   \State \quad {\bf if} no $i$ found {\bf then} \Return{ FAILED}
+   \State \quad \textsc{SWAP}($m_i,n_i$); $backtrack_i := \lfalse$
+   \EndWhile
+   \State Let $l$ be the smallest number such that $Cs_l\neq \emptyset$
+   \State Choose $o \in 0..l$\ashu{More constraints over needed?!!}
+   \State Right shift $m$ until $o$ trailing $0$ blocks in $m$
+   \State Right shift $m$ until $l-o$ trailing $0$ blocks in $n$
+   \State \Return $(m,n)$
+ \end{algorithmic}
+\end{algorithm}  
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

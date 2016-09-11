@@ -1,15 +1,34 @@
 In this section, we will present syntax of
 the theory of quantifier-free bit vector formulas(\qfbv),
 basics of solving methods used by SMT solvers,
-and the multiplication procedures that are of our interest. 
-
-
+and the multiplication methods that are of our interest. 
 
 \subsection{\qfbv~syntax}
 
+A bit-vector is a fixed sequence of bits.
+%
+We will denote bit vectors by $x$,$y$,$z$...
+
 Syntax of bit-vector formulas
 
+A bit-vector $v$
+
+\subsection{SMT solvers for \qfbv}
+
+The leading SMT solvers for \qfbv~apply several simplification
+passes followed by bit-blast, i.e. translating input to Boolean
+satisfiability problem.
+%
+The bit-blasted SAT problem is solved using conflict driven clause
+learning(CDCL) based procedures.
+%
+
+
+
+
 \subsection{Multipliers}
+
+
 
 \subsubsection{Grade school multiplication}
 

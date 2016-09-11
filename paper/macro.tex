@@ -15,6 +15,7 @@
 \usepackage{caption}
 \usepackage{subfigure}
 \usepackage{algorithmicx}
+% \usepackage{algorithm2e}
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithm}
 \usepackage{fancyvrb}
@@ -29,6 +30,10 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{automata}
 \usetikzlibrary{calc}
+
+
+\algnewcommand{\IIf}[1]{\State\algorithmicif\ #1\ \algorithmicthen}
+\algnewcommand{\EndIIf}{\unskip\ \algorithmicend\ \algorithmicif}
 
 \lstset{
   basicstyle=\ttfamily,
