@@ -21,7 +21,7 @@
    \State $C := C - \{m_j*m_{k+i-j}\}$
    \EndIf
    \EndFor
-   \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}
+   % \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}
    \State {\bf match} $C$ {\bf with}
    \State\quad $\mid$ $\{m_k*b,n_k*d\}$ $\rightarrow$ $m_i := d; n_i := b$;
    $backtrack_i := (m_k == n_k)$; 
@@ -36,9 +36,10 @@
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
    \State {\bf continue;}
    \State \textsc{Backtrack:}
-   \State \quad Choose smallest $i$ such that $backtrack_i == \ltrue$
-   \State \quad {\bf if} no $i$ found {\bf then} \Return{ FAILED}
-   \State \quad \textsc{SWAP}($m_i,n_i$); $backtrack_i := \lfalse$
+   \State \quad Choose smallest $i' > i$ such that $backtrack_i == \ltrue$
+   \State \quad {\bf if} no $i'$ found {\bf then} \Return{ FAILED}
+   \State \quad $i := i'$
+   \State \quad \textsc{SWAP}($m_i,n_i$); $backtrack_{i} := \lfalse$
    \EndWhile
    \State Let $l$ be the smallest number such that $Cs_l\neq \emptyset$
    \State Choose $o \in 0..l$\ashu{More constraints over needed?!!}
