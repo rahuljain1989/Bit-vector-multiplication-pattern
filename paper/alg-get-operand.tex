@@ -2,14 +2,15 @@
  \caption{\textsc{getMultOperand}($\Lambda$)}
  \label{alg:hb}
  \begin{algorithmic}[1]
-   \Ensure $\Lambda$ : array of multisets of the partial products
-   \State $m$ : candidate multiplier 
-   \State $n$ : candidate multiplicand
-   \State Choose largest $k$ such that $\Lambda_k\neq \emptyset$
+   \Require $\Lambda$ : array of multisets of the partial products
+   \Ensure $M$ : matched multiplications := $\emptyset$
+   \State $m$ : candidate multiplier,  $n$ : candidate multiplicand
+   % \State Choose largest  such that $\Lambda_k\neq \emptyset$
+   \State Let $l$ and $k$ be the smallest and largest $i$ such that $\Lambda_i\neq \emptyset$, respectively.
    \If{$\Lambda_k == \{a*b\} $}
    \State $m_k := a; n_k := b$; $backtrack_k := \lfalse$; 
    \Else
-   \State \Return{ FAILED}
+   \State \Return{ $M$}
    \EndIf
    \State $i := k$
    \While{ $i > 0$}
@@ -34,18 +35,19 @@
    \State \quad $\mid$ $\{\}$ $\rightarrow$ $m_i := 0; n_i := 0;$\
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
-   \State {\bf continue;}
-   \State \textsc{Backtrack:}
-   \State \quad Choose smallest $i' \in k..(i+1)$ such that $backtrack_{i'} == \ltrue$
-   \State \quad {\bf if} no $i'$ found {\bf then} \Return{ FAILED}
-   \State \quad $i := i'$
-   \State \quad \textsc{SWAP}($m_i,n_i$); $backtrack_{i} := \lfalse$
-   \EndWhile
-   \State Let $l$ be the smallest number such that $\Lambda_l\neq \emptyset$
+   \If{ $i == 0 $}
    \State Choose $o \in 0..l$\ashu{More constraints over $o$ needed?!!}
    \State Right shift $m$ until $o$ trailing $0$ blocks in $m$
    \State Right shift $n$ until $l-o$ trailing $0$ blocks in $n$
-   \State \Return $(m,n)$
+   \State $M := M \union \{m * n\}$
+   \Else
+   \State {\bf continue;}
+   \EndIf
+   \State \textsc{Backtrack:}
+   \State \quad Choose smallest $i' \in k..(i+1)$ such that $backtrack_{i'} == \ltrue$
+   \State \quad {\bf if} no $i'$ found {\bf then} \Return{$M$}
+   \State \quad $i := i'$; \textsc{SWAP}($m_i,n_i$); $backtrack_{i} := \lfalse$
+   \EndWhile
  \end{algorithmic}
 \end{algorithm}  
 

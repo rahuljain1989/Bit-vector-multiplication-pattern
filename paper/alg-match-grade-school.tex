@@ -1,15 +1,15 @@
 \begin{algorithm}[t]
  \caption{\textsc{RecognizeGradeSchoolMultiplier}($t$)}
- \label{alg:hb}
+ \label{alg:grade}
  \begin{algorithmic}[1]
    \Ensure $t$ : a term in $\qfbv$
-   \If{ $t == (s_{11} \concat ... \concat s_{1k_1})+...+(s_{n1} \concat ... \concat s_{nk_n})$}
+   \If{ $t == (s_{11} \concat ... \concat s_{1k_1})+...+(s_{p1} \concat ... \concat s_{pk_n})$}
    \State $bsize$ :=  minimum bit length of $s_{ij}$
    \State $\Lambda := \lambda i. \emptyset$
    \For{ each $s_{ij}$ }
    \State $o := (\sum_{j' < j} len( s_{ij'}))/bsize$
    \IIf{ $s_{ij} == 0$ } {\bf continue;}
-   \If{ $s_{ij} == a * b$  and $len(s_{ij}) == bsize$} $\Lambda(o).insert( s_{ij})$
+   \If{ $s_{ij} == a * b$  and $len(s_{ij}) == bsize$} $\Lambda_o.insert( s_{ij})$
    \Else~\Return{FAILED}
    \EndIf
    \EndFor

@@ -1,0 +1,23 @@
+\begin{algorithm}[t]
+ \caption{\textsc{OurSolver}($F$)}
+ \label{alg:solver}
+ \begin{algorithmic}[1]
+   \Ensure $F$ : a $\qfbv$ formula
+   \State \textsc{SMTSolver}.add($F$)
+   \For{ each subterm $t$ in $F$}
+   \If{ $M$ := \textsc{RecognizeGradeSchoolMultiplier}($t$) }
+   \For{ each $m*n \in M$}
+   \State \textsc{SMTSolver}.add($m*n = t$)
+   \EndFor
+   \EndIf
+   \EndFor
+   \State \Return{ \textsc{SMTSolver}.checkSat() }
+ \end{algorithmic}
+\end{algorithm}  
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

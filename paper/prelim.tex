@@ -37,9 +37,14 @@ satisfiability problem.
 The bit-blasted SAT problem is solved using conflict driven clause
 learning(CDCL) based procedures.
 %
+Some of the SMT solvers are \zthree.
 
-
-
+We assume that an  $\qfbv$~SMT solver $\textsc{SMTSolver}$ 
+with the standard interface is available.
+%
+The interface includes a function $add(F)$ that adds a formula
+into the solver and a function $checkSat()$ that checks the
+satisfiability of the formulas added so far. 
 
 \subsection{Multipliers}
 
