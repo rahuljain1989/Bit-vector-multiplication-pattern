@@ -8,10 +8,25 @@ and the multiplication methods that are of our interest.
 A bit-vector is a fixed sequence of bits.
 %
 We will denote bit vectors by $x$,$y$,$z$...
-
-Syntax of bit-vector formulas
-
-A bit-vector $v$
+%
+A $\qfbv$~term $t$ and formula $F$ may be constructed using
+the following grammar.
+\begin{align*}
+t ::= & t * t \mid t + t \mid x \mid n \mid t \concat t \mid ....\\
+F ::= & t = t \mid t \bowtie t | \lnot F | F \lor F | F \land F | F \lxor F \mid ... 
+\end{align*}
+where $x$ is a bit-vector variable, 
+$n$ is a constant number represented in some length of bits,
+$\bowtie \in \{\leq , <, \geq, > \}$, and
+$\concat$ is a binary operator that concatenates bit-vectors.
+%
+Here we have presented only the  part of the theory
+of $\qfbv$ that is relevant to our discussion.
+%
+All the inputs and outputs of arithmetic bit-vector operators 
+have same bit length.
+%
+Let $len(t)$ denote the bit length of a term $t$.
 
 \subsection{SMT solvers for \qfbv}
 

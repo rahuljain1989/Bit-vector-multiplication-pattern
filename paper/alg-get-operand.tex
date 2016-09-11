@@ -1,12 +1,12 @@
 \begin{algorithm}[t]
- \caption{\textsc{getMultOperandRec}($Cs$)}
+ \caption{\textsc{getMultOperand}($\Lambda$)}
  \label{alg:hb}
  \begin{algorithmic}[1]
-   \Ensure $Cs$ : array of multisets of the partial products
+   \Ensure $\Lambda$ : array of multisets of the partial products
    \State $m$ : candidate multiplier 
    \State $n$ : candidate multiplicand
-   \State Choose largest $k$ such that $Cs_k\neq \emptyset$
-   \If{$Cs_k == \{a*b\} $}
+   \State Choose largest $k$ such that $\Lambda_k\neq \emptyset$
+   \If{$\Lambda_k == \{a*b\} $}
    \State $m_k := a; n_k := b$; $backtrack_k := \lfalse$; 
    \Else
    \State \Return{ FAILED}
@@ -14,7 +14,7 @@
    \State $i := k$
    \While{ $i > 0$}
    \State $i = i - 1 $
-   \State $C := Cs_i$
+   \State $C := \Lambda_i$
    \For{ $j \in (k-1)..(i+1)$}
    \If{$m_{j} \neq 0$ and $n_{k+i-j} \neq 0$}
    \IIf{ $m_j*m_{k+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
@@ -36,15 +36,15 @@
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
    \State {\bf continue;}
    \State \textsc{Backtrack:}
-   \State \quad Choose smallest $i' > i$ such that $backtrack_i == \ltrue$
+   \State \quad Choose smallest $i' \in k..(i+1)$ such that $backtrack_{i'} == \ltrue$
    \State \quad {\bf if} no $i'$ found {\bf then} \Return{ FAILED}
    \State \quad $i := i'$
    \State \quad \textsc{SWAP}($m_i,n_i$); $backtrack_{i} := \lfalse$
    \EndWhile
-   \State Let $l$ be the smallest number such that $Cs_l\neq \emptyset$
-   \State Choose $o \in 0..l$\ashu{More constraints over needed?!!}
+   \State Let $l$ be the smallest number such that $\Lambda_l\neq \emptyset$
+   \State Choose $o \in 0..l$\ashu{More constraints over $o$ needed?!!}
    \State Right shift $m$ until $o$ trailing $0$ blocks in $m$
-   \State Right shift $m$ until $l-o$ trailing $0$ blocks in $n$
+   \State Right shift $n$ until $l-o$ trailing $0$ blocks in $n$
    \State \Return $(m,n)$
  \end{algorithmic}
 \end{algorithm}  
