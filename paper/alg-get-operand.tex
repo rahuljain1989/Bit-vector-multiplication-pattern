@@ -2,16 +2,16 @@
  \caption{\textsc{getMultOperandRec}($Cs$)}
  \label{alg:hb}
  \begin{algorithmic}[1]
-   \Ensure $Cs$ : array of sets of the partial products
-   \State $m$ : candidate multiplier $\sassign$ []
-   \State $n$ : candidate multiplicand $\sassign$ []
+   \Ensure $Cs$ : array of multisets of the partial products
+   \State $m$ : candidate multiplier 
+   \State $n$ : candidate multiplicand
    \State Choose largest $k$ such that $Cs_k\neq \emptyset$
-   \State $i := k$
    \If{$Cs_k == \{a*b\} $}
-   \State $m_k := a; n_k := b$; $backtrack_k := (m_k == n_k)$; 
+   \State $m_k := a; n_k := b$; $backtrack_k := \lfalse$; 
    \Else
-   \State {\bf goto }{\textsc{Backtrack}}
+   \State \Return{ FAILED}
    \EndIf
+   \State $i := k$
    \While{ $i > 0$}
    \State $i = i - 1 $
    \State $C := Cs_i$
@@ -33,6 +33,7 @@
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\{\}$ $\rightarrow$ $m_i := 0; n_i := 0;$\
    $backtrack_i := \lfalse$; 
+   \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
    \State {\bf continue;}
    \State \textsc{Backtrack:}
    \State \quad Choose smallest $i$ such that $backtrack_i == \ltrue$
