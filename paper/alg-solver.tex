@@ -5,7 +5,12 @@
    \Ensure $F$ : a $\qfbv$ formula
    \State \textsc{SMTSolver}.add($F$)
    \For{ each subterm $t$ in $F$}
-   \If{ $M$ := \textsc{RecognizeGradeSchoolMultiplier}($t$) }
+   \If{ $M$ := \textsc{RecognizeGradeSchool}($t$) }
+   \For{ each $m*n \in M$}
+   \State \textsc{SMTSolver}.add($m*n = t$)
+   \EndFor
+   \EndIf
+   \If{ $M$ := \textsc{RecognizeWallaceTree}($t$) }
    \For{ each $m*n \in M$}
    \State \textsc{SMTSolver}.add($m*n = t$)
    \EndFor
