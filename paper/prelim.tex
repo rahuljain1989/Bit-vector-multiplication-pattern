@@ -9,19 +9,30 @@ A bit-vector is a fixed sequence of bits.
 %
 We will denote bit vectors by $x$,$y$,$z$...
 %
+We need to refer to the blocks of bits in 
+bit-vectors.
+Therefore, we may declare that a bit-vector $x$
+is accessed in blocks of size $w$.
+%
+We write $x_i$ to denotes $i$th block from
+least significant bit (LSB).
+
+
 A $\qfbv$~term $t$ and formula $F$ may be constructed using
 the following grammar.
 \begin{align*}
-t ::= & t * t \mid t + t \mid x \mid n \mid t \concat t \mid ....\\
+t ::= & t * t \mid t + t \mid x \mid n^w \mid t \concat t \mid ....\\
 F ::= & t = t \mid t \bowtie t | \lnot F | F \lor F | F \land F | F \lxor F \mid ... 
 \end{align*}
 where $x$ is a bit-vector variable, 
-$n$ is a constant number represented in some length of bits,
+$n^w$ is a constant number represented by $w$ bits,
 $\bowtie \in \{\leq , <, \geq, > \}$, and
 $\concat$ is a binary operator that concatenates bit-vectors.
 %
-Here we have presented only the  part of the theory
+Here we are presenting only the  part of the theory
 of $\qfbv$ that is relevant to our discussion.
+%
+In this paper, all the arithmetic operators are unsigned.
 %
 All the inputs and outputs of arithmetic bit-vector operators 
 have same bit length.
@@ -30,6 +41,10 @@ Let $len(t)$ denote the bit length of a term $t$.
 
 \subsection{SMT solvers for \qfbv}
 
+SMT(satisfiability modulo theory)
+solvers are the specialized solvers that solve 
+formulas of a given theory.
+%
 The leading SMT solvers for \qfbv~apply several simplification
 passes followed by bit-blast, i.e. translating input to Boolean
 satisfiability problem.
@@ -37,9 +52,11 @@ satisfiability problem.
 The bit-blasted SAT problem is solved using conflict driven clause
 learning(CDCL) based procedures.
 %
-Some of the SMT solvers are \zthree.
+Some of the SMT solvers that implement \qfbv~are
+\zthree, \boolector, \cvcfour, etc.
 
-We assume that an  $\qfbv$~SMT solver $\textsc{SMTSolver}$ 
+For our algorithm, we assume that a  $\qfbv$~SMT
+solver $\textsc{SMTSolver}$ 
 with the standard interface is available.
 %
 The interface includes a function $add(F)$ that adds a formula
@@ -48,36 +65,174 @@ satisfiability of the formulas added so far.
 
 \subsection{Multipliers}
 
-
+Multiplication is an expensive operation to implement in hardware.
+%
+There are several designs of multipliers for varying
+resource constraints.
+%
+If one can have a large number of gates then Wallace tree
+multiplier can be used.
+%
+Otherwise, one may break down the multiplication task in
+small multiplications and combine the results appropriately.
+%
+For example, grade school multiplier and Booth multiplier.
+%
+Here, we will discuss Wallace tree and Grade school multiplier.
 
 \subsubsection{Grade school multiplication}
 
-Describe it in our $\qfbv$
-
-\ashu{2-3 line why this definition and what to expect in the words already 
-introduced}
-
-\rahul{ We need to do this}
-
-\begin{df}
-  
-\end{df}
-
-Some discussion about the definition.
+Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
+bits and are of size $kw$.
+%
+The grade school multiplier breaks down the multiplication $kw$ bits
+into chunks of $w$ bits multiplication, called {\em partial products}.
+%
+The partial products are summed with appropriate offsets to obtain
+the final result.
+%
+The following notation is typically used to illustrate
+the grade school multiplication.
+%
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $x_{k}$ & ... & $x_1$&\\ 
+  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline
+  &&&$x_k*y_1$& ... & $x_1*y_1$&\\
+  &&$\iddots$&$\vdots$& $\iddots$ && \\
+  &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
+\end{tabular}  
+\end{center}
+$x_i * y_j$ are the partial products.
+%
+$x_i*y_j$ is left shifted $(i+j-2)*w$ bits. 
+%
+In the above scheme all the partial products that have same offset are 
+aligned in single column.
+%
+After the shifts, all the partial results are added in some order.
+%
+Let us clarify that the needed bit-width of the partial products should be $2w$.
+%
+Formally, $x_i * y_j$ denotes $(0^w \concat x_i)*(0^w \concat y_j)$.
+%
+Therefore, the bits of the partial products in neighbouring columns overlap
+and they can not be simply concatenated.
+%
+The scheme does not specify the order of the addition
+of the shifted partial products.
+%
+Therefore, there are several design possible for a given $k$ and $w$.
 
 \begin{example}
-  
+  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
+  Let us apply grade school multiplication in multiplying
+  $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
+  We obtain the following partial products.
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $v_2$ & $0^2$ & $v_1$&\\ 
+  &&& $u_2$ & $v_2$ & $u_1$&$*$\\ \hline
+  &&&$v_2*u_1$& $0^4$ & $v_1*u_1$&\\
+  &&$v_2*v_2$&$0^4$& $v_1*v_2$ && \\
+  &$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
+\end{tabular}
+\end{center}
+We need to sum the partial products. However, if their non-zero bits 
+do not overlap then we can simply concatenate them.
+%
+And finally we may sum the concatenated vectors.
+%
+The following is one the combination of the concatenation and 
+summation of the above multiplication.
+$$
+( 0^4 \concat v_1*u_2 \concat v_1*u_1)+ (v_2*u_2 \concat v_2*u_1 \concat 0^4)+ (0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+$$
 \end{example}
 
 
 \subsubsection{Wallace tree multiplier}
+%
+Wallace tree breaks down the multiplication all the way to single bits.
+%
+Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $1$
+bits and are of size $k$.
+%
+In a Wallace tree, the partial products are multiplication of single
+bits $x_iy_j$.
+%
+The multiplication of single bits is the conjunction of the bits, i.e.,
+$x_i \land y_i$.\footnote{1-bit bit vectors may be viewed as boolean values therefore we may apply logical and.}
+%
+There is no carry generated due to the multiplication of the single bits.
+%
+We need to align the partial product $x_iy_j$ to $(i+j-2)$th bit of output.
+%
+Consider $o$th output bit.
+%
+All the partial products that are align to $o$ are summed using full adder 
+and half adders.
+%
+The full adders are used
+if more than three bits are available that are yet to be added
+and half adder are used if there are only two bits that are left to be added.
+%
+The adders generate carry bits that are aligned to $(o+1)$th bit,
+which are added to the partial products for $(o+1)th$ bit using the 
+adders as illustrated in the following figure.
 
-\subsubsection{Booth multiplier}
+\begin{center}
+  \begin{tikzpicture}[node distance=4cm,thick]
+
+    \node[draw,rectangle, minimum width=2cm,minimum height=1cm] (a) {Adders};
+    \node[draw,rectangle, minimum width=2cm,minimum height=1cm, right of=a] (b) {Adders};
+
+    % \draw (0,0)  rectangle +(2,1);
+    % \draw (3,0)  rectangle +(2,1);
+
+    \draw[->] (a.south) -- node[right=1pt] {$o+1$} +(0,-.5);
+    \draw[->] (b.south) -- node[right=1pt] {$o$} +(0,-.5);
 
 
-%\subsection{Verification problem to SMT formula}
+    \draw[vecArrow] (b.220) |- ++(-1.5cm,-0.5) --node[right=1pt,yshift=-1cm,rotate = 90] {carry bits} ++(0,2.3cm) -| (a.40);
+
+    \draw[vecArrow] ($ (a.140) + (0,0.6cm) $) --node[above=1pt,yshift = 1mm] {
+      \begin{tabular}{c}
+        partial\\
+        products
+      \end{tabular}
+      } (a.140);
+    \draw[vecArrow] ($ (b.140) + (0,0.6cm) $) --node[above=1pt,yshift = 1mm] {
+      \begin{tabular}{c}
+        partial\\
+        products
+      \end{tabular}
+      } (b.140);
+
+    \draw[vecArrow,gray] ($ (b.50) + (1cm,0.8cm) $) -| (b.50);
 
 
+  % \draw[vecArrow] (k) |- (c);
+  \end{tikzpicture}  
+\end{center}
+
+
+%\subsubsection{Booth multiplier}
+
+
+\subsection{Verification problem to SMT formula}
+
+We have observed that both the above multiplication method do not
+fully specified the design.
+%
+Therefore, there are several ways to implement the multiplications.
+%
+For any hardware design containing multiplication,
+one needs to verify that the design indeed implements the intended
+multiplication.
+
+\ashu{Needs more detailed discussion with example about how
+verification problem may contain such multipliers expanded out!}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
