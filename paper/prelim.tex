@@ -177,10 +177,9 @@ The full adders are used
 if more than three bits are available that are yet to be added
 and half adder are used if there are only two bits that are left to be added.
 %
-The adders generate carry bits that are aligned to $(o+1)$th bit.
-%
-They are added to the partial products for $(o+1)th$ bit using the 
-adders.
+The adders generate carry bits that are aligned to $(o+1)$th bit,
+which are added to the partial products for $(o+1)th$ bit using the 
+adders as illustrated in the following figure.
 
 \begin{center}
   \begin{tikzpicture}[node distance=4cm,thick]
@@ -223,8 +222,17 @@ adders.
 
 \subsection{Verification problem to SMT formula}
 
-\ashu{Needs a discussion about how verification problem may contain such
-multipliers expanded out!}
+We have observed that both the above multiplication method do not
+fully specified the design.
+%
+Therefore, there are several ways to implement the multiplications.
+%
+For any hardware design containing multiplication,
+one needs to verify that the design indeed implements the intended
+multiplication.
+
+\ashu{Needs more detailed discussion with example about how
+verification problem may contain such multipliers expanded out!}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
