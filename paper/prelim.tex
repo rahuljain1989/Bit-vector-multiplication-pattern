@@ -76,23 +76,23 @@ multiplier can be used.
 Otherwise, one may break down the multiplication task in
 small multiplications and combine the results appropriately.
 %
-For example, grade school multiplier and Booth multiplier.
+For example, long multiplier and Booth multiplier.
 %
-Here, we will discuss Wallace tree and Grade school multiplier.
+Here, we will discuss long and Wallace tree multiplier.
 
-\subsubsection{Grade school multiplication}
+\subsubsection{Long multiplier}
 
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
 bits and are of size $kw$.
 %
-The grade school multiplier breaks down the multiplication $kw$ bits
+The long multiplier breaks down the multiplication $kw$ bits
 into chunks of $w$ bits multiplication, called {\em partial products}.
 %
 The partial products are summed with appropriate offsets to obtain
 the final result.
 %
 The following notation is typically used to illustrate
-the grade school multiplication.
+the long multiplication.
 %
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
@@ -126,7 +126,7 @@ Therefore, there are several design possible for a given $k$ and $w$.
 
 \begin{example}
   Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
-  Let us apply grade school multiplication in multiplying
+  Let us apply long multiplication in multiplying
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}

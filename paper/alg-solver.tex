@@ -5,7 +5,7 @@
    \Ensure $F$ : a $\qfbv$ formula
    \State \textsc{SMTSolver}.add($F$)
    \For{ each subterm $t$ in $F$}
-   \If{ $M$ := \textsc{RecognizeGradeSchool}($t$) }
+   \If{ $M$ := \textsc{RecognizeLong}($t$) }
    \For{ each $m*n \in M$}
    \State \textsc{SMTSolver}.add($m*n = t$)
    \EndFor
