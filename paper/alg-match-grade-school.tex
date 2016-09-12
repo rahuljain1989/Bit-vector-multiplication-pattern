@@ -4,16 +4,16 @@
  \begin{algorithmic}[1]
    \Ensure $t$ : a term in $\qfbv$
    \If{ $t == (s_{11} \concat ... \concat s_{1k_1})+...+(s_{p1} \concat ... \concat s_{pk_n})$}
-   \State $bsize$ :=  minimum bit length of $s_{ij}$
+   \State $w$ :=  minimum bit length of $s_{ij}$
    \State $\Lambda := \lambda i. \emptyset$
    \For{ each $s_{ij}$ }
-   \State $o := (\sum_{j' < j} len( s_{ij'}))/bsize$
+   \State $o := (\sum_{j' < j} len( s_{ij'}))/w$
    \IIf{ $s_{ij} == 0$ } {\bf continue;}
-   \If{ $s_{ij} == a * b$  and $len(s_{ij}) == bsize$} $\Lambda_o.insert( s_{ij})$
-   \Else~\Return{FAILED}
+   \If{ $s_{ij} == (0^{w} \concat a) * (0^{w} \concat b)$  and $len(a) == w$} $\Lambda_o.insert( a * b )$
+   \Else~\Return{$\emptyset$}
    \EndIf
    \EndFor
-   \State \Return{\textsc{getMultOperand}($\Lambda$)}
+   \State \Return{\textsc{getMultOperand}($\Lambda$,$w$)}
    \EndIf
    % \Else
    \State \Return{FAILED}

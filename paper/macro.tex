@@ -9,6 +9,7 @@
 \usepackage{amsfonts}
 \usepackage{galois}
 \usepackage{mathabx}
+\usepackage{mathdots}
 \usepackage{todonotes}
 \usepackage{paralist}
 \usepackage{multirow}
@@ -26,10 +27,20 @@
 \usepackage{etoolbox}
 \usepackage{tikz}
 \usetikzlibrary{shapes}
-\usetikzlibrary{arrows}
+\usetikzlibrary{arrows,decorations.markings}
 \usetikzlibrary{positioning}
 \usetikzlibrary{automata}
 \usetikzlibrary{calc}
+
+
+\tikzstyle{vecArrow} = [
+    thick,
+    decoration={markings,
+                mark=at position
+                1 with {\pgftransformscale{2.3}\arrow[semithick]{open triangle 90}}},
+    double distance=10.4pt, shorten >= 10.5pt,
+    preaction = {decorate},
+    postaction = {draw,line width=10.4pt, white,shorten >= 7.5pt}]
 
 
 \algnewcommand{\IIf}[1]{\State\algorithmicif\ #1\ \algorithmicthen}
@@ -61,7 +72,7 @@
 
 \newcommand{\ashu}[1]{ {\textcolor{magenta} {Ashutosh: #1}} }
 \newcommand{\supratik}[1]{ {\textcolor{red} {Supratik: #1}} }
-\newcommand{\rahul}[1]{ {\textcolor{blue} {Divyesh: #1}} }
+\newcommand{\rahul}[1]{ {\textcolor{blue} {Rahul: #1}} }
 
 \newcommand{\naturals}{\mathbb{N}}
 \newcommand{\integers}{\mathbb{Z}}
@@ -119,6 +130,7 @@
 % \newcommand{\ourtool}{$\crest^{+}$}
 \newcommand{\ourtool}{\textsc{Crabs}}
 \newcommand{\zthree}{\textsc{Z3}}
+\newcommand{\boolector}{\textsc{Boolector}}
 \newcommand{\cvcfour}{\textsc{CVC4}}
 \newcommand{\crest}{\textsc{Crest}}
 \newcommand{\synergy}{\textsc{Synergy}}
