@@ -1,6 +1,6 @@
-In this section, we will present syntax of
+In this section, we will present the syntax of
 the theory of quantifier-free bit vector formulas(\qfbv),
-basics of solving methods used by SMT solvers,
+the basics of solving methods used by SMT solvers,
 and the multiplication methods that are of our interest. 
 
 %
@@ -9,7 +9,7 @@ and the multiplication methods that are of our interest.
 
 A bit-vector is a fixed sequence of bits.
 %
-We will denote bit vectors by $x$,$y$,$z$...
+We will denote bit vectors by $x$,$y$,$z$, etc.
 %
 We need to refer to the blocks of bits in 
 bit-vectors.
@@ -17,7 +17,7 @@ Therefore, we may declare that a bit-vector $x$
 is accessed in blocks of size $w$.
 %
 We write $x_i$ to denotes $i$th block from
-least significant bit (LSB).
+the least significant bit (LSB).
 %
 Similar notation is used for the vectors of any objects.
 
@@ -32,12 +32,12 @@ $n^w$ is a constant number represented by $w$ bits,
 $\bowtie \in \{\leq , <, \geq, > \}$, and
 $\concat$ is a binary operator that concatenates bit-vectors.
 %
-Here we are presenting only the  part of the theory
-of $\qfbv$ that is relevant to our discussion.
+Here we are presenting only the part of the theory
+that is relevant to our discussion.
 %
 In this paper, all the arithmetic operators are unsigned.
 %
-All the inputs and outputs of arithmetic bit-vector operators 
+All the inputs and outputs of arithmetic operators 
 have same bit length.
 %
 Let $len(t)$ denote the bit length of a term $t$.
@@ -45,13 +45,13 @@ Let $len(t)$ denote the bit length of a term $t$.
 Let $zeroExt(t,w)$ be shorthand for  $0^{w-len(t)}\concat t$.
 
 We assume that $a * b$ is commutative and, in a pattern matching
-steps, we will not make a distinction between $a*b$ and $b*a$.
+step, we will not make a distinction between $a*b$ and $b*a$.
 %
 $t == s$ is true iff $t$ and $s$ are syntactically same.
 %
-For bit-vectors $x$,$y$, and $z$. Let $w= max( len(x),len(y), t)$.
+For bit-vectors $x$,$y$, and $z$, let $w= max( len(x),len(y), t)$.
 %
-Let $[x*y = t]$ is a term $x'*y'=t'$, where 
+Let $[x*y = t]$ denote term $x'*y'=t'$, where 
 $x' = zeroExt(x,w)$, $y' = zeroExt(y,w)$, and $t' = zeroExt(t,w)$.
 %
 Similarly, $[x*y]$ is defined.
@@ -63,14 +63,14 @@ solvers are the specialized solvers that solve
 formulas of a given theory.
 %
 The leading SMT solvers for \qfbv~apply several simplification
-passes followed by bit-blast, i.e. translating input to Boolean
-satisfiability problem.
+passes followed by bit-blast, i.e. translating input to
+Boolean satisfiability problem(SAT problem).
 %
 The bit-blasted SAT problem is solved using conflict driven clause
 learning(CDCL) based procedures.
 %
-Some of the SMT solvers that implement \qfbv~are
-\zthree, \boolector, \cvcfour, etc.
+Some of the SMT solvers are
+\zthree, \boolector, and \cvcfour.
 
 For our algorithm, we assume that a  $\qfbv$~SMT
 solver $\textsc{SMTSolver}$ 
@@ -122,21 +122,22 @@ the long multiplication.
 \end{center}
 $x_i * y_j$ are the partial products.
 %
-$x_i*y_j$ is left shifted $(i+j-2)*w$ bits. 
+$x_i*y_j$ is left shifted $(i+j-2)w$ bits. 
 %
 In the above scheme all the partial products that have same offset are 
 aligned in single column.
 %
 After the shifts, all the partial results are added in some order.
 %
-Let us clarify that the needed bit-width of the partial products should be $2w$.
+The needed bit-width of the partial products should be $2w$.
 %
-Formally, $x_i * y_j$ denotes $(0^w \concat x_i)*(0^w \concat y_j)$.
+In the $\qfbv$ notation, $x_i * y_j$ is correctly denoted by
+$(0^w \concat x_i)*(0^w \concat y_j)$.
 %
 Therefore, the bits of the partial products in neighbouring columns overlap
 and they can not be simply concatenated.
 %
-The scheme does not specify the order of the addition
+The long multiplier does not specify the order of the addition
 of the shifted partial products.
 %
 Therefore, there are several design possible for a given $k$ and $w$.
@@ -160,8 +161,8 @@ do not overlap then we can simply concatenate them.
 %
 And finally we may sum the concatenated vectors.
 %
-The following is one of the combination of the concatenation and 
-summation of the above multiplication.
+The following is one of the combination of the concatenations and 
+summations of the above multiplication.
 $$
 ( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
 (v_2*u_2 \concat v_2*u_1 \concat 0^4) +
@@ -235,7 +236,7 @@ adders as illustrated in the following figure.
 \subsection{Verification problem to SMT formula}
 
 We have observed that both the above multiplication method do not
-fully specified the design.
+fully specify the design.
 %
 Therefore, there are several ways to implement the multiplications.
 %
