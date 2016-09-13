@@ -1,21 +1,227 @@
-In this section, we will present a class of simplification patterns that
-may simplify the formulas with multipliers 
-and the algorithms to detect the patterns.
+%
+In this section, we will present our method for solving
+formulas that contain implementations of multiplications.
+%
+Our method first attempts to identify multiplications that
+are broken down using long or Wallace tree multiplication.
+%
+If we suspect some subterms are indeed instances of the
+multiplications, we add tautologies stating that the terms are 
+equal to the multiplication of the identified bit-vectors.
+%
+Our identification method may find multiple matches for a subterm.
+%
+We add a tautology for each match.
+%
+Let us first present our method of identifying long multiplication. 
 
+% In this section, we will present a class of simplification patterns that
+% may simplify the formulas with multipliers 
+% and the algorithms to detect the patterns.
 
 \subsection{Identifying long multiplication}
+\input{alg-match-long}
 
-\subsection{Identifying Wallace tree multiplication}
+In Algorithm~\ref{alg:long}, we present a function $\textsc{MatchLong}$
+that takes a $\qfbv$ term $t$ and returns a set of matched multiplications.
+%
+The algorithm and the subsequent algorithms are written such that as soon
+as it becomes clear that no multiplication can be identified then
+it returns empty set. 
+%
+At line 1, we match $t$ with sum of concatenations and if match fails
+then clearly $t$ is not a long multiplication.
+%
+At line 2, we identify the block size $w$ used by the long
+multiplication.\ashu{clarify}
+%
+The loop at line $4$ populates the vector of set of partial products $\Lambda$.
+%
+$\Lambda_i$ denotes the partial products that are aligned at $i$th block.
+%
+Each $s_{ij}$ must either be $0$ or a partial product of width $w$.
+%
+Otherwise, $t$ is declared unmatched at line 8. 
+%
+At line 5, we compute the alignment $o$ for $s_{ij}$.
+%
+If $s_{ij}$ happens to be a partial product then it is inserted in
+$\Lambda_o$ at line 7.
+%
+At line 9, we call $\textsc{getMultOperands}$ to identify the operands
+of the multiplication from $\Lambda$.
 
 \subsection{Partial products to operands}
-
 \input{alg-get-operand}
 
-\input{alg-match-long}
+In Algorithm~\ref{alg:operand}, we present a function
+$\textsc{getMultOperands}$ that takes a $\qfbv$ term $t$ and returns a
+set of matched multiplications.
+%
+At line 1, we compute $h$ and $l$ that establishes the range of search for
+operands.
+%
+We maintain two candidate operands $x$ and $y$ of size $hw$.
+%
+We also maintain a vector of bits $backtrack$ that encodes 
+the possibility of flipping the uncertain decisions.
+%
+Due to the scheme of the long multiplication, the highest
+non-empty entry in $\Lambda$ must be a singleton set.
+%
+If $\Lambda_h$ contains a single partial product $a*b$,
+we assign $x_h$ and $y_h$ the operands of $a*b$ arbitrarily.
+%
+Otherwise, we declare failure of matching and return $\emptyset$.
+%
+We set $backtrack_h$ to be $\lfalse$, which states that
+no need of backtracking at index $h$.
+%
+The loop at line 8 iterates using from $h$ to $1$ index $i$.
+%
+In each iteration, it assigns a value to $x_i$, $y_i$, and $backtrack_i$. 
+%
+
+The algorithm may not have enough information at $i$th iteration and
+the chosen value for the variables may be wrong.
+%
+Whenever, the algorithm realizes that such a mistake has happened
+it jumps to line 28 and increases back the value of $i$
+to the latest $i'$ that allowed back tracking,
+swap the assigned values of $x_i$, $y_i$, and sets $backtrack_i$ to
+$\lfalse$ stating that backtracking has happened at this point
+please do not consider it again.
+%
+
+Now let us look back again at the loop at line 8.
+%
+At line 9, we decrement $i$ and $\Lambda_i$ is copied in $C$.
+%
+At index $i$, the sum of the aligned partial products is the following.
+$$
+x_{h}*y_{i} + \underbrace{x_{h-1}*y_{i+1} + \dots + x_{i+1}*y_{h-1}}_{\text{operands seen at the earlier iterations}} + x_{i}*y_{h}
+$$
+We have already chosen the operands of the middle multiplications in the previous iterations.
+%
+Only the multiplication at the extreme end have $y_i$ and $x_i$ that are
+not assigned yet.
+%
+In the loop at line 10, we remove the middle term and if any of the needed
+term is missing then we may have made a mistake earlier and we jump for
+backtracking.
+%
+After the loop, we should have left with at most two partial products in $C$.
+%
+We match $C$ with six possibilities at lines 14-20 and
+update $x_i$, $y_i$, and sets $backtrack_i$ accordingly.
+%
+In some cases we determine the value of $x_i$ and $y_i$ and the other
+cases we are not certain. 
+%
+In the following list we discuss each of the cases.
+%
+\begin{itemize}
+\item[line 15:] If $C$ has two elements $x_h*b$ and $y_h*d$ then
+there is an ambiguity in choosing $x_i$ and $y_i$
+if $x_h == y_h$.
+%
+In the case, we set $backtrack_i$ to $\ltrue$.
+\item[line 16:] If $C$ has a single element $x_h*y_h$ then again there  
+are two possibilities and we set $backtrack_i$ to $\ltrue$.
+\item[line 17:] If $C = \{x_h*b\}$ and $b$ is not $y_h$ then 
+  similar to the first case there is an ambiguity in
+  choosing $x_i$ and $y_i$ if $x_h == y_h$. Line 18 is similar.
+\item[line 19:] If $C$ is empty then certainly $x_i = y_i = 0$.
+\item[line 20:] If none of the above patterns match then we jump for
+  backtracking.
+\end{itemize}
+%
+At line 21, we check if $i==1$ that means a match has been successful.
+%
+To find the appropriate operands, we need to right shift $x$ and $y$
+such that the total number of their trailing zero blocks is $l-1$.
+%
+We add the match to the match store $M$.
+%
+And, the algorithm proceeds for backtracking.
+
+\subsection{Identifying Wallace tree multiplication}
 \input{alg-match-wallace-tree}
 
+A Wallace tree has a cluster of adders that take partial products and 
+and carry bits as input to produce the output bits.
+%
+In our matching algorithm, we find the set of inputs
+to the adders for an output bit and classify them into
+partial products and carry bits.
+%
+The sum output of a half/full adders are the result of 
+xor operations of inputs.
+%
+To find the input to the adders, we start from a
+output bit and follow backward until we find input that
+are not the result of $\lxor$.
+
+In Algorithm~\ref{alg:wallace}, we present a function
+$\textsc{MatchWallace}$ that takes a $\qfbv$ term $t$ and returns a
+set of matched multiplications.
+%
+At line 1, $t$ is matched with a concatenation of single bit terms $t_1$,..,$t_n$.
+%
+Similar to Algorithm~\ref{alg:long},
+we maintain the partial product store $\Lambda$.
+%
+For each $i$,
+we also maintain the multiset of terms $\Delta_i$ that were used as 
+input to the adders for the $i$th bit.
+%
+In the loop at line 6, we traverse to the subterms until
+the subterm is not the result of xors.
+%
+In the traversal, we also collect the inputs of xors in $\Delta_i$, which
+will help us in checking that all the carry inputs in adders for $t_{i+1}$
+is generated by the adders for $t_i$.
+%
+If the term $t$ is not the result of xors then
+we have the following possibilities.
+%
+\begin{itemize}
+\item[line 10-13:]
+  If $t$ is the carry bit of a half/full adder, we remove the inputs 
+  the adder from $\Delta_{i-1}$.
+\item[line 14-15:] If $t$ is a partial product, we record this in $\Lambda_i$
+\item[line 16:] Otherwise, we return $\emptyset$, which means the match has failed.
+\end{itemize}
+At line 17, we check that $\Delta_{i-1} = 0$, i.e., all carry bits from
+adders for $t_{i-1}$ are consumed by the adders for $t_i$ exactly once.
+%
+If this check fails then we return $\emptyset$.
+%
+After the loop at 6, we have collected the partial products in $\Lambda$.
+%
+At line 18, we call $\textsc{getMultOperands}(\Lambda,1)$ to get all
+the matching multiplications.
+
+\subsection{Our solver}
 \input{alg-solver}
 
+Using the above pattern matching algorithms, we modify an existing
+solver $\textsc{SMTSolver}$, which
+is presented in the Algorithm~\ref{alg:solver}.
+%
+$\textsc{OurSolver}$ adds the input formula $F$ in $\textsc{SMTSolver}$.
+%
+For every subterm of $F$, we attempt to match with both long multiplication
+or Wallace tree multiplication.
+%
+For each discovered matching $x*y$, we add a bit-vector tautology $[x*y = t]$ 
+to the solvers, which is obtained after
+appropriately zero-padding $x$, $y$, and $t$.
+ 
+
+
+\section{Proof generation}
+\ashu{Are we doing this!}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 

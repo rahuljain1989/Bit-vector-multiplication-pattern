@@ -1,52 +1,51 @@
-\begin{algorithm}[t]
- \caption{\textsc{getMultOperand}($\Lambda,w$)}
- \label{alg:hb}
+\begin{algorithm}[!t]
+ \caption{\textsc{getMultOperands}($\Lambda,w$)}
+ \label{alg:operand}
  \begin{algorithmic}[1]
    \Require $\Lambda$ : array of multisets of the partial products
    \Ensure $M$ : matched multiplications := $\emptyset$
-   \State $m,n$ : candidate multipliers that are accessed in block size $w$
-   % $n$ : candidate multiplicand
-   % \State Choose largest  such that $\Lambda_k\neq \emptyset$
-   \State Let $l$ and $k$ be the smallest and largest $i$ such that $\Lambda_i\neq \emptyset$, respectively.
-   \If{$\Lambda_k == \{a*b\} $}
-   \State $m_k := a; n_k := b$; $backtrack_k := \lfalse$; 
+   \State Let $l$ and $h$ be the smallest and largest $i$ such that $\Lambda_i\neq \emptyset$, respectively.
+   \State $x,y$ : candidate operands that are accessed in block size $w$ and of size $hw$
+   \If{$\Lambda_h == \{a*b\} $}
+   \State $x_h := a; y_h := b$; $backtrack_h := \lfalse$; 
    \Else
-   \State \Return{ $M$}
+   \State \Return{ $\emptyset$}
    \EndIf
-   \State $i := k;$
+   \State $i := h;$
    \While{ $i > 1$}
    \State $i := i - 1; C := \Lambda_i$
-   \For{ $j \in (k-1)..(i+1)$}
-   \If{$m_{j} \neq 0$ and $n_{k+i-j} \neq 0$}
-   \IIf{ $m_j*m_{k+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
-   \State $C := C - \{m_j*m_{k+i-j}\}$
+   \For{ $j \in (h-1)..(i+1)$}
+   \If{$x_{j} \neq 0$ and $y_{h+i-j} \neq 0$}
+   \IIf{ $x_j*x_{h+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
+   \State $C := C - \{x_j*x_{h+i-j}\}$
    \EndIf
    \EndFor
    % \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}
    \State {\bf match} $C$ {\bf with}
-   \State\quad $\mid$ $\{m_k*b,n_k*d\}$ $\rightarrow$ $m_i := d; n_i := b$;
-   $backtrack_i := (m_k == n_k)$; 
-   \State\quad $\mid$ $\{m_k*n_k\}$ $\rightarrow$ $m_i := 0; n_i := m_k;$
+   \State\quad $\mid$ $\{x_h*b,y_h*d\}$ $\rightarrow$ $x_i := d; y_i := b$;
+   $backtrack_i := (x_h == y_h)$; 
+   \State\quad $\mid$ $\{x_h*y_h\}$ $\rightarrow$ $x_i := 0; y_i := x_h;$
    $backtrack_i := \ltrue$; 
-   \State \quad$\mid$ $\{m_k*b\}$ $\rightarrow$ $m_i := 0; n_i := b;$
-   $backtrack_i := (m_k == n_k)$; 
-   \State \quad $\mid$ $\{n_k*b\}$ $\rightarrow$ $m_i := b; n_i := 0;$\
+   \State \quad$\mid$ $\{x_h*b\}$ $\rightarrow$ $x_i := 0; y_i := b;$
+   $backtrack_i := (x_h == y_h)$; 
+   \State \quad $\mid$ $\{y_h*b\}$ $\rightarrow$ $x_i := b; y_i := 0;$\
    $backtrack_i := \lfalse$; 
-   \State \quad $\mid$ $\{\}$ $\rightarrow$ $m_i := 0; n_i := 0;$\
+   \State \quad $\mid$ $\{\}$ $\rightarrow$ $x_i := 0; y_i := 0;$\
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
    \If{ $i == 1 $}
-   \State Choose $o \in 0..l$\ashu{More constraints over $o$ needed?!!}
-   \State Right shift $m$ until $o$ trailing $0$ blocks in $m$
-   \State Right shift $n$ until $l-o$ trailing $0$ blocks in $n$
-   \State $M := M \union \{m * n\}$
+   \For{$o \in 0..(l-1)$} \ashu{More constraints over $o$ needed?!!}
+   \State $x'$ := Right shift $x$ until $o$ trailing $0$ blocks in $x$
+   \State $y'$ := Right shift $y$ until $l-o$ trailing $0$ blocks in $y$
+   \State $M := M \union \{x' * y'\}$
+   \EndFor
    \Else
    \State {\bf continue;}
    \EndIf
    \State \textsc{Backtrack:}
-   \State \quad Choose smallest $i' \in k..(i+1)$ such that $backtrack_{i'} == \ltrue$
+   \State \quad Choose smallest $i' \in h..(i+1)$ such that $backtrack_{i'} == \ltrue$
    \State \quad {\bf if} no $i'$ found {\bf then} \Return{$M$}
-   \State \quad $i := i'$; \textsc{SWAP}($m_i,n_i$); $backtrack_{i} := \lfalse$
+   \State \quad $i := i'$; \textsc{SWAP}($x_i,y_i$); $backtrack_{i} := \lfalse$
    \EndWhile
  \end{algorithmic}
 \end{algorithm}  

@@ -2,17 +2,13 @@
  \caption{\textsc{OurSolver}($F$)}
  \label{alg:solver}
  \begin{algorithmic}[1]
-   \Ensure $F$ : a $\qfbv$ formula
+   \Require $F$ : a $\qfbv$ formula
+   \Ensure sat/unsat/undef
    \State \textsc{SMTSolver}.add($F$)
    \For{ each subterm $t$ in $F$}
-   \If{ $M$ := \textsc{RecognizeLong}($t$) }
-   \For{ each $m*n \in M$}
-   \State \textsc{SMTSolver}.add($m*n = t$)
-   \EndFor
-   \EndIf
-   \If{ $M$ := \textsc{RecognizeWallaceTree}($t$) }
-   \For{ each $m*n \in M$}
-   \State \textsc{SMTSolver}.add($m*n = t$)
+   \If{ $M$ := \textsc{MatchLong}($t$) $\union$ \textsc{MatchWallaceTree}($t$) }
+   \For{ each $x*y \in M$}
+   \State \textsc{SMTSolver}.add($[x*y = t]$)
    \EndFor
    \EndIf
    \EndFor

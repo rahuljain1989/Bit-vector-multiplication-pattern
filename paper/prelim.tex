@@ -3,6 +3,8 @@ the theory of quantifier-free bit vector formulas(\qfbv),
 basics of solving methods used by SMT solvers,
 and the multiplication methods that are of our interest. 
 
+%
+
 \subsection{\qfbv~syntax}
 
 A bit-vector is a fixed sequence of bits.
@@ -16,13 +18,14 @@ is accessed in blocks of size $w$.
 %
 We write $x_i$ to denotes $i$th block from
 least significant bit (LSB).
+%
+Similar notation is used for the vectors of any objects.
 
-
-A $\qfbv$~term $t$ and formula $F$ may be constructed using
+A $\qfbv$~term $t$ and formula $F$ is constructed using
 the following grammar.
 \begin{align*}
-t ::= & t * t \mid t + t \mid x \mid n^w \mid t \concat t \mid ....\\
-F ::= & t = t \mid t \bowtie t | \lnot F | F \lor F | F \land F | F \lxor F \mid ... 
+t ::= & t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
+F ::= & t = t \mid t \bowtie t \mid \lnot F \mid F \lor F \mid F \land F \mid F \lxor F \mid ... 
 \end{align*}
 where $x$ is a bit-vector variable, 
 $n^w$ is a constant number represented by $w$ bits,
@@ -38,6 +41,20 @@ All the inputs and outputs of arithmetic bit-vector operators
 have same bit length.
 %
 Let $len(t)$ denote the bit length of a term $t$.
+%
+Let $zeroExt(t,w)$ be shorthand for  $0^{w-len(t)}\concat t$.
+
+We assume that $a * b$ is commutative and, in a pattern matching
+steps, we will not make a distinction between $a*b$ and $b*a$.
+%
+$t == s$ is true iff $t$ and $s$ are syntactically same.
+%
+For bit-vectors $x$,$y$, and $z$. Let $w= max( len(x),len(y), t)$.
+%
+Let $[x*y = t]$ is a term $x'*y'=t'$, where 
+$x' = zeroExt(x,w)$, $y' = zeroExt(y,w)$, and $t' = zeroExt(t,w)$.
+%
+Similarly, $[x*y]$ is defined.
 
 \subsection{SMT solvers for \qfbv}
 
@@ -146,23 +163,25 @@ And finally we may sum the concatenated vectors.
 The following is one the combination of the concatenation and 
 summation of the above multiplication.
 $$
-( 0^4 \concat v_1*u_2 \concat v_1*u_1)+ (v_2*u_2 \concat v_2*u_1 \concat 0^4)+ (0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
+(v_2*u_2 \concat v_2*u_1 \concat 0^4) +
+(0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
 $$
 \end{example}
 
 
 \subsubsection{Wallace tree multiplier}
 %
-Wallace tree breaks down the multiplication all the way to single bits.
+Wallace tree breaks the multiplication all the way down to single bits.
 %
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $1$
-bits and are of size $k$.
+bit and are of size $k$.
 %
 In a Wallace tree, the partial products are multiplication of single
 bits $x_iy_j$.
 %
 The multiplication of single bits is the conjunction of the bits, i.e.,
-$x_i \land y_i$.\footnote{1-bit bit vectors may be viewed as boolean values therefore we may apply logical and.}
+$x_i \land y_i$.\footnote{1-bit bit vectors may be viewed as Boolean values therefore we may apply logical and.}
 %
 There is no carry generated due to the multiplication of the single bits.
 %
@@ -187,12 +206,8 @@ adders as illustrated in the following figure.
     \node[draw,rectangle, minimum width=2cm,minimum height=1cm] (a) {Adders};
     \node[draw,rectangle, minimum width=2cm,minimum height=1cm, right of=a] (b) {Adders};
 
-    % \draw (0,0)  rectangle +(2,1);
-    % \draw (3,0)  rectangle +(2,1);
-
     \draw[->] (a.south) -- node[right=1pt] {$o+1$} +(0,-.5);
     \draw[->] (b.south) -- node[right=1pt] {$o$} +(0,-.5);
-
 
     \draw[vecArrow] (b.220) |- ++(-1.5cm,-0.5) --node[right=1pt,yshift=-1cm,rotate = 90] {carry bits} ++(0,2.3cm) -| (a.40);
 
@@ -210,9 +225,6 @@ adders as illustrated in the following figure.
       } (b.140);
 
     \draw[vecArrow,gray] ($ (b.50) + (1cm,0.8cm) $) -| (b.50);
-
-
-  % \draw[vecArrow] (k) |- (c);
   \end{tikzpicture}  
 \end{center}
 
