@@ -1,8 +1,9 @@
 \begin{algorithm}[t]
- \caption{\textsc{RecognizeGradeSchool}($t$)}
- \label{alg:grade}
+ \caption{\textsc{MatchLong}($t$)}
+ \label{alg:long}
  \begin{algorithmic}[1]
-   \Ensure $t$ : a term in $\qfbv$
+   \Require $t$ : a term in $\qfbv$
+   \Ensure $M$ : matched multiplications := $\emptyset$
    \If{ $t == (s_{1k_1} \concat ... \concat s_{11})+...+(s_{pk_p} \concat ... \concat s_{p1})$}
    \State $w$ :=  minimum bit length of $s_{ij}$
    \State $\Lambda := \lambda i. \emptyset$
@@ -13,7 +14,7 @@
    \Else~\Return{$\emptyset$}
    \EndIf
    \EndFor
-   \State \Return{\textsc{getMultOperand}($\Lambda$,$w$)}
+   \State \Return{\textsc{getMultOperands}($\Lambda$,$w$)}
    \EndIf
    % \Else
    \State \Return{$\emptyset$}
