@@ -160,7 +160,7 @@ do not overlap then we can simply concatenate them.
 %
 And finally we may sum the concatenated vectors.
 %
-The following is one the combination of the concatenation and 
+The following is one of the combination of the concatenation and 
 summation of the above multiplication.
 $$
 ( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
@@ -181,20 +181,20 @@ In a Wallace tree, the partial products are multiplication of single
 bits $x_iy_j$.
 %
 The multiplication of single bits is the conjunction of the bits, i.e.,
-$x_i \land y_i$.\footnote{1-bit bit vectors may be viewed as Boolean values therefore we may apply logical and.}
+$x_i \land y_i$.%\footnote{1-bit bit vectors may be viewed as Boolean values therefore we may apply logical and.}
 %
 There is no carry generated due to the multiplication of the single bits.
 %
-We need to align the partial product $x_iy_j$ to $(i+j-2)$th bit of output.
+The partial product $x_iy_j$ is aligned with the $(i+j-2)$th bit of output.
 %
-Consider $o$th output bit.
+Let us consider $o$th output bit.
 %
 All the partial products that are align to $o$ are summed using full adder 
 and half adders.
 %
 The full adders are used
 if more than three bits are available that are yet to be added
-and half adder are used if there are only two bits that are left to be added.
+and half adders are used if there are only two bits that are left to be added.
 %
 The adders generate carry bits that are aligned to $(o+1)$th bit,
 which are added to the partial products for $(o+1)th$ bit using the 
