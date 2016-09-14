@@ -86,11 +86,14 @@ The algorithm may not have enough information at $i$th iteration and
 the chosen value for the variables may be wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
-it jumps to line 28 and increases back the value of $i$
-to the latest $i'$ that allowed back tracking,
-swap the assigned values of $x_i$, $y_i$, and sets $backtrack_i$ to
-$\lfalse$ stating that backtracking has happened at this point
-please do not consider it again.
+it jumps to line 28.
+%
+It increases back the value of $i$
+to the latest $i'$ that allowed backtracking.
+%
+it swaps the assigned values of $x_i$, $y_i$, and disables future
+backtracking at $i$ by setting $backtrack_i$ to
+$\lfalse$.
 %
 
 Now let us look back again at the loop at line 8.
@@ -219,6 +222,7 @@ to the solvers, which is obtained after
 appropriately zero-padding $x$, $y$, and $t$.
  
 
+\ashu{Correctness proof of the algorithms?}
 
 \section{Proof generation}
 \ashu{Are we doing this!}
