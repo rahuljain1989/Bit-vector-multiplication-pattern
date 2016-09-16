@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..7eb292c 100644
+index def05f0..c6ea8f4 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,10 +1634,1564 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,10 +1634,1611 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -284,6 +284,7 @@ index def05f0..7eb292c 100644
 +          }
 +      }
 +
++
 +      for (signed i = right_container_size - 1; i >= 0; i--)
 +      {
 +          if (is_zero(right_container[i]))
@@ -318,13 +319,14 @@ index def05f0..7eb292c 100644
 +
 +      unsigned const no_of_args = no_of_containers/2;
 +      unsigned m1_trailing_zero, m2_trailing_zero;
++      int flag;
 +      for (unsigned i = 0; i <= no_of_args; i++)
 +      {
-+          int flag = 0;
++          flag = 0;
 +          for (unsigned j = 0; j <= no_of_args; j++)
 +          {
 +              if((left_container.size() + i <= no_of_args) &&
-+                 (left_container.size() + i <= no_of_args) &&
++                 (right_container.size() + j <= no_of_args) &&
 +                 ((i+j) == no_of_empty_containers_right))
 +              {
 +                  m1_trailing_zero = i;
@@ -337,6 +339,9 @@ index def05f0..7eb292c 100644
 +          if (flag == 1)
 +              break;
 +      }
++
++      if (flag == 0)
++          continue;
 +
 +      unsigned m1_leading_zero = no_of_args - left_container.size() - m1_trailing_zero;
 +      unsigned m2_leading_zero = no_of_args - right_container.size() - m2_trailing_zero;
@@ -1345,6 +1350,32 @@ index def05f0..7eb292c 100644
 +    return 0;
 +}
 +
++int bv_rewriter::check_ha_carry(expr *const arg, expr *& a, expr *& b) {
++    if (m_util.is_bv_not(arg))
++    {
++        expr *not_arg = to_app(arg)->get_arg(0);
++        if (m_util.is_bv_or(not_arg) && to_app(not_arg)->get_num_args() >= 2)
++        {
++            bool check = true;
++            return 1;
++        }
++    }
++
++    return 0;
++}
++
++int bv_rewriter::check_fa_carry(expr *const arg, expr *& a, expr *& b, expr *& c) {
++
++    if (m_util.is_bv_or(arg) && to_app(arg)->get_num_args() == 3)
++    {
++        bool check = true;
++        return 1;
++    }
++
++    return 0;
++}
++
++
 +br_status bv_rewriter::check_wallace(unsigned num_args, expr *const *args,
 +                                     expr_ref &result) {
 +
@@ -1433,6 +1464,7 @@ index def05f0..7eb292c 100644
 +        {
 +            expr *a = nullptr;
 +            expr *b = nullptr;
++            expr *c = nullptr;
 +
 +            expr *e = work_container[i][0];
 +
@@ -1447,6 +1479,21 @@ index def05f0..7eb292c 100644
 +            {
 +                work_container[i].push_back(a);
 +                work_container[i].push_back(b);
++            }
++
++            else if (check_ha_carry(e, a, b))
++            {
++                bool check = true;
++            }
++
++            else if (check_fa_carry(e, a, b, c))
++            {
++                bool check = true;
++            }
++
++            else
++            {
++                bool check = false;
 +            }
 +
 +            work_container[i].erase(work_container[i].begin());
@@ -1567,7 +1614,7 @@ index def05f0..7eb292c 100644
  #if 0
      expr * x;
      expr * y;
-@@ -1682,6 +3236,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +3283,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
@@ -1577,10 +1624,10 @@ index def05f0..7eb292c 100644
      for (unsigned i = 0; i < sz; i++) {
          bool found_non_zero = false;
 diff --git a/src/ast/rewriter/bv_rewriter.h b/src/ast/rewriter/bv_rewriter.h
-index 7135c52..f8ecfc2 100644
+index 7135c52..19a7e52 100644
 --- a/src/ast/rewriter/bv_rewriter.h
 +++ b/src/ast/rewriter/bv_rewriter.h
-@@ -89,6 +89,21 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
+@@ -89,6 +89,22 @@ class bv_rewriter : public poly_rewriter<bv_rewriter_core> {
      br_status mk_bv_ext_rotate_left(expr * arg1, expr * arg2, expr_ref & result);
      br_status mk_bv_ext_rotate_right(expr * arg1, expr * arg2, expr_ref & result);
      br_status mk_bv_add(unsigned num_args, expr * const * args, expr_ref & result);
@@ -1596,7 +1643,8 @@ index 7135c52..f8ecfc2 100644
 +    int extract_initial_bits(expr * const arg, unsigned const index, vector<expr *> (&container)[50]);
 +    int check_xor(expr * const arg, expr *& a, expr *& b);
 +    int check_pp(expr * const arg);
-+
++    int check_ha_carry(expr *const arg, expr *& a, expr *& b);
++    int check_fa_carry(expr *const arg, expr *& a, expr *& b, expr *& c);
 +
 +
      br_status mk_bv_add(expr * arg1, expr * arg2, expr_ref & result) {
