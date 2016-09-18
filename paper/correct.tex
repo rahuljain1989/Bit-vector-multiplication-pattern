@@ -69,17 +69,26 @@ $w$, respectively.
   Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
   the carry bits produced by the sum for $t_{i-1}$.
   %
-  Since the sum is done using half-adder and full-adder, the sum
-  output is always xors of the input of the adders.
+  The algorithm identifies the terms that are added to obtain $t_i$.
   %
-  By following xors towards the sub-formulas, we identify the terms
-  that are summed for $t_i$.
+  Only need to prove that the terms that are not identified as partial products
+  are carry bits of the sum of $t_{i-1}$.
   %
-  At line 10 and 12, we detect if any of the terms are the carry
-  bits of the sums for $\Lambda_{i-1}$.
+  Let us consider such a term $t$.
   %
-  The conditions check that every carry bit from the  $\Lambda_{i-1}$ sums
-  are consumed by the sums for $t_i$ and no carry bit is used twice.
+  The algorithm identifies that is it output of one of the carry bit circuits.
+  %
+  It requires that their input and their xors must occur
+  as the intermediate result of adders for $t_{i-1}$.
+  %
+  Therefore, $t$ is the carry bit.
+  %
+  Since after the match of the adder the inputs and the intermediate results
+  of the adder are removed from $\Delta_{i-1}$,
+  all the identified adders are disjoint.
+  %
+  Since we require that all $\Delta_{i-1}$ elements are eventually
+  removed except $t_{i-1}$, all carry bits are added to obtain $t_i$.
   %
   Therefore, $\Lambda$s carry the expected partial products of a Wallace tree.
   \ashu{poorly written needs rewrite.}

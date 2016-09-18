@@ -1,5 +1,5 @@
 In this section, we will present the syntax of
-the theory of quantifier-free bit vector formulas(\qfbv),
+the theory of quantifier-free bit-vector formulas(\qfbv),
 the basics of solving methods used by SMT solvers,
 and the multiplication methods that are of our interest. 
 
@@ -9,17 +9,17 @@ and the multiplication methods that are of our interest.
 
 A bit-vector is a fixed sequence of bits.
 %
-We will denote bit vectors by $x$,$y$,$z$, etc.
+We will denote bit-vectors by $x$,$y$,$z$, etc.
 %
-We need to refer to the blocks of bits in 
-bit-vectors.
-Therefore, we may declare that a bit-vector $x$
-is accessed in blocks of size $w$.
+We will refer to the blocks of bits in bit-vectors.
 %
-We write $x_i$ to denotes $i$th block from
-the least significant bit (LSB).
+Therefore, we may declare that a bit-vector $x$ is accessed in blocks
+of size $w$.
 %
-Similar notation is used for the vectors of any objects.
+Let $x_i$ denote $i$th block from the least significant
+bit(LSB).
+%
+Similar notation is used for the vectors of any object.
 
 A $\qfbv$~term $t$ and formula $F$ is constructed using
 the following grammar.
@@ -28,14 +28,14 @@ t ::= & t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
 F ::= & t = t \mid t \bowtie t \mid \lnot F \mid F \lor F \mid F \land F \mid F \lxor F \mid ... 
 \end{align*}
 where $x$ is a bit-vector variable, 
-$n^w$ is a constant number represented by $w$ bits,
+$n^w$ is a constant number represented in $w$ bits,
 $\bowtie \in \{\leq , <, \geq, > \}$, and
 $\concat$ is a binary operator that concatenates bit-vectors.
 %
-Here we are presenting only the part of the theory
-that is relevant to our discussion.
+Here we are only presenting the parts of the theory
+that are relevant to our discussion.
 %
-In this paper, all the arithmetic operators are unsigned.
+In this paper, all the variables and arithmetic operators are unsigned.
 %
 All the inputs and outputs of arithmetic operators 
 have same bit length.
