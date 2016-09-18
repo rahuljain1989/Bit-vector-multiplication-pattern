@@ -1,0 +1,64 @@
+We need to prove that each $[x*y = t]$ added in $\textsc{OurSolver}$
+is a valid formula.
+%
+First we will prove the correctness of $\textsc{getMultOperands}$.
+%
+If either of $x$ or $y$ is zero, we assume term $x*y$ is also simplified to zero.
+\begin{thm}
+ If $ x*y \in \textsc{getMultOperands}(\Lambda,w)$, then
+ $$
+ \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}
+ $$
+  where $x_k$ and $y_k$ are the $k$th block of $x$ and $y$ of size
+$w$, respectively.
+\end{thm}
+\begin{proof}
+  After each iteration of the loop at line 8,
+  the loop body ensures that the following holds, which readers 
+  may easily check.
+  Otherwise, it jumps to backtracking.
+  $$
+  \Lambda_i = \{ x_h*y_{i}, x_{h-1}*y_{i+1},....,x_{i}*y_h \}
+  $$
+  Due to the above equation,
+  if $x_j*y_k \in \Lambda_i$, then $ i = h-j-k$.
+  %
+  If the program enters at line 25, it has a successful match and $i=1$.
+  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_x}\}$
+  and $l = h - l_x - l_y$.
+  %
+  We choose $o \leq l$ and shift $x$ and $y$ according to lines 26-27.
+  After the shift, we need to write the above equation as follows.
+  $$
+  \Lambda_i = \{ x_{h-(l_x-o)}*y_{i-(l_y-l+o)},...,x_{i-(l_x-o)}*y_{h-(l_y-l+o)} \}.
+  $$
+  We can easily verify that the sum of the indexes in each of the partial products
+  is $i$.
+  %
+  Since all $x_k$ is zero for $k > h-(l_x-o)$ and all $y_k$ is zero for $k > h-(l_y-l+o)$,
+  we may rewrite the above equation as follows.
+  $$
+  \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}.
+  $$
+\end{proof}
+
+\begin{thm}
+  If $m*n\in$ \textsc{MatchLong}($t$), $[m*n = t]$ is valid.
+\end{thm}
+\begin{proof}
+  
+\end{proof}
+
+\begin{thm}
+  If $m*n\in$ \textsc{MatchWallaceTree}($t$), $[m*n = t]$ is valid.
+\end{thm}
+\begin{proof}
+  
+\end{proof}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

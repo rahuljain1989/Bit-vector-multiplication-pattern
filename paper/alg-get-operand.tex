@@ -11,7 +11,7 @@
    \Else
    \State \Return{ $\emptyset$}
    \EndIf
-   \State $i := h;$
+   \State $i := h;l_x := h; l_y = h;$
    \While{ $i > 1$}
    \State $i := i - 1; C := \Lambda_i$
    \For{ $j \in (h-1)..(i+1)$}
@@ -33,8 +33,11 @@
    \State \quad $\mid$ $\{\}$ $\rightarrow$ $x_i := 0; y_i := 0;$\
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
+   \IIf{$x_i \neq 0$} $l_x = i$
+   \IIf{$y_i \neq 0$} $l_y = i$
+   \IIf{ $h-l_x -l_y < 1$} {\bf goto }{\textsc{Backtrack}};
    \If{ $i == 1 $}
-   \For{$o \in 0..(l-1)$} \ashu{More constraints over $o$ needed?!!}
+   \For{$o \in 0..(l-1)$} %\ashu{More constraints over $o$ needed?!!}
    \State $x'$ := Right shift $x$ until $o$ trailing $0$ blocks in $x$
    \State $y'$ := Right shift $y$ until $l-o$ trailing $0$ blocks in $y$
    \State $M := M \union \{x' * y'\}$

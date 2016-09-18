@@ -86,7 +86,7 @@ The algorithm may not have enough information at $i$th iteration and
 the chosen value for the variables may be wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
-it jumps to line 28.
+it jumps to line 31.
 %
 It increases back the value of $i$
 to the latest $i'$ that allowed backtracking.
@@ -97,6 +97,12 @@ $\lfalse$.
 %
 
 Now let us look back again at the loop at line 8.
+%
+We initialize $i$ to $h$, which represents the current $\Lambda_i$ under
+consideration.
+%
+We also have variables $l_x$ and $l_y$ that contains the index of
+least non-zero entry in $x$ and $y$.
 %
 At line 9, we decrement $i$ and $\Lambda_i$ is copied in $C$.
 %
@@ -139,7 +145,12 @@ are two possibilities and we set $backtrack_i$ to $\ltrue$.
   backtracking.
 \end{itemize}
 %
-At line 21, we check if $i==1$ that means a match has been successful.
+At line 21-22, we update $l_x$ and $l_y$ appropriately.
+%
+The condition at line 23 ensures that the least index $i$ such that
+$\Lambda_i \neq \empty$ is greater than 0.    
+%
+At line 24, we check if $i==1$ that means a match has been successful.
 %
 To find the appropriate operands, we need to right shift $x$ and $y$
 such that the total number of their trailing zero blocks is $l-1$.
@@ -222,7 +233,6 @@ to the solvers, which is obtained after
 appropriately zero-padding $x$, $y$, and $t$.
  
 
-\ashu{Correctness proof of the algorithms?}
 
 \section{Proof generation}
 \ashu{Are we doing this!}
