@@ -1,18 +1,24 @@
 %
-On an input bit-vector formula,
-a typical SMT solver proceeds by applying several
-simplification rules and then bit-blasting.
+The SMT solvers for the theory of bit-vectors are widely used.
+%
+The bit-vector formulas often involve word-lever arithmetic
+operations.
 %
 The bit-vector formulas with multiplications
 are particularly hard for SMT solvers.
 %
-Therefore, it becomes more important that the simplification detects
-high level structures in the formulas in order to solve it faster.
+Therefore, it is more important that a solver uses all 
+the structure available in the problem including the
+word-level reasoning.
 %
-In this paper, we present a class of simplifications that may be
-needed in solving formulas containing multiplications and no leading
-solver implements it, and an efficient algorithm to recognize the
-simplification pattern. 
+Sometimes multiplications are decomposed and implemented in several
+ways and the solver fails to see the word-level multiplication. 
+%
+In this paper, we present a solver that identifies the decomposed
+multipliers, adds theory axioms in the input formula that encodes
+equivalence of the decomposed multiplication and the word-level
+multiplication, and solves the modified input using an available
+solver.
 %
 We have added the algorithm in rewriting engine of $\zthree$
 and applied on benchmarks.

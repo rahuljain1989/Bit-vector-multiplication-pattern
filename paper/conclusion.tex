@@ -1,6 +1,5 @@
-We have presented classes of simplifications for the formulas with
-multipliers implemented using long school multiplier and Wallace tree,
-and algorithms to apply the simplifications on the formulas.
+We have presented two classes of pattern detection for the formulas with
+multipliers implemented using long school multiplier and Wallace tree.
 %
 We have implemented the algorithms and applied to several handcrafted and 
 industrial benchmarks.
@@ -8,10 +7,15 @@ industrial benchmarks.
 The experiments suggest a significant improvement in performance.
 
 We are currently extending our procedure to support Booth multiplier
-and other difficult arithmetic patterns that lead to highly simplified
-formula.
+and other difficult arithmetic patterns.
 %
-We are planning to request \zthree team to adopt our modification in their
+We are also working to add proof generation support
+for the added valid formulas.
+%
+We could not include proof generation in this work, since basic infrastructure
+of proof generation is missing in $\zthree$~bit-vector rewriter module.
+%
+We are also planning to request \zthree~team to adopt our modification in their
 standard distribution.
 
 
