@@ -32,10 +32,11 @@ $w$, respectively.
   $$
   \Lambda_i = \{ x_{h-(l_x-o)}*y_{i-(l_y-l+o)},...,x_{i-(l_x-o)}*y_{h-(l_y-l+o)} \}.
   $$
-  We can easily verify that the sum of the indexes in each of the partial products
-  is $i$.
+  We can easily verify that the sum of the indexes in each of
+  the partial products is $i$.
   %
-  Since all $x_k$ is zero for $k > h-(l_x-o)$ and all $y_k$ is zero for $k > h-(l_y-l+o)$,
+  Since all $x_k$ is zero for $k > h-(l_x-o)$ and all $y_k$ is zero
+  for $k > h-(l_y-l+o)$,
   we may rewrite the above equation as follows.
   $$
   \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}.
@@ -43,17 +44,45 @@ $w$, respectively.
 \end{proof}
 
 \begin{thm}
-  If $m*n\in$ \textsc{MatchLong}($t$), $[m*n = t]$ is valid.
+  If $m*n\in$ \textsc{MatchLong}$(t)$, $[m*n = t]$ is valid.
 \end{thm}
 \begin{proof}
-  
+  We collect partial products with appropriate offsets $o$ at line 5.
+  %
+  The pattern of $t$ indicates that the net result is the sum of the 
+  partial products at the respective offsets. 
+  %
+  $\textsc{getMultOperands}(\Lambda,w)$ returns exactly the
+  matches that produces the sums.
+  %
+  Therefore, $[m*n = t]$ is valid.
 \end{proof}
 
 \begin{thm}
-  If $m*n\in$ \textsc{MatchWallaceTree}($t$), $[m*n = t]$ is valid.
+  If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is valid.
 \end{thm}
 \begin{proof}
+  All we need to show that $t$ is intending to sum the partial products
+  stored in $\Lambda$. Rest of the proof follows the previous theorem.
   
+  
+  Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
+  the carry bits produced by the sum for $t_{i-1}$.
+  %
+  Since the sum is done using half-adder and full-adder, the sum
+  output is always xors of the input of the adders.
+  %
+  By following xors towards the sub-formulas, we identify the terms
+  that are summed for $t_i$.
+  %
+  At line 10 and 12, we detect if any of the terms are the carry
+  bits of the sums for $\Lambda_{i-1}$.
+  %
+  The conditions is checked that every carry bit from the  $\Lambda_{i-1}$ sums
+  are consumed by the sums for $t_i$ and no carry bit is used twice.
+  %
+  Therefore, $\Lambda$s carry the expected partial products of a Wallace tree.
+  \ashu{poorly written needs rewrite.}
 \end{proof}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
