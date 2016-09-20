@@ -1,5 +1,6 @@
 In this section, we will present the syntax of
-the theory of quantifier-free bit-vector formulas(\qfbv),
+the theory of quantifier-free foxed-width
+bit-vector formulas(\qfbv),
 the basics of solving methods used by SMT solvers,
 and the multiplication methods that are of our interest. 
 
@@ -16,10 +17,10 @@ We will refer to the blocks of bits in bit-vectors.
 Therefore, we may declare that a bit-vector $x$ is accessed in blocks
 of size $w$.
 %
-Let $x_i$ denote $i$th block from the least significant
+Let $x_i$ denote the $i$th block from the least significant
 bit(LSB).
 %
-Similar notation is used for the vectors of any object.
+% Similar notation is used for the vectors of any object.
 
 A $\qfbv$~term $t$ and formula $F$ is constructed using
 the following grammar.
@@ -42,14 +43,15 @@ have same bit length.
 %
 Let $len(t)$ denote the bit length of a term $t$.
 %
-Let $zeroExt(t,w)$ be shorthand for  $0^{w-len(t)}\concat t$.
+If $w \geq len(t)$,
+let $zeroExt(t,w)$ be a shorthand for  $0^{w-len(t)}\concat t$.
 
-We assume that $a * b$ is commutative and, in a pattern matching
+We know that $a * b$ is commutative and, in a pattern matching
 step, we will not make a distinction between $a*b$ and $b*a$.
 %
 $t == s$ is true iff $t$ and $s$ are syntactically same.
 %
-For bit-vectors $x$,$y$, and $z$, let $w= max( len(x),len(y), t)$.
+For bit-vectors $x$, $y$, and $t$, let $w= max( len(x),len(y), len(t))$.
 %
 Let $[x*y = t]$ denote term $x'*y'=t'$, where 
 $x' = zeroExt(x,w)$, $y' = zeroExt(y,w)$, and $t' = zeroExt(t,w)$.
@@ -59,17 +61,17 @@ Similarly, $[x*y]$ is defined.
 \subsection{SMT solvers for \qfbv}
 
 SMT(satisfiability modulo theory)
-solvers are the specialized solvers that solve 
+solvers are specialized solvers that solve 
 formulas of a given theory.
 %
 The leading SMT solvers for \qfbv~apply several simplification
-passes followed by bit-blast, i.e. translating input to
+passes followed by bit-blast, i.e., translating input to
 Boolean satisfiability problem(SAT problem).
 %
 The bit-blasted SAT problem is solved using conflict driven clause
 learning(CDCL) based procedures.
 %
-Some of the SMT solvers are
+Some of the leading SMT solvers are
 \zthree, \boolector, and \cvcfour.
 
 For our algorithm, we assume that a  $\qfbv$~SMT
@@ -102,7 +104,8 @@ Here, we will discuss long and Wallace tree multiplier.
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
 bits and are of size $kw$.
 %
-The long multiplier breaks down the multiplication $kw$ bits
+\ashu{Rahul: suggest a rewrite.}
+The long multiplier decomposes the $kw$ bits multiplication 
 into chunks of $w$ bits multiplication, called {\em partial products}.
 %
 The partial products are summed with appropriate offsets to obtain
@@ -173,33 +176,34 @@ $$
 
 \subsubsection{Wallace tree multiplier}
 %
-Wallace tree breaks the multiplication all the way down to single bits.
+Wallace tree decomposes the multiplication all the way down to single bits.
 %
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $1$
 bit and are of size $k$.
 %
 In a Wallace tree, the partial products are multiplication of single
-bits $x_iy_j$.
+bits $x_i*y_j$.
 %
 The multiplication of single bits is the conjunction of the bits, i.e.,
-$x_i \land y_i$.%\footnote{1-bit bit vectors may be viewed as Boolean values therefore we may apply logical and.}
+$x_i \land y_j$.
 %
-There is no carry generated due to the multiplication of the single bits.
+There is no carry generated due to the multiplication of single bits.
 %
-The partial product $x_iy_j$ is aligned with the $(i+j-2)$th bit of output.
+The partial product $x_i*y_j$ is aligned with the $(i+j-2)$th bit of output.
 %
 Let us consider $o$th output bit.
 %
-All the partial products that are align to $o$ are summed using full adder 
+All the partial products that are aligned to $o$ are summed using full adder 
 and half adders.
 %
 The full adders are used
-if more than three bits are available that are yet to be added
+if more than two bits are available that are yet to be added
 and half adders are used if there are only two bits that are left to be added.
 %
-The adders generate carry bits that are aligned to $(o+1)$th bit,
-which are added to the partial products for $(o+1)th$ bit using the 
-adders as illustrated in the following figure.
+The adders generate carry bits are aligned to $(o+1)$th output bit.
+%
+The carry bits are added to the partial products for $(o+1)th$ bit
+using adders as illustrated in the following figure.
 
 \begin{center}
   \begin{tikzpicture}[node distance=4cm,thick]
@@ -229,19 +233,13 @@ adders as illustrated in the following figure.
   \end{tikzpicture}  
 \end{center}
 
-
-%\subsubsection{Booth multiplier}
-
-
-% \subsection{Verification problem to SMT formula}
-
 Both the above multiplication methods do not
 fully specify the design.
 %
 Therefore, there are several ways to implement the multiplications.
 %
-For any hardware design containing multiplication, it is not
-immediately trivial to verify that the design indeed implements the
+For a hardware design containing multiplication, it is not
+trivial to verify that the design indeed implements the
 intended multiplication.
 
 % \ashu{Needs more detailed discussion with example about how
