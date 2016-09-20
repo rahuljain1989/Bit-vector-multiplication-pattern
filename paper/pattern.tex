@@ -5,7 +5,8 @@ formulas that contain implementations of multiplications.
 Our method first attempts to identify multiplications that
 are decomposed using long or Wallace tree multiplication.
 %
-If we suspect some subterms are indeed instances of the
+If we suspect some subterms of the input formula
+are indeed instances of the
 multiplications, we add tautologies stating that the terms are 
 equal to the multiplication of the identified bit-vectors.
 %
@@ -49,14 +50,16 @@ If $s_{ij}$ happens to be a partial product then it is inserted in
 $\Lambda_o$ at line 7.
 %
 At line 9, we call $\textsc{getMultOperands}$ to identify the operands
-of the multiplication from $\Lambda$.
+of the multiplication from $\Lambda$ if $t$ is indeed a long
+multiplication.
 
 \subsection{Partial products to operands}
 \input{alg-get-operand}
 
 In Algorithm~\ref{alg:operand}, we present a function
-$\textsc{getMultOperands}$ that takes a $\qfbv$ term $t$ and returns a
-set of matched multiplications.
+$\textsc{getMultOperands}$ that takes a vector of multiset of partial
+products $\Lambda$, block width $w$, and returns a set of matched
+multiplications.
 %
 At line 1, we compute $h$ and $l$ that establishes the range of search for
 operands.
@@ -77,13 +80,13 @@ Otherwise, we declare failure of matching and return $\emptyset$.
 We set $backtrack_h$ to be $\lfalse$, which states that
 no need of backtracking at index $h$.
 %
-The loop at line 8 iterates using from $h$ to $1$ index $i$.
+The loop at line 8 downwards iterates over index $i$ starting from $h$.
 %
-In each iteration, it assigns a value to $x_i$, $y_i$, and $backtrack_i$. 
+In each iteration, it assigns values to $x_i$, $y_i$, and $backtrack_i$. 
 %
 
-The algorithm may not have enough information at $i$th iteration and
-the chosen value for the variables may be wrong.
+The algorithm may not have enough information at
+the $i$th iteration and the chosen value for the variables may be wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
 it jumps to line 31.
@@ -115,32 +118,35 @@ We have already chosen the operands of the middle multiplications in the previou
 Only the multiplication at the extreme end have $y_i$ and $x_i$ that are
 not assigned yet.
 %
-In the loop at line 10, we remove the middle term and if any of the needed
-term is missing then we may have made a mistake earlier and we jump for
-backtracking.
+In the loop at line 10, we remove the middle multiplications.
 %
-After the loop, we should have left with at most two partial products in $C$.
+If any of the needed multiplication is missing then we may have made a mistake
+earlier and we jump for backtracking.
+%
+After the loop, we should be left with at most two partial products in $C$.
 %
 We match $C$ with six possibilities at lines 14-20 and
 update $x_i$, $y_i$, and sets $backtrack_i$ accordingly.
 %
 In some cases we determine the value of $x_i$ and $y_i$ and the other
-cases we are not certain. 
+cases we are not certain.
 %
-In the following list we discuss each of the cases.
+In the uncertain cases we set $backtrack_i$ to $\ltrue$.
+%
+In the following list we discuss the uncertain cases.
 %
 \begin{itemize}
 \item[line 15:] If $C$ has two elements $x_h*b$ and $y_h*d$,
 there is an ambiguity in choosing $x_i$ and $y_i$
 if $x_h == y_h$.
 %
-In the case, we set $backtrack_i$ to $\ltrue$.
+% Thus, if  $x_h == y_h$, we set $backtrack_i$ to $\ltrue$.
 \item[line 16:] If $C$ has a single element $x_h*y_h$, there  
-are two possibilities and we set $backtrack_i$ to $\ltrue$.
+are two possibilities.
 \item[line 17:] If $C = \{x_h*b\}$ and $b$ is not $y_h$ then 
   similar to the first case there is an ambiguity in
   choosing $x_i$ and $y_i$ if $x_h == y_h$. Line 18 is similar.
-\item[line 19:] If $C$ is empty then certainly $x_i = y_i = 0$.
+\item[line 19:] If $C$ is empty then there is no uncertainly. % $x_i = y_i = 0$.
 \item[line 20:] If none of the above patterns match then we jump for
   backtracking.
 \end{itemize}

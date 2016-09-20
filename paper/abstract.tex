@@ -1,7 +1,7 @@
 %
 The SMT solvers for the theory of bit-vectors are widely used.
 %
-The bit-vector formulas often involve word-lever arithmetic
+The bit-vector formulas often involve word-level arithmetic
 operations.
 %
 The bit-vector formulas with multiplications
@@ -15,12 +15,12 @@ Sometimes multiplications are decomposed and implemented in several
 ways and the solver fails to see the word-level multiplication. 
 %
 In this paper, we present a solver that identifies the decomposed
-multipliers, adds theory axioms in the input formula that encodes
+multipliers, adds theory axioms to the input formula that encodes
 equivalence of the decomposed multiplication and the word-level
 multiplication, and solves the modified input using an available
 solver.
 %
-We have added the algorithm in rewriting engine of $\zthree$
+We have added the algorithms in the rewriting engine of $\zthree$
 and applied on benchmarks.
 %
 Our modification solves several formulas that are

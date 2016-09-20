@@ -62,36 +62,37 @@ $w$, respectively.
   If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is valid.
 \end{thm}
 \begin{proof}
+  \ashu{poorly written needs rewrite.}
   All we need to show that $t$ is intending to sum the partial products
   stored in $\Lambda$. Rest of the proof follows the previous theorem.
-  
   
   Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
   the carry bits produced by the sum for $t_{i-1}$.
   %
   The algorithm identifies the terms that are added to obtain $t_i$.
   %
-  Only need to prove that the terms that are not identified as partial products
-  are carry bits of the sum of $t_{i-1}$.
+  Only need to prove that the terms that are not identified as
+  partial products are carry bits of the sum for $t_{i-1}$.
   %
   Let us consider such a term $t$.
   %
-  The algorithm identifies that is it output of one of the carry bit circuits.
+  Let us suppose the algorithm identifies $t$ as an output of the carry
+  bit circuit of a full adder (half adder case is similar) with inputs
+  $a$, $b$, and $c$.
   %
-  It requires that their input and their xors must occur
-  as the intermediate result of adders for $t_{i-1}$.
+  If $a$, $b$, $a \lxor b$ and $c$ are the intermediate
+  results of the sum for $t_{i-1}$.
   %
-  Therefore, $t$ is the carry bit.
+  Therefore, $t$ is one of the carry bit.
   %
-  Since after the match of the adder the inputs and the intermediate results
-  of the adder are removed from $\Delta_{i-1}$,
+  Since $a$, $b$, $a \lxor b$ and $c$ are removed from $\Delta_{i-1}$
+  after the match of the adder,
   all the identified adders are disjoint.
   %
-  Since we require that all $\Delta_{i-1}$ elements are eventually
+  Since we require that all the elements of $\Delta_{i-1}$  are eventually
   removed except $t_{i-1}$, all carry bits are added to obtain $t_i$.
   %
   Therefore, $\Lambda$s carry the expected partial products of a Wallace tree.
-  \ashu{poorly written needs rewrite.}
 \end{proof}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
