@@ -14,30 +14,33 @@ $w$, respectively.
 \end{thm}
 \begin{proof}
   After each iteration of the loop at line 8,
-  the loop body ensures that the following holds, which readers 
-  may easily check.
-  Otherwise, it jumps to backtracking.
-  $$
-  \Lambda_i = \{ x_h*y_{i}, x_{h-1}*y_{i+1},....,x_{i}*y_h \}
-  $$
+  if no backtracking triggered, the loop body ensures
+  that the following holds at the end, which readers may easily check.
+  \begin{equation}
+    \label{eq:container-inv}
+  \Lambda_i = \{ x_h*y_{i}, x_{h-1}*y_{i+1},....,x_{i}*y_h \}    
+  \end{equation}
   Due to the above equation,
-  if $x_j*y_k \in \Lambda_i$, then $ i = h-j-k$.
+  if $x_j*y_k \in \Lambda_i$, $ i = h-j-k$.
   %
   If the program enters at line 25, it has a successful match and $i=1$.
   Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_x}\}$
   and $l = h - l_x - l_y$.
   %
   We choose $o \leq l$, and shift $x$ and $y$ according to lines 26-27.
-  After the shift, we need to write the above equation as follows.
-  $$
-  \Lambda_i = \{ x_{h-(l_x-o)}*y_{i-(l_y-l+o)},...,x_{i-(l_x-o)}*y_{h-(l_y-l+o)} \}.
-  $$
+  After the shift, we need to write equation~\eqref{eq:container-inv}
+  as follows.
+  \begin{equation}
+    \label{eq:container-shifted}
+    \Lambda_i = \{ x_{h-(l_x-o)}*y_{i-(l_y-l+o)},...,x_{i-(l_x-o)}*y_{h-(l_y-l+o)} \}.
+  \end{equation}
   We can easily verify that the sum of the indexes in each of
   the partial products is $i$.
   %
   Since all $x_k$ is zero for $k > h-(l_x-o)$ and all $y_k$ is zero
   for $k > h-(l_y-l+o)$,
-  we may rewrite the above equation as follows.
+  we may rewrite equation~\eqref{eq:container-shifted}
+ as follows.
   $$
   \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}.
   $$
@@ -50,9 +53,9 @@ $w$, respectively.
   We collect partial products with appropriate offsets $o$ at line 5.
   %
   The pattern of $t$ indicates that the net result is the sum of the 
-  partial products at the respective offsets. 
+  partial products with the respective offsets. 
   %
-  $\textsc{getMultOperands}(\Lambda,w)$ returns exactly the
+  $\textsc{getMultOperands}(\Lambda,w)$ returns the
   matches that produces the sums.
   %
   Therefore, $[m*n = t]$ is valid.
@@ -62,16 +65,16 @@ $w$, respectively.
   If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is valid.
 \end{thm}
 \begin{proof}
-  \ashu{poorly written needs rewrite.}
   All we need to show that $t$ is intending to sum the partial products
   stored in $\Lambda$. Rest of the proof follows the previous theorem.
-  
+
+  \ashu{needs tightening.}  
   Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
   the carry bits produced by the sum for $t_{i-1}$.
   %
   The algorithm identifies the terms that are added to obtain $t_i$.
   %
-  Only need to prove that the terms that are not identified as
+  We only need to prove that the terms that are not identified as
   partial products are carry bits of the sum for $t_{i-1}$.
   %
   Let us consider such a term $t$.
@@ -80,10 +83,11 @@ $w$, respectively.
   bit circuit of a full adder (half adder case is similar) with inputs
   $a$, $b$, and $c$.
   %
-  If $a$, $b$, $a \lxor b$ and $c$ are the intermediate
+  The algorithm also checks that $a$, $b$, $c$, $a \lxor b$ and
+  $a \lxor b \lxor c$ are the intermediate
   results of the sum for $t_{i-1}$.
   %
-  Therefore, $t$ is one of the carry bit.
+  Therefore, $t$ is one of the carry bits.
   %
   Since $a$, $b$, $a \lxor b$ and $c$ are removed from $\Delta_{i-1}$
   after the match of the adder,
@@ -92,7 +96,7 @@ $w$, respectively.
   Since we require that all the elements of $\Delta_{i-1}$  are eventually
   removed except $t_{i-1}$, all carry bits are added to obtain $t_i$.
   %
-  Therefore, $\Lambda$s carry the expected partial products of a Wallace tree.
+  Therefore, $\Lambda$ carry the expected partial products of a Wallace tree.
 \end{proof}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------

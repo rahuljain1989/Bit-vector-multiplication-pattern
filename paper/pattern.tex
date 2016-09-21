@@ -2,43 +2,39 @@
 In this section, we will present our method for solving
 formulas that contain implementations of multiplications.
 %
-Our method first attempts to identify multiplications that
+Our method first attempts to match multiplications that
 are decomposed using long or Wallace tree multiplication.
 %
-If we suspect some subterms of the input formula
+If we match some subterms of the input formula
 are indeed instances of the
 multiplications, we add tautologies stating that the terms are 
-equal to the multiplication of the identified bit-vectors.
+equal to the multiplications of the matched bit-vectors.
 %
-Our identification method may find multiple matches for a subterm.
+Our matching method may find multiple matches for a subterm.
 %
 We add a tautology for each match.
 %
-Let us first present our method of identifying long multiplication. 
+Let us first present our method of matching long multiplication. 
 
-% In this section, we will present a class of simplification patterns that
-% may simplify the formulas with multipliers 
-% and the algorithms to detect the patterns.
-
-\subsection{Identifying long multiplication}
+\subsection{Matching long multiplication}
 \input{alg-match-long}
 
 In Algorithm~\ref{alg:long}, we present a function $\textsc{MatchLong}$
 that takes a $\qfbv$ term $t$ and returns a set of matched multiplications.
 %
 The algorithm and the subsequent algorithms are written such that as soon
-as it becomes clear that no multiplication can be identified then
-it returns empty set. 
+as it becomes clear that no multiplication can be matched then
+they return empty set. 
 %
-At line 1, we match $t$ with sum of concatenations and if match fails
+At line 1, we match $t$ with a sum of concatenations and if the match fails
 then clearly $t$ is not a long multiplication.
 %
-At line 2, we identify the block size $w$ used by the long
-multiplication.\ashu{clarify}
+At line 2, we find a partial product among $s_{ij}$ and extract
+the block size $w$ used by the long multiplication.
 %
-The loop at line $4$ populates the vector of set of partial products $\Lambda$.
+The loop at line $4$ populates the vector of the set of partial products $\Lambda$.
 %
-$\Lambda_i$ denotes the partial products that are aligned at $i$th block.
+$\Lambda_i$ denotes the partial products that are aligned at the $i$th block.
 %
 Each $s_{ij}$ must either be $0$ or a partial product of width $w$.
 %
@@ -56,13 +52,14 @@ multiplication.
 \subsection{Partial products to operands}
 \input{alg-get-operand}
 
+\ashu{Needs some discussions about the nature of the algorithm.}
 In Algorithm~\ref{alg:operand}, we present a function
 $\textsc{getMultOperands}$ that takes a vector of multiset of partial
-products $\Lambda$, block width $w$, and returns a set of matched
+products $\Lambda$ and block width $w$, and returns a set of matched
 multiplications.
 %
 At line 1, we compute $h$ and $l$ that establishes the range of search for
-operands.
+the operands.
 %
 We maintain two candidate operands $x$ and $y$ of size $hw$.
 %
@@ -75,47 +72,46 @@ non-empty entry in $\Lambda$ must be a singleton set.
 If $\Lambda_h$ contains a single partial product $a*b$,
 we assign $x_h$ and $y_h$ the operands of $a*b$ arbitrarily.
 %
-Otherwise, we declare failure of matching and return $\emptyset$.
+Otherwise, we declare the match has failed by returning $\emptyset$.
 %
-We set $backtrack_h$ to be $\lfalse$, which states that
+We assign $\lfalse$ to $backtrack_h$, which states that
 no need of backtracking at index $h$.
 %
-The loop at line 8 downwards iterates over index $i$ starting from $h$.
+The loop at line 8 iterates over index $i$ starting from $h$ and decreases
+$i$ in each iteration.
 %
 In each iteration, it assigns values to $x_i$, $y_i$, and $backtrack_i$. 
 %
 
-The algorithm may not have enough information at
-the $i$th iteration and the chosen value for the variables may be wrong.
+The algorithm may not have enough information at the $i$th iteration
+and the chosen value for $x_i$ and $y_i$ is be wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
 it jumps to line 31.
 %
-It increases back the value of $i$
-to the latest $i'$ that allowed backtracking.
+It increases back the value of $i$ to the latest $i'$ that allows
+backtracking.
 %
-it swaps the assigned values of $x_i$, $y_i$, and disables future
-backtracking at $i$ by setting $backtrack_i$ to
+It swaps the assigned values of $x_i$ and $y_i$, and disables future
+backtracking to $i$ by setting $backtrack_i$ to
 $\lfalse$.
 %
 
-Now let us look back again at the loop at line 8.
+Let us look at the loop at line 8 again.
 %
-We initialize $i$ to $h$, which represents the current $\Lambda_i$ under
-consideration.
+We also have variables $l_x$ and $l_y$ that contain the index of
+the least non-zero entries in $x$ and $y$, respectively.
 %
-We also have variables $l_x$ and $l_y$ that contains the index of
-least non-zero entry in $x$ and $y$.
-%
-At line 9, we decrement $i$ and $\Lambda_i$ is copied in $C$.
+At line 9, we decrement $i$ and $\Lambda_i$ is copied to $C$.
 %
 At index $i$, the sum of the aligned partial products is the following.
 $$
 x_{h}*y_{i} + \underbrace{x_{h-1}*y_{i+1} + \dots + x_{i+1}*y_{h-1}}_{\text{operands seen at the earlier iterations}} + x_{i}*y_{h}
 $$
-We have already chosen the operands of the middle multiplications in the previous iterations.
+We have already chosen the operands of the middle multiplications in
+the previous iterations.
 %
-Only the multiplication at the extreme end have $y_i$ and $x_i$ that are
+Only the multiplications at the extreme ends have $y_i$ and $x_i$ that are
 not assigned yet.
 %
 In the loop at line 10, we remove the middle multiplications.
@@ -125,15 +121,18 @@ earlier and we jump for backtracking.
 %
 After the loop, we should be left with at most two partial products in $C$.
 %
-We match $C$ with six possibilities at lines 14-20 and
-update $x_i$, $y_i$, and sets $backtrack_i$ accordingly.
+We match $C$ with five patterns at lines 14-19 and
+update $x_i$, $y_i$, and $backtrack_i$ accordingly.
 %
-In some cases we determine the value of $x_i$ and $y_i$ and the other
-cases we are not certain.
+If none of the pattern match, we jump for backtracking at line 20.
 %
-In the uncertain cases we set $backtrack_i$ to $\ltrue$.
+In some cases we clearly determine the value of $x_i$ and $y_i$, and
+we are not certain in the other cases.
 %
-In the following list we discuss the uncertain cases.
+We set $backtrack_i$ to $\ltrue$ in the uncertain cases to indicate
+that we may return back to index $i$ and swap $x_i$ and $y_i$.
+%
+In the following list, we discuss the uncertain cases.
 %
 \begin{itemize}
 \item[line 15:] If $C$ has two elements $x_h*b$ and $y_h*d$,
@@ -147,28 +146,27 @@ are two possibilities.
   similar to the first case there is an ambiguity in
   choosing $x_i$ and $y_i$ if $x_h == y_h$. Line 18 is similar.
 \item[line 19:] If $C$ is empty then there is no uncertainly. % $x_i = y_i = 0$.
-\item[line 20:] If none of the above patterns match then we jump for
-  backtracking.
 \end{itemize}
 %
 At line 21-22, we update $l_x$ and $l_y$ appropriately.
 %
-The condition at line 23 ensures that the least index $i$ such that
-$\Lambda_i \neq \empty$ is greater than 0.    
+The condition at line 23 ensures that the expected
+least index $i$ such that $\Lambda_i \neq \emptyset$ is greater than 0.    
 %
-At line 24, we check if $i==1$ that means a match has been successful.
+At line 24, we check if $i==1$, which means a match has been successful.
 %
 To find the appropriate operands, we need to right shift $x$ and $y$
 such that the total number of their trailing zero blocks is $l-1$.
 %
-We add the match to the match store $M$.
+We add the matched $x*y$ to the match store $M$.
 %
-And, the algorithm proceeds for backtracking.
+And, the algorithm proceeds for backtracking to find if more matching
+exists.
 
-\subsection{Identifying Wallace tree multiplication}
+\subsection{Matching Wallace tree multiplication}
 \input{alg-match-wallace-tree}
 
-A Wallace tree has a cluster of adders that take partial products and 
+A Wallace tree has a cascade of adders that take partial products 
 and carry bits as input to produce the output bits.
 %
 In our matching algorithm, we find the set of inputs
@@ -185,8 +183,8 @@ carryFull(a,b,c) = (a \land b) \lor (b \land c) \lor (c \land a).
 The sum output of a half/full adders are the result of 
 xor operations of inputs.
 %
-To find the input to the adders, we start from a
-output bit and follow backward until we find input that
+To find the input to the adders, we start from an
+output bit and follow backward until we find the input that
 are not the result of some xor.
 
 In Algorithm~\ref{alg:wallace}, we present a function
@@ -214,18 +212,21 @@ we have the following possibilities.
 %
 \begin{itemize}
 \item[line 10-13:]
-  If $t$ is the carry bit of a half/full adder, we remove the inputs 
-  and intermediate results
-  of the adder from $\Delta_{i-1}$ .
-\item[line 14-15:] If $t$ is a partial product, we record this in $\Lambda_i$
-\item[line 16:] Otherwise, we return $\emptyset$, which means the match has failed.
+  If $t$ is the carry bit of a half/full adder, and the inputs, the intermediate
+  result of the sum bit, and the output sum bit
+  of the adder are in $\Delta_{i-1}$. We remove the inputs and intermediate result
+  of the adder from $\Delta_{i-1}$.
+  We do not remove the output sum bit from $\Delta_{i-1}$, since it may be
+  used as input to some other adder.
+\item[line 14-15:] If $t$ is a partial product, we record it in $\Lambda_i$.
+\item[line 16:] Otherwise, we return $\emptyset$.
 \end{itemize}
 At line 17, we check that $\Delta_{i-1} = \{t_{i-1}\}$, i.e., all carry bits from
 the adders for $t_{i-1}$ are consumed by the adders for $t_i$ exactly once.
 %
-If the check fails then we return $\emptyset$.
+Again if the check fails then we return $\emptyset$.
 %
-After the loop at 6, we have collected the partial products in $\Lambda$.
+After the loop at 3, we have collected the partial products in $\Lambda$.
 %
 At line 18, we call $\textsc{getMultOperands}(\Lambda,1)$ to get all
 the matching multiplications.
