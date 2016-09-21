@@ -11,17 +11,23 @@ We run the solvers on the SMT2 formulas corresponding to the benchmarks by runni
 Shorthand, $O$ - original input formula, $M$ - Generated formula, $T$ - trunk version of solver, $CE$ - $\zthree$ - Continue execution after adding tautologies, $bool$ - Boolector.
 The tables below specify the results obtained on the various benchmarks. 
 
-
 \begin{table}[]
 \centering
-\caption{Long Multiplication}
+\caption{Long multiplication}
 \label{my-label}
 \begin{tabular}{|l|l|l|l|l|l|l|l|}
 \hline
-Benchmark   & z3 - T,O & z3 - CE & z3 - T,M & bool - T,O & bool - T,M & cvc4 - T,O & cvc4 -T,M \\ \hline
-B1 - n bits &          &         &          &            &            &            &           \\ \hline
-B2 - n bits &          &         &          &            &            &            &           \\ \hline
-B3 - n nits &          &         &          &            &            &            &           \\ \hline
+Benchmark                  & z3 - T,O  & z3 - CE   & z3 - T,M  & bool - T,O & bool - T,M & cvc4 - T,O & cvc4 -T,M \\ \hline
+base.smt2                  & 2m48.510s & 0.390s    & 0.475s    & 44.509s    & 46.009s    & 18.368s    & 0.024s    \\ \hline
+ex1\_scaledup.smt2         & timeout   & 1.509s    & 1.653s    & timeout    & timeout    & timeout    & 0.025s    \\ \hline
+ex2\_scaledup.smt2         & timeout   & 2.573s    & 3.050s    & timeout    & timeout    & timeout    & 0.022s    \\ \hline
+ex3\_scaledup.smt2         & timeout   & 2.780s    & 2.842s    & timeout    & 7m52.392s  & timeout    & 0.032s    \\ \hline
+ex5\_scaledup\_2.smt2      & 5m29.560s & 4m32.388s & 4m51.898s & 52.064s    & 16.455s    & 39.898s    & 0.022s    \\ \hline
+mult\_3operands.smt2       & timeout   & timeout   & timeout   & timeout    & timeout    & timeout    & timeout   \\ \hline
+sv\_assy.smt2              & timeout   & 0.061s    & 0.022s    & timeout    & timeout    & timeout    & 0.021s    \\ \hline
+mot\_base\_scaledup.smt2   & timeout   & 11.816s   & 14.197s   & timeout    & timeout    & timeout    & 0.022s    \\ \hline
+mot\_ex1\_scaledup\_2.smt2 & timeout   & timeout   & timeout   & timeout    & 18.425s    & timeout    & 0.019s    \\ \hline
+mot\_ex2\_scaledup\_2.smt2 & timeout   & timeout   & timeout   & timeout    & 15.569s    & timeout    & 0.018s    \\ \hline
 \end{tabular}
 \end{table}
 
