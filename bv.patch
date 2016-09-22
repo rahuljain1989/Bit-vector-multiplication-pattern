@@ -1,8 +1,8 @@
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..ac00e1d 100644
+index def05f0..777efb8 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,10 +1634,1612 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,10 +1634,1613 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -15,7 +15,7 @@ index def05f0..ac00e1d 100644
 +
 +   else if (m_util.is_bv_add(cur_arg))
 +   {
-+       int arg_count = to_app(cur_arg)->get_num_args();
++       unsigned arg_count = to_app(cur_arg)->get_num_args();
 +       for (unsigned i = 0; i < arg_count; i++)
 +       {
 +           traverse_bvadd_args(to_app(cur_arg)->get_arg(i),bv_args);
@@ -63,7 +63,7 @@ index def05f0..ac00e1d 100644
 +      flat_args.push_back(args[i]);
 +  }
 +
-+  int flat_args_size = flat_args.size();
++  unsigned flat_args_size = flat_args.size();
 +
 +  if (flat_args_size < 3)
 +      return BR_FAILED;
@@ -1356,7 +1356,7 @@ index def05f0..ac00e1d 100644
 +        expr *not_arg = to_app(arg)->get_arg(0);
 +        if (m_util.is_bv_or(not_arg) && to_app(not_arg)->get_num_args() >= 2)
 +        {
-+            bool check = true;
++            //bool check = true;
 +            return 1;
 +        }
 +    }
@@ -1368,7 +1368,7 @@ index def05f0..ac00e1d 100644
 +
 +    if (m_util.is_bv_or(arg) && to_app(arg)->get_num_args() == 3)
 +    {
-+        bool check = true;
++        //bool check = true;
 +        return 1;
 +    }
 +
@@ -1483,17 +1483,17 @@ index def05f0..ac00e1d 100644
 +
 +            else if (check_ha_carry(e, a, b))
 +            {
-+                bool check = true;
++                //bool check = true;
 +            }
 +
 +            else if (check_fa_carry(e, a, b, c))
 +            {
-+                bool check = true;
++                //bool check = true;
 +            }
 +
 +            else
 +            {
-+                bool check = false;
++                //bool check = false;
 +            }
 +
 +            work_container[i].erase(work_container[i].begin());
@@ -1603,6 +1603,7 @@ index def05f0..ac00e1d 100644
          return st;
 +
 +
++
 +   st = check_pattern(num_args, args, result);
 +       if (st != BR_FAILED && st != BR_DONE)
 +           return st;
@@ -1615,7 +1616,7 @@ index def05f0..ac00e1d 100644
  #if 0
      expr * x;
      expr * y;
-@@ -1682,6 +3284,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +3285,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
