@@ -1,15 +1,61 @@
 
 
-We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver.  We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems. We compare with $\zthree$, $\boolector$\cite{Boolector} and $\cvcfour$\cite{cvc4}. Our experiments show that the solvers time out on the benchmarks and our implementation produces results within the time limit.
+We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver.
+%
+ We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
+%
+We compare with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\cite{cvc4}.
+%
+Our experiments show that the solvers time out on the benchmarks and our implementation produces results within the time limit.
 
-Our implementation of the algorithms in $\zthree$ is 1500 lines long. The algorithms have been implemented in the bit vectors rewrite module of $\zthree$. We chose to work in the rewrite module, since it gives an easy access to the abstract syntax tree of the input formula. One important aspect in the implementation is the ability to exit as early as possible if the match is going to fail. We implemented various preliminary checks \rahul{add some checks}. Our implementation has two modes. In the first mode we insert the learnt tautologies in the $\zthree$ solver within the current execution. In the second mode other we do not run  the $\zthree$ solver and print the learnt tautologies in a file along with the input formula. The mode allows us to run the other solvers on the newly generated formula.
+Our implementation of the algorithms in $\zthree$ is 1500 lines long.
+%
+The algorithms have been implemented in the bit vectors rewrite module of $\zthree$.
+%
+We chose to work in the rewrite module, since it gives an easy access to the abstract syntax tree of the input formula.
+%
+One important aspect in the implementation is the ability to exit as early as possible if the match is going to fail.
+%
+We implemented various preliminary checks \rahul{add some checks}.
+%
+Our implementation has two modes.
+%
+In the first mode we insert the learnt tautologies in the $\zthree$ solver within the current execution.
+%
+In the second mode other we do not run  the $\zthree$ solver and print the learnt tautologies in a file along with the input formula.
+%
+The mode allows us to run the other solvers on the newly generated formula.
 
-Our experiments include x benchmarks. We received an industrial hardware verification benchmark in $\sysver$ involving long multiplication that was not solved by any of the solvers in 24 hours. The example inspired our current work and to evaluate it we generated several similar benchmarks. For long multiplication, we generated benchmarks by varying three characteristics, namely total bit length of the input bit-vectors, width of each block, and assigning specific blocks as equal or set them to zero. Our $\sysver$ benchmarks are fed to STEWord~\cite{Word-level Symbolic Trajectory Evaluation}, a hardware verification tool. STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula. We convert the SMT1 formula to SMT2 format using $\boolector$. In the process, $\boolector$ extensively simplifies the input formula but retains the overall structure. We have generated benchmarks also for Wallace tree multiplier similar to the long multiplication. For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. 
+Our experiments include x benchmarks.
+%
+We received an industrial hardware verification benchmark in $\sysver$ involving long multiplication that was not solved by any of the solvers in 24 hours.
+%
+The example inspired our current work and to evaluate it we generated several similar benchmarks.
+%
+For long multiplication, we generated benchmarks by varying three characteristics, namely total bit length of the input bit-vectors, width of each block, and assigning specific blocks as equal or set them to zero.
+%
+Our $\sysver$ benchmarks are fed to STEWord~\cite{Word-level-Symbolic-Trajectory-Evaluation}, a hardware verification tool.
+%
+STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula.
+%
+We convert the SMT1 formula to SMT2 format using $\boolector$.
+%
+In the process, $\boolector$ extensively simplifies the input formula but retains the overall structure.
+%
+We have generated benchmarks also for Wallace tree multiplier similar to the long multiplication.
+%
+For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord.
+%
 
-We run the solvers on the SMT2 formulas corresponding to the benchmarks by running the solvers on the original input formula and the modified formula after adding the new tautologies. For $\zthree$ we also capture the time taken to solve when the tautologies are added during the current execution.
+
+We run the solvers on the SMT2 formulas corresponding to the benchmarks by running the solvers on the original input formula and the modified formula after adding the new tautologies.
+%
+For $\zthree$ we also capture the time taken to solve when the tautologies are added during the current execution.
 
 Shorthand, $O$ - original input formula, $M$ - Generated formula, $T$ - trunk version of solver, $CE$ - $\zthree$ - Continue execution after adding tautologies, $bool$ - Boolector.
-The tables below specify the results obtained on the various benchmarks. 
+The tables below specify the results obtained on the various benchmarks.
+%
+
 
 \begin{table}[]
 \centering
