@@ -19,13 +19,20 @@ An important aspect of the implementation is the ability to exit as early as pos
 %
 We implemented various preliminary checks \rahul{add some checks}.
 %
-Our implementation has two modes.
+We have implemented three version of $\ourtool$ by varying
+$\textsc{SMTSolver}$.
 %
-In the first mode we insert the learnt tautologies in the $\zthree$ solver within the current execution.
+We used  $\zthree$, $\boolector$, and $\cvcfour$ for the variations. 
 %
-In the second mode other we do not run  the $\zthree$ solver and print the learnt tautologies in a file along with the input formula.
+In the case of $\zthree$.
+we insert the learnt tautologies in the $\zthree$ solver within the current execution.
 %
-The mode allows us to run the other solvers on the newly generated formula.
+For $\boolector$ and $\cvcfour$,
+we do not run  the $\zthree$ solver after running our matching algorithms,
+print the learnt tautologies in a file along with the input formula, and
+run the solvers in a separate process on the newly generated formula.
+% %
+% The mode allows us to run the other solvers 
 
 \paragraph{\bf Benchmarks}
 %
