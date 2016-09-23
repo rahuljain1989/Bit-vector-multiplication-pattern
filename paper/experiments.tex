@@ -52,8 +52,7 @@ We run the solvers on the SMT2 formulas corresponding to the benchmarks by runni
 %
 For $\zthree$ we also capture the time taken to solve when the tautologies are added during the current execution.
 
-Shorthand, $O$ - original input formula, $M$ - Generated formula, $T$ - trunk version of solver, $CE$ - $\zthree$ - Continue execution after adding tautologies, $bool$ - Boolector.
-The tables below specify the results obtained on the various benchmarks.
+The tables below specify the results obtained on the various benchmarks. Timout taken is 600 seconds.
 %
 
 \begin{table}[]
@@ -80,7 +79,14 @@ mot\_ex2\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 15.57s    
 
 
 
-Explanation: 
+The first set of 3 columns under "SMT Solver" is the time taken by the solvers($\zthree$ - 4.4.2, $\boolector$ - 2.2.0, $\cvcfour$ - 1.4) to prove the satisfiability of the input benchmark. The solvers timout in most of the benchmarks. Couple of smaller bit sized benchmarks have been included to compare the time taken by the 3 solvers under consideration. $\cvcfour$ is able to solve these small cases faster than the other 2 solvers.
+
+The second set of 3 columns under "Our Solver" is the time taken by the solvers to prove the satisfiability of the input benchmark along with the learnt tautologies. This is the second mode mentioned above. Our experiments indicate that $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. Unfortunately, $\zthree$ is not able to infer as smartly as $\cvcfour$, due to the flattening involved in the added tautologies, but still makes good use of the added tautologies, which helps $\zthree$ to reduce the search space considerably after bit-blasting. $\boolector$ also shows some improvement in some of the cases, in which the search space for the SAT solver is reduced.
+
+The last column shows the results of mode one as mentioned above. $\zthree$ is allowed to continue execution after adding the learnt tautologies. The results are similar to the one when $\zthree$ is invoked freshly in the second mode.
+
+One benchmark which shows no improvements within time limits is mult\_3\_operands. While all the other benchmarks above check for equality of multiplication of two bit vectors, mult\_3\_operands is an attempt to see if the approach works for multiplication of 3 operands which is carried out as 2 long multiplications. Our observations indicate that none of the solvers are able to infer the structural similarity based on the 2 tautologies added for the 2 long multiplications. We carried out similar experiments involving multiple operands, expressions of the form $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$. None of the solvers were able to make use of the added tautologies(one for each long multiplication). The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure use one assertion to infer the satisfiability of another does not seem to be well developed. 
+
 
 \begin{table}[]
 \centering
@@ -93,13 +99,12 @@ Benchmark       & Z3       & Boolector & CVC4     & Z3      & Boolector   & CVC4
 wallace\_4bits  & 0.08s    & 0.04s     & 0.04s    & 0.02s   & 0.05s       & 0.05s   & 0.08s \\ \hline
 wallace\_8bits  & 3m33.33s & 1m3.80s   & 3m32.79s & 0.05s   & 30.60s      & t/o     & 0.44s \\ \hline
 wallace\_12bits & t/o      & t/o       & t/o      & 0.09s   & 3m47.17s    & t/o     & 1.20s \\ \hline
-wallace\_16bits & t/o      & t/o       & t/o      & 0.16s   & 11m28.19s   & t/o     & 2.26s \\ \hline
+wallace\_16bits & t/o      & t/o       & t/o      & 0.16s   & 9m13.21s   & t/o     & 2.26s \\ \hline
 \end{tabular}
 \end{table}
 
 
-Explanation:
-
+Wallace tree multiplier involves a series of half adders and full adders. As the bit vector size increases, their is a considerable increase in the formula size of the input. Despite such increase in formula size, $\zthree$ is able to make ideal use of the added assertions and ascertain the satisfiability of the formula. $\boolector$ makes little use of the added tautologies reducing its search space slightly. $\cvcfour$ shows no improvement. This is because the input formula is contructed using "and" and "not" gates whereas $\zthree$ transforms all "ands" to "ors". $\therefore$ the added tautology has no "ands". While $\zthree$ again does the same transformation while processing the newly generated formula and quickly infers the similarity of the original formula and the added tautologies, the other 2 solvers are not able to do the same and hence the inablilty to solve quickly.
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
@@ -108,8 +113,4 @@ Explanation:
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-
-
-
- 
 
