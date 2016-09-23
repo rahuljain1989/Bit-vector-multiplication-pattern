@@ -56,41 +56,47 @@ Shorthand, $O$ - original input formula, $M$ - Generated formula, $T$ - trunk ve
 The tables below specify the results obtained on the various benchmarks.
 %
 
-
 \begin{table}[]
 \centering
 \caption{Long multiplication}
 \label{my-label}
-\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-Benchmark                  & z3 - T,O  & z3 - CE   & z3 - T,M  & bool - T,O & bool - T,M & cvc4 - T,O & cvc4 -T,M \\ \hline
-base.smt2                  & 2m48.510s & 0.390s    & 0.475s    & 44.509s    & 46.009s    & 18.368s    & 0.024s    \\ \hline
-ex1\_scaledup.smt2         & timeout   & 1.509s    & 1.653s    & timeout    & timeout    & timeout    & 0.025s    \\ \hline
-ex2\_scaledup.smt2         & timeout   & 2.573s    & 3.050s    & timeout    & timeout    & timeout    & 0.022s    \\ \hline
-ex3\_scaledup.smt2         & timeout   & 2.780s    & 2.842s    & timeout    & 7m52.392s  & timeout    & 0.032s    \\ \hline
-ex5\_scaledup\_2.smt2      & 5m29.560s & 4m32.388s & 4m51.898s & 52.064s    & 16.455s    & 39.898s    & 0.022s    \\ \hline
-mult\_3operands.smt2       & timeout   & timeout   & timeout   & timeout    & timeout    & timeout    & timeout   \\ \hline
-sv\_assy.smt2              & timeout   & 0.061s    & 0.022s    & timeout    & timeout    & timeout    & 0.021s    \\ \hline
-mot\_base\_scaledup.smt2   & timeout   & 11.816s   & 14.197s   & timeout    & timeout    & timeout    & 0.022s    \\ \hline
-mot\_ex1\_scaledup\_2.smt2 & timeout   & timeout   & timeout   & timeout    & 18.425s    & timeout    & 0.019s    \\ \hline
-mot\_ex2\_scaledup\_2.smt2 & timeout   & timeout   & timeout   & timeout    & 15.569s    & timeout    & 0.018s    \\ \hline
+                      & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &          \\ \hline
+Benchmark             & Z3        & Boolector  & CVC4   & Z3        & Boolector  & CVC4   & Z3       \\ \hline
+base                  & 2m48.51s  & 44.50s     & 18.37s & 0.48s     & 46.0s      & 0.02s  & 0.39s    \\ \hline
+ex1\_scaledup         & t/o       & t/o        & t/o    & 1.65s     & t/o        & 0.02s  & 1.50s    \\ \hline
+ex2\_scaledup         & t/o       & t/o        & t/o    & 3.05s     & t/o        & 0.02s  & 2.57s    \\ \hline
+ex3\_scaledup         & t/o       & t/o        & t/o    & 2.84s     & 7m52.39s   & 0.03s  & 2.78s    \\ \hline
+ex5\_scaledup\_2      & 5m29.56s  & 52.06s     & 39.89s & 4m51.89s  & 16.46s     & 0.02s  & 4m32.39s \\ \hline
+mult\_3operands       & t/o       & t/o        & t/o    & t/o       & t/o        & t/o    & t/o      \\ \hline
+sv\_assy              & t/o       & t/o        & t/o    & 0.02s     & t/o        & 0.02s  & 0.06s    \\ \hline
+mot\_base\_scaledup   & t/o       & t/o        & t/o    & 14.20s    & t/o        & 0.02s  & 11.81s   \\ \hline
+mot\_ex1\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 18.43s     & 0.02s  & t/o      \\ \hline
+mot\_ex2\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 15.57s     & 0.02s  & t/o      \\ \hline
 \end{tabular}
 \end{table}
+
+
+
 
 Explanation: 
 
 \begin{table}[]
 \centering
-\caption{Wallace tree multiplier}
+\caption{My caption}
 \label{my-label}
-\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-Benchmark   & z3 - T,O & z3 - CE & z3 - T,M & bool - T,O & bool - T,M & cvc4 - T,O & cvc4 -T,M \\ \hline
-B1 - n bits &          &         &          &            &            &            &           \\ \hline
-B2 - n bits &          &         &          &            &            &            &           \\ \hline
-B3 - n nits &          &         &          &            &            &            &           \\ \hline
+                & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &       \\ \hline
+Benchmark       & Z3       & Boolector & CVC4     & Z3      & Boolector   & CVC4    & Z3    \\ \hline
+wallace\_4bits  & 0.08s    & 0.04s     & 0.04s    & 0.02s   & 0.05s       & 0.05s   & 0.08s \\ \hline
+wallace\_8bits  & 3m33.33s & 1m3.80s   & 3m32.79s & 0.05s   & 30.60s      & t/o     & 0.44s \\ \hline
+wallace\_12bits & t/o      & t/o       & t/o      & 0.09s   & 3m47.17s    & t/o     & 1.20s \\ \hline
+wallace\_16bits & t/o      & t/o       & t/o      & 0.16s   & 11m28.19s   & t/o     & 2.26s \\ \hline
 \end{tabular}
 \end{table}
+
 
 Explanation:
 
