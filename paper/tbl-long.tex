@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Long multiplication}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+                      & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &          \\ \hline
+Benchmark             & Z3        & Boolector  & CVC4   & Z3        & Boolector  & CVC4   & Z3       \\ \hline
+base                  & 2m48.51s  & 44.50s     & 18.37s & 0.48s     & 46.0s      & 0.02s  & 0.39s    \\ \hline
+ex1\_scaledup         & t/o       & t/o        & t/o    & 1.65s     & t/o        & 0.02s  & 1.50s    \\ \hline
+ex2\_scaledup         & t/o       & t/o        & t/o    & 3.05s     & t/o        & 0.02s  & 2.57s    \\ \hline
+ex3\_scaledup         & t/o       & t/o        & t/o    & 2.84s     & 7m52.39s   & 0.03s  & 2.78s    \\ \hline
+ex5\_scaledup\_2      & 5m29.56s  & 52.06s     & 39.89s & 4m51.89s  & 16.46s     & 0.02s  & 4m32.39s \\ \hline
+mult\_3operands       & t/o       & t/o        & t/o    & t/o       & t/o        & t/o    & t/o      \\ \hline
+sv\_assy              & t/o       & t/o        & t/o    & 0.02s     & t/o        & 0.02s  & 0.06s    \\ \hline
+mot\_base\_scaledup   & t/o       & t/o        & t/o    & 14.20s    & t/o        & 0.02s  & 11.81s   \\ \hline
+mot\_ex1\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 18.43s     & 0.02s  & t/o      \\ \hline
+mot\_ex2\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 15.57s     & 0.02s  & t/o      \\ \hline
+\end{tabular}
+\end{table}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

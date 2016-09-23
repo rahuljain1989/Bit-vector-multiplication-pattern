@@ -8,6 +8,7 @@ We compare with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\cite{cvc4
 %
 Our experiments show that the solvers time out on the benchmarks and our implementation produces results within the time limit.
 
+\paragraph{\bf Implementation}
 Our implementation of the algorithms in $\zthree$ is 1500 lines long.
 %
 The algorithms have been implemented in the bit vectors rewrite module of $\zthree$.
@@ -26,6 +27,8 @@ In the second mode other we do not run  the $\zthree$ solver and print the learn
 %
 The mode allows us to run the other solvers on the newly generated formula.
 
+\paragraph{\bf Benchmarks}
+%
 Our experiments include x benchmarks.
 %
 We received an industrial hardware verification benchmark in $\sysver$ involving long multiplication that was not solved by any of the solvers in 24 hours.
@@ -47,64 +50,37 @@ We have generated benchmarks also for Wallace tree multiplier similar to the lon
 For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord.
 %
 
-
+\paragraph{\bf Results}
+%
 We run the solvers on the SMT2 formulas corresponding to the benchmarks by running the solvers on the original input formula and the modified formula after adding the new tautologies.
 %
 For $\zthree$ we also capture the time taken to solve when the tautologies are added during the current execution.
 
 The tables below specify the results obtained on the various benchmarks. Timout taken is 600 seconds.
 %
-
-\begin{table}[]
-\centering
-\caption{Long multiplication}
-\label{my-label}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\hline
-                      & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &          \\ \hline
-Benchmark             & Z3        & Boolector  & CVC4   & Z3        & Boolector  & CVC4   & Z3       \\ \hline
-base                  & 2m48.51s  & 44.50s     & 18.37s & 0.48s     & 46.0s      & 0.02s  & 0.39s    \\ \hline
-ex1\_scaledup         & t/o       & t/o        & t/o    & 1.65s     & t/o        & 0.02s  & 1.50s    \\ \hline
-ex2\_scaledup         & t/o       & t/o        & t/o    & 3.05s     & t/o        & 0.02s  & 2.57s    \\ \hline
-ex3\_scaledup         & t/o       & t/o        & t/o    & 2.84s     & 7m52.39s   & 0.03s  & 2.78s    \\ \hline
-ex5\_scaledup\_2      & 5m29.56s  & 52.06s     & 39.89s & 4m51.89s  & 16.46s     & 0.02s  & 4m32.39s \\ \hline
-mult\_3operands       & t/o       & t/o        & t/o    & t/o       & t/o        & t/o    & t/o      \\ \hline
-sv\_assy              & t/o       & t/o        & t/o    & 0.02s     & t/o        & 0.02s  & 0.06s    \\ \hline
-mot\_base\_scaledup   & t/o       & t/o        & t/o    & 14.20s    & t/o        & 0.02s  & 11.81s   \\ \hline
-mot\_ex1\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 18.43s     & 0.02s  & t/o      \\ \hline
-mot\_ex2\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 15.57s     & 0.02s  & t/o      \\ \hline
-\end{tabular}
-\end{table}
-
-
+\input{tbl-long}
 
 
 The first set of 3 columns under "SMT Solver" is the time taken by the solvers($\zthree$ - 4.4.2, $\boolector$ - 2.2.0, $\cvcfour$ - 1.4) to prove the satisfiability of the input benchmark. The solvers timout in most of the benchmarks. Couple of smaller bit sized benchmarks have been included to compare the time taken by the 3 solvers under consideration. $\cvcfour$ is able to solve these small cases faster than the other 2 solvers.
 
-The second set of 3 columns under "Our Solver" is the time taken by the solvers to prove the satisfiability of the input benchmark along with the learnt tautologies. This is the second mode mentioned above. Our experiments indicate that $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. Unfortunately, $\zthree$ is not able to infer as smartly as $\cvcfour$, due to the flattening involved in the added tautologies, but still makes good use of the added tautologies, which helps $\zthree$ to reduce the search space considerably after bit-blasting. $\boolector$ also shows some improvement in some of the cases, in which the search space for the SAT solver is reduced.
+The second set of 3 columns under "Our Solver" is the time taken by the solvers to prove the satisfiability of the input benchmark along with the learnt tautologies. This is the second mode mentioned above.
+% columns oursolver - time - using backend solvers -Z3, CVC4, Boolector respectively col. numbers  
+%
+Our experiments indicate that $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. Unfortunately, $\zthree$ is not able to infer as smartly as $\cvcfour$, due to the flattening involved in the added tautologies, but still makes good use of the added tautologies, which helps $\zthree$ to reduce the search space considerably after bit-blasting. $\boolector$ also shows some improvement in some of the cases, in which the search space for the SAT solver is reduced.
+
+
+
 
 The last column shows the results of mode one as mentioned above. $\zthree$ is allowed to continue execution after adding the learnt tautologies. The results are similar to the one when $\zthree$ is invoked freshly in the second mode.
 
-One benchmark which shows no improvements within time limits is mult\_3\_operands. While all the other benchmarks above check for equality of multiplication of two bit vectors, mult\_3\_operands is an attempt to see if the approach works for multiplication of 3 operands which is carried out as 2 long multiplications. Our observations indicate that none of the solvers are able to infer the structural similarity based on the 2 tautologies added for the 2 long multiplications. We carried out similar experiments involving multiple operands, expressions of the form $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$. None of the solvers were able to make use of the added tautologies(one for each long multiplication). The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure use one assertion to infer the satisfiability of another does not seem to be well developed. 
 
-
-\begin{table}[]
-\centering
-\caption{Wallace tree multiplier}
-\label{my-label}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
-\hline
-                & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &       \\ \hline
-Benchmark       & Z3       & Boolector & CVC4     & Z3      & Boolector   & CVC4    & Z3    \\ \hline
-wallace\_4bits  & 0.08s    & 0.04s     & 0.04s    & 0.02s   & 0.05s       & 0.05s   & 0.08s \\ \hline
-wallace\_8bits  & 3m33.33s & 1m3.80s   & 3m32.79s & 0.05s   & 30.60s      & t/o     & 0.44s \\ \hline
-wallace\_12bits & t/o      & t/o       & t/o      & 0.09s   & 3m47.17s    & t/o     & 1.20s \\ \hline
-wallace\_16bits & t/o      & t/o       & t/o      & 0.16s   & 9m13.21s   & t/o     & 2.26s \\ \hline
-\end{tabular}
-\end{table}
-
+\input{tbl-wallace}
 
 Wallace tree multiplier involves a series of half adders and full adders. As the bit vector size increases, their is a considerable increase in the formula size of the input. Despite such increase in formula size, $\zthree$ is able to make ideal use of the added assertions and ascertain the satisfiability of the formula. $\boolector$ makes little use of the added tautologies reducing its search space slightly. $\cvcfour$ shows no improvement. This is because the input formula is contructed using "and" and "not" gates whereas $\zthree$ transforms all "ands" to "ors". $\therefore$ the added tautology has no "ands". While $\zthree$ again does the same transformation while processing the newly generated formula and quickly infers the similarity of the original formula and the added tautologies, the other 2 solvers are not able to do the same and hence the inablilty to solve quickly.
+
+\paragraph{\bf Observations}
+%
+One benchmark which shows no improvements within time limits is mult\_3\_operands. While all the other benchmarks above check for equality of multiplication of two bit vectors, mult\_3\_operands is an attempt to see if the approach works for multiplication of 3 operands which is carried out as 2 long multiplications. Our observations indicate that none of the solvers are able to infer the structural similarity based on the 2 tautologies added for the 2 long multiplications. We carried out similar experiments involving multiple operands, expressions of the form $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$. None of the solvers were able to make use of the added tautologies(one for each long multiplication). The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure use one assertion to infer the satisfiability of another does not seem to be well developed. 
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
