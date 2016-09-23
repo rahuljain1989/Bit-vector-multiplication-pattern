@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Wallace tree multiplier}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+                & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &       \\ \hline
+Benchmark       & Z3       & Boolector & CVC4     & Z3      & Boolector   & CVC4    & Z3    \\ \hline
+wallace\_4bits  & 0.08s    & 0.04s     & 0.04s    & 0.02s   & 0.05s       & 0.05s   & 0.08s \\ \hline
+wallace\_8bits  & 3m33.33s & 1m3.80s   & 3m32.79s & 0.05s   & 30.60s      & t/o     & 0.44s \\ \hline
+wallace\_12bits & t/o      & t/o       & t/o      & 0.09s   & 3m47.17s    & t/o     & 1.20s \\ \hline
+wallace\_16bits & t/o      & t/o       & t/o      & 0.16s   & 9m13.21s   & t/o     & 2.26s \\ \hline
+\end{tabular}
+\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
