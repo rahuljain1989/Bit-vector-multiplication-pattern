@@ -1,21 +1,21 @@
-\begin{table}[t]
+\begin{table}[]
 \centering
-\caption{Long multiplication}
+\caption{Long multiplication experiments:Time in seconds}
 \label{my-label}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-                      & \multicolumn{3}{c|}{SMT Solver} & \multicolumn{3}{c|}{Our Solver} &          \\ \hline
-Benchmark             & Z3        & Boolector  & CVC4   & Z3        & Boolector  & CVC4   & Z3       \\ \hline
-base                  & 2m48.51s  & 44.50s     & 18.37s & 0.48s     & 46.0s      & 0.02s  & 0.39s    \\ \hline
-ex1\_scaledup         & t/o       & t/o        & t/o    & 1.65s     & t/o        & 0.02s  & 1.50s    \\ \hline
-ex2\_scaledup         & t/o       & t/o        & t/o    & 3.05s     & t/o        & 0.02s  & 2.57s    \\ \hline
-ex3\_scaledup         & t/o       & t/o        & t/o    & 2.84s     & 7m52.39s   & 0.03s  & 2.78s    \\ \hline
-ex5\_scaledup\_2      & 5m29.56s  & 52.06s     & 39.89s & 4m51.89s  & 16.46s     & 0.02s  & 4m32.39s \\ \hline
-mult\_3operands       & t/o       & t/o        & t/o    & t/o       & t/o        & t/o    & t/o      \\ \hline
-sv\_assy              & t/o       & t/o        & t/o    & 0.02s     & t/o        & 0.02s  & 0.06s    \\ \hline
-mot\_base\_scaledup   & t/o       & t/o        & t/o    & 14.20s    & t/o        & 0.02s  & 11.81s   \\ \hline
-mot\_ex1\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 18.43s     & 0.02s  & t/o      \\ \hline
-mot\_ex2\_scaledup\_2 & t/o       & t/o        & t/o    & t/o       & 15.57s     & 0.02s  & t/o      \\ \hline
+                      & \multicolumn{3}{c|}{\textsc{SMTSolver}}       & \multicolumn{3}{c|}{$\ourtool$}       \\ \hline
+Benchmark             & $\zthree$ & $\boolector$ & $\cvcfour$ & $\zthree$ & $\boolector$ & $\cvcfour$ \\ \hline
+base                  & 168.51  & 44.50       & 18.37     & 0.39     & 46.02        & 0.02      \\ \hline
+ex1\_scaledup         & t/o       & t/o          & t/o        & 1.50     & t/o          & 0.02      \\ \hline
+ex2\_scaledup         & t/o       & t/o          & t/o        & 2.57     & t/o          & 0.02      \\ \hline
+ex3\_scaledup         & t/o       & t/o          & t/o        & 2.78     & 472.39     & 0.03      \\ \hline
+ex5\_scaledup\_2      & 329.56  & 52.06       & 39.89     & 272.39  & 16.46       & 0.02      \\ \hline
+mult\_3operands       & t/o       & t/o          & t/o        & t/o       & t/o          & t/o        \\ \hline
+sv\_assy              & t/o       & t/o          & t/o        & 0.06     & t/o          & 0.02      \\ \hline
+mot\_base\_scaledup   & t/o       & t/o          & t/o        & 11.81    & t/o          & 0.02      \\ \hline
+mot\_ex1\_scaledup\_2 & t/o       & t/o          & t/o        & t/o       & 18.43       & 0.02      \\ \hline
+mot\_ex2\_scaledup\_2 & t/o       & t/o          & t/o        & t/o       & 15.57       & 0.02      \\ \hline
 \end{tabular}
 \end{table}
 
