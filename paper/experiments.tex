@@ -9,11 +9,9 @@ We compare our tool with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\
 Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
 \paragraph{\bf Implementation}
-Our implementation of the algorithms in $\zthree$ is 1500 lines long.
+We implemented the algorithms inside $\zthree$. We have added about 1500 lines of code in the bit vector rewrite module.
 %
-The algorithms have been implemented in the bit vectors rewrite module of $\zthree$.
-%
-We chose to work in the rewrite module, since it gives an easy access to the abstract syntax tree of the input formula.
+The rewrite module gives an easy access to the abstract syntax tree of the input formula.
 %
 An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
 %
@@ -28,9 +26,9 @@ In the case of $\zthree$.
 we insert the learnt tautologies in the $\zthree$ solver within the current execution.
 %
 For $\boolector$ and $\cvcfour$,
-we do not run the $\zthree$ solver after running our matching algorithms,
+we forcefully stop the $\zthree$ solver after running our matching algorithms,
 print the learnt tautologies in a file along with the input formula, and
-run the solvers in a separate process on the newly generated formula. We use the following versions of the solvers: $\zthree$ - 4.4.2, $\boolector$ - 2.2.0, $\cvcfour$ - 1.4.
+run the solvers in a separate process on the newly generated formula. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
 % %
 % The mode allows us to run the other solvers 
 
@@ -42,7 +40,7 @@ Initially, we received an industrial hardware verification benchmark in $\sysver
 %
 The example inspired our current work and to evaluate it we generated several similar benchmarks.
 %
-For long multiplication, we generated benchmarks by varying three characteristics, namely total bit length of the input bit-vectors, width of each block, and assigning specific blocks as equal or set them to zero.
+For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or set them to zero.
 %
 Our $\sysver$ benchmarks are fed to STEWord~\cite{Word-level-Symbolic-Trajectory-Evaluation}, a hardware verification tool.
 %
@@ -59,23 +57,22 @@ For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as 
 
 \paragraph{\bf Results}
 %
-We compare our tool with the time taken by $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 present the results of our experiments. We chose timeout to be 600 seconds.
+We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 present the results of the experiments. We chose timeout to be 600 seconds.
 %
 \input{tbl-long}
 
+Table 1 presents the results of the long multiplication experiments. The columns under $\textsc{SMTSolver}$ are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. 
 
-The columns under "SMT Solver" are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. The benchmarks include two smaller bit sized benchmarks to compare the time taken by the 3 solvers under consideration.
-
-The last three columns are the run times of the three versions of $\ourtool$ to prove the satisfiability of the newly generated formula.
+The last three columns are the run times of the three versions of $\ourtool$ to prove the satisfiability of the benchmarks.
 % columns oursolver - time - using backend solvers -Z3, CVC4, Boolector respectively col. numbers  
 %
-Our experiments indicate that $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. 
-$\boolector$ and $\zthree$ do not make the above inference, leading to more running time. The added tautologies help $\boolector$ and $\zthree$ reduce the search space, once the sat solver is invoked on the bit blasted formula.
+$\ourtool$ with $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. 
+$\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, leading to more running time. $\boolector$ and $\zthree$ resort to bit blasting having not been able to detect the structural similarity. However, the added tautologies help $\boolector$ and $\zthree$ to reduce the search space, after the sat solver is invoked on the bit blasted formula.
 
 
 \input{tbl-wallace}
 
-Wallace tree multiplier involves a series of half adders and full adders. As the bit vector size increases, their is a considerable increase in the formula size of the input formula. Despite such increase in formula size, $\zthree$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. $\boolector$ and $\cvcfour$ do not make the above inference, leading to more running time. This is because the input formula has "and" and "not" gates as its building blocks, whereas $\zthree$ transforms all "ands" to "ors". We have implemented our algorithms in $\zthree$. Therefore, the added tautology has no "ands". This difference in structure caused due to this basic rewrite in $\zthree$, makes it difficult for $\boolector$ and $\cvcfour$ to infer the structural similarity. 
+Table 2 presents the results of the Wallace tree multiplier experiments. Wallace tree multiplier involves a series of half adders and full adders. As the bit vector size increases, their is a considerable increase in the formula size of the input formula. Despite such increase in formula size, $\zthree$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the run time. $\boolector$ and $\cvcfour$ do not make the above inference, leading to more running time. This is because the input formula has "and" and "not" gates as its building blocks, whereas $\zthree$ transforms all "ands" to "ors". We have implemented our algorithms in $\zthree$. Therefore, the added tautology has no "ands". This difference in structure caused due to this basic rewrite in $\zthree$, makes it difficult for $\boolector$ and $\cvcfour$ to infer the structural similarity. 
 
 \paragraph{\bf Observations}
 %
@@ -88,6 +85,4 @@ One benchmark which shows no improvements within the set time limits is mult\_3\
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-
-
 
