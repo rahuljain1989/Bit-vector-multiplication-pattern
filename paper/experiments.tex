@@ -15,7 +15,7 @@ The rewrite module gives an easy access to the abstract syntax tree of the input
 %
 An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
 %
-We implemented various preliminary checks \rahul{add some checks}.
+We implemented various preliminary checks including the ones mentioned in Algorithm 1. We ensure that size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
 %
 We have implemented three version of $\ourtool$ by varying
 $\textsc{SMTSolver}$.
@@ -85,4 +85,7 @@ One benchmark which shows no improvements within the set time limits is mult\_3\
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+
+
+
 
