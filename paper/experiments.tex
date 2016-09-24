@@ -6,7 +6,7 @@ We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver.
 %
 We compare our tool with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\cite{cvc4}.
 %
-Our experiments show that the solvers time out on the benchmarks and our tool produces results within the set time limit.
+Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
 \paragraph{\bf Implementation}
 Our implementation of the algorithms in $\zthree$ is 1500 lines long.
@@ -28,7 +28,7 @@ In the case of $\zthree$.
 we insert the learnt tautologies in the $\zthree$ solver within the current execution.
 %
 For $\boolector$ and $\cvcfour$,
-we do not run  the $\zthree$ solver after running our matching algorithms,
+we do not run the $\zthree$ solver after running our matching algorithms,
 print the learnt tautologies in a file along with the input formula, and
 run the solvers in a separate process on the newly generated formula. We use the following versions of the solvers: $\zthree$ - 4.4.2, $\boolector$ - 2.2.0, $\cvcfour$ - 1.4.
 % %
@@ -66,7 +66,7 @@ We compare our tool with the time taken by $\zthree$, $\boolector$ and $\cvcfour
 
 The columns under "SMT Solver" are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. The benchmarks include two smaller bit sized benchmarks to compare the time taken by the 3 solvers under consideration.
 
-The last three columns are the run times of the three  version of $\ourtool$ to prove the satisfiability of the newly generated formula.
+The last three columns are the run times of the three versions of $\ourtool$ to prove the satisfiability of the newly generated formula.
 % columns oursolver - time - using backend solvers -Z3, CVC4, Boolector respectively col. numbers  
 %
 Our experiments indicate that $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. 
