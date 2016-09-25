@@ -61,7 +61,7 @@ We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 pres
 %
 \input{tbl-long}
 
-Table 1 presents the results of the long multiplication experiments. The columns under $\textsc{SMTSolver}$ are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. 
+In table 1 we present the results of the long multiplication experiments. The columns under $\textsc{SMTSolver}$ are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. 
 
 The last three columns are the run times of the three versions of $\ourtool$ to prove the satisfiability of the benchmarks.
 % columns oursolver - time - using backend solvers -Z3, CVC4, Boolector respectively col. numbers  
@@ -72,7 +72,7 @@ $\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, le
 
 \input{tbl-wallace}
 
-Table 2 presents the results of the Wallace tree multiplier experiments. Wallace tree multiplier involves a series of half adders and full adders. As the bit vector size increases, their is a considerable increase in the formula size of the input formula. Despite such increase in formula size, $\zthree$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the run time. $\boolector$ and $\cvcfour$ do not make the above inference, leading to more running time. This is because the input formula has "and" and "not" gates as its building blocks, whereas $\zthree$ transforms all "ands" to "ors". We have implemented our algorithms in $\zthree$. Therefore, the added tautology has no "ands". This difference in structure caused due to this basic rewrite in $\zthree$, makes it difficult for $\boolector$ and $\cvcfour$ to infer the structural similarity. 
+In table 2 we present the results of the Wallace tree multiplier experiments. The multiplier involves a series of half adders and full adders. As the bit vector size increases, the size of the input formula increases rapidly. Despite the blowup in formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautologies are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the above inference, leading to larger run times. This is because the input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Since, we have implemented our algorithms in $\zthree$, the added tautology has no `ands'. The difference in the structure caused due to this rewrite in $\zthree$, makes it difficult for $\boolector$ and $\cvcfour$ to infer the structural similarity. 
 
 \paragraph{\bf Observations}
 %
