@@ -1,6 +1,6 @@
 
 
-We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver.
+We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}}.
 %
  We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
 %
@@ -9,25 +9,23 @@ We compare our tool with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\
 Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
 \paragraph{\bf Implementation}
-We implemented the algorithms inside $\zthree$. We have added about 1500 lines of code in the bit vector rewrite module.
-%
-The rewrite module gives an easy access to the abstract syntax tree of the input formula.
+We implemented the algorithms inside $\zthree$. We have added about 1500 lines of code in the bit vector rewrite module because it allows an easy access to the abstract syntax tree of the input formula.
 %
 An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
 %
-We implemented various preliminary checks including the ones mentioned in Algorithm 1. We ensure that size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
+We implemented various preliminary checks including the ones mentioned in Algorithm 1. We ensure that the size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
 %
 We have implemented three version of $\ourtool$ by varying
 $\textsc{SMTSolver}$.
 %
 We used  $\zthree$, $\boolector$, and $\cvcfour$ for the variations. 
 %
-In the case of $\zthree$.
-we insert the learnt tautologies in the $\zthree$ solver within the current execution.
+In the case of $\zthree$,
+we insert the learned tautologies in the $\zthree$ solver within the current execution.
 %
 For $\boolector$ and $\cvcfour$,
 we forcefully stop the $\zthree$ solver after running our matching algorithms,
-print the learnt tautologies in a file along with the input formula, and
+print the learned tautologies in a file along with the input formula, and
 run the solvers in a separate process on the newly generated formula. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
 % %
 % The mode allows us to run the other solvers 
@@ -72,7 +70,7 @@ $\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, le
 
 \input{tbl-wallace}
 
-In table 2 we present the results of the Wallace tree multiplier experiments. The multiplier involves a series of half adders and full adders. As the bit vector size increases, the size of the input formula increases rapidly. Despite the blowup in formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautologies are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the above inference, leading to larger run times. This is because the input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Since, we have implemented our algorithms in $\zthree$, the added tautology has no `ands'. The difference in the structure caused due to this rewrite in $\zthree$, makes it difficult for $\boolector$ and $\cvcfour$ to infer the structural similarity. 
+In table 2 we present the results of the Wallace tree multiplier experiments. Since, the multiplier involves a series of half and full adders, the size of the input formula increases rapidly as the bit vector size increases. Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautology are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the inference, leading to larger run times. This is because of the synctactic structure of the learned tautology from our implementation inside $\zthree$. The input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Therefore, the added tautology has no `ands'. The difference in the synctactic structure between the input formula and the added tautology makes it difficult for $\boolector$ and $\cvcfour$ to make the above inference. 
 
 \paragraph{\bf Observations}
 %
