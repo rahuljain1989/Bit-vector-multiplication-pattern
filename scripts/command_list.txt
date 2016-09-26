@@ -1,0 +1,14 @@
+python z3_long_orig.py
+python z3_long_ce.py
+python z3_wallace_orig.py
+python z3_wallace_ce.py
+
+python cvc4_long_orig.py 2> cvc4_long_orig.st
+python cvc4_long_gen.py 2> cvc4_long_gen.st
+python cvc4_wallace_orig.py 2> cvc4_wallace_orig.st
+python cvc4_wallace_gen.py 2> cvc4_wallace_gen.st
+
+python bool_long_orig.py > bool_long_orig.st
+python bool_long_gen.py > bool_long_gen.st
+python bool_wallace_orig.py > bool_wallace_orig.st
+python bool_wallace_gen.py > bool_wallace_gen.st
