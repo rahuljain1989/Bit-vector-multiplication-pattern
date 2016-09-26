@@ -1,8 +1,39 @@
+diff --git a/src/ast/ast.cpp b/src/ast/ast.cpp
+index 0365a26..7c44ea6 100644
+--- a/src/ast/ast.cpp
++++ b/src/ast/ast.cpp
+@@ -1406,8 +1406,8 @@ ast_manager::~ast_manager() {
+             dealloc(*it);
+     }
+     DEBUG_CODE({
+-        if (!m_ast_table.empty())
+-            std::cout << "ast_manager LEAKED: " << m_ast_table.size() << std::endl;
++        //if (!m_ast_table.empty())
++            //std::cout << "ast_manager LEAKED: " << m_ast_table.size() << std::endl;
+     });
+ #if 1
+     DEBUG_CODE({
+@@ -1415,12 +1415,12 @@ ast_manager::~ast_manager() {
+         ast_table::iterator end_a = m_ast_table.end();
+         for (; it_a != end_a; ++it_a) {
+             ast* a = (*it_a);
+-            std::cout << "Leaked: ";
++            //std::cout << "Leaked: ";
+             if (is_sort(a)) {
+-                std::cout << to_sort(a)->get_name() << "\n";
++                //std::cout << to_sort(a)->get_name() << "\n";
+             }
+             else {
+-                std::cout << mk_ll_pp(a, *this, false);
++                //std::cout << mk_ll_pp(a, *this, false);
+             }
+         }
+     });
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..777efb8 100644
+index def05f0..7847645 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,10 +1634,1613 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,10 +1634,1626 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -166,7 +197,7 @@ index def05f0..777efb8 100644
 +    unsigned concat_arg_count =
 +        to_app(cur_add_arg)->get_num_args(); // Number of concatenations
 +
-+    int pos_count = 0;
++    unsigned pos_count = 0;
 +    // Collect all partial products in appropriate container
 +    for (unsigned j = 0; j < concat_arg_count; j++) {
 +      expr *concat_arg = to_app(cur_add_arg)->get_arg(j);
@@ -319,7 +350,7 @@ index def05f0..777efb8 100644
 +
 +      unsigned const no_of_args = no_of_containers/2;
 +      unsigned m1_trailing_zero, m2_trailing_zero;
-+      int flag;
++      unsigned flag;
 +      for (unsigned i = 0; i <= no_of_args; i++)
 +      {
 +          flag = 0;
@@ -427,8 +458,8 @@ index def05f0..777efb8 100644
 +    }
 +
 +    vector<expr *> current_container(container[current_container_index]);
-+    unsigned int offset = current_container_index - first_non_empty_container_index;
-+    unsigned int sz = current_container.size();
++    unsigned offset = current_container_index - first_non_empty_container_index;
++    unsigned sz = current_container.size();
 +
 +    // Remove known partial products from current container
 +    for (unsigned i = 1; i <= offset - 1; i++)
@@ -1464,7 +1495,7 @@ index def05f0..777efb8 100644
 +        {
 +            expr *a = 0;
 +            expr *b = 0;
-+            expr *c = 0;
++            //expr *c = 0;
 +
 +            expr *e = work_container[i][0];
 +
@@ -1481,6 +1512,7 @@ index def05f0..777efb8 100644
 +                work_container[i].push_back(b);
 +            }
 +
++            /*
 +            else if (check_ha_carry(e, a, b))
 +            {
 +                //bool check = true;
@@ -1495,6 +1527,7 @@ index def05f0..777efb8 100644
 +            {
 +                //bool check = false;
 +            }
++            */
 +
 +            work_container[i].erase(work_container[i].begin());
 +        }
@@ -1591,9 +1624,20 @@ index def05f0..777efb8 100644
 +    expr* concat2 = m_util.mk_concat(m2.size(),r);
 +
 +    expr* mul_args[2] = {concat1,concat2};
-+    result = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
++    expr *e1 = m().mk_app(get_fid(), OP_BADD, num_args, args);
++    expr *e2 = m().mk_app(get_fid(), OP_BMUL, 2, mul_args);
++    expr *e3 = m().mk_eq(e1, e2);
++    m().inc_ref(e3);
++    returned_axiom -> push_back(e3);
 +
-+    return BR_REWRITE1;
++    result = m().mk_eq(e1, e2);
++    tout << "\n; Adding new assert\n";
++    tout << "(assert";
++    tout << result;
++    tout << ")";
++    tout << "\n\n";
++
++    return BR_FAILED;
 +
 +}
 +
@@ -1616,7 +1660,7 @@ index def05f0..777efb8 100644
  #if 0
      expr * x;
      expr * y;
-@@ -1682,6 +3285,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +3298,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
