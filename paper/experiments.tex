@@ -55,7 +55,7 @@ For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as 
 
 \paragraph{\bf Results}
 %
-We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 present the results of the experiments. We chose timeout to be 600 seconds.
+We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 present the results of the experiments. We chose timeout to be 3600 seconds.
 %
 \input{tbl-long-time}
 
@@ -69,6 +69,8 @@ $\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, le
 
 
 The last 7 rows correspond to the Wallace tree multiplier experiments. Since, the multiplier involves a series of half and full adders, the size of the input formula increases rapidly as the bit vector size increases. Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautology are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the inference, leading to larger run times. This is because of the synctactic structure of the learned tautology from our implementation inside $\zthree$. The input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Therefore, the added tautology has no `ands'. The difference in the synctactic structure between the input formula and the added tautology makes it difficult for $\boolector$ and $\cvcfour$ to make the above inference. 
+
+In table 2, we present the number of conflicts and decisions of the experiments. The number of conflicts and decisions on running $\ourtool$ with the three solvers, are considerably less than their $\textsc{SMTSolver}$ counterparts in most of the cases. Particularly, $\ourtool$ with $\cvcfour$ has zero conflicts and decisions for all the long multiplication experiments. $\ourtool$ with $\zthree$ has zero conflicts and decisions for all the Wallace tree multiplier experiments.
 
 \input{tbl-long-cd}
 %
