@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\caption{Long multiplication experiments. Conflicts and decisions.}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+                      & \multicolumn{6}{c|}{\textsc{SMTSolver}}                                                            & \multicolumn{6}{c|}{$\ourtool$}                                                                      \\ \hline
+Benchmark             & \multicolumn{2}{c|}{$\zthree$} & \multicolumn{2}{c|}{$\boolector$} & \multicolumn{2}{c|}{$\cvcfour$} & \multicolumn{2}{c|}{$\zthree$} & \multicolumn{2}{c|}{$\boolector$} & \multicolumn{2}{c|}{$\cvcfour$} \\ \hline
+                      & Conflicts      & Decisions     & Conflicts       & Decisions       & Conflicts      & Decisions      & Conflicts      & Decisions     & Conflicts       & Decisions       & Conflicts      & Decisions      \\ \hline
+ex1                   & 7444           & 9065          & 7320            & 9892            & 8396           & 10652          & 474            & 890           & 7090            & 9558            & 0              & 0              \\ \hline
+base                  & 171910         & 203432        & 170161          & 227577          & 127057         & 147950         & 724            & 1433          & 148102          & 194369          & 0              & 0              \\ \hline
+ex2\_scaledup         & t/o ---        & t/o ---       & 3349696         & 4912946         & 1947242        & 2255638        & 5076           & 8981          & 2714038         & 4264345         & 0              & 0              \\ \hline
+mot\_ex1\_scaledup\_2 & t/o ---        & t/o ---       & t/o 4412624     & t/o 6137811     & t/o 1746651    & t/o 1993209    & 280936         & 409480        & 30264           & 57778           & 0              & 0              \\ \hline
+ex2                   & 2067           & 2599          & 1789            & 2612            & 2360           & 3374           & 919            & 1420          & 1747            & 2526            & 0              & 0              \\ \hline
+mot\_base\_scaledup   & t/o ---        & t/o ---       & t/o 6009588     & t/o 10133037    & t/o 2240716    & t/o 2951771    & 12524          & 30380         & 2400999         & 5518896         & 0              & 0              \\ \hline
+ex3\_scaledup         & t/o ---        & t/o ---       & 3792473         & 5869090         & t/o 2868121    & t/o 3586311    & 4814           & 9012          & 805318          & 1362330         & 0              & 0              \\ \hline
+ex5\_scaledup\_2      & 142861         & 165209        & 130092          & 165374          & 110914         & 130722         & 115803         & 138645        & 67426           & 114180          & 0              & 0              \\ \hline
+ex5\_scaledup         & 647            & 801           & 612             & 715             & 463            & 588            & 630            & 918           & 405             & 519             & 0              & 0              \\ \hline
+sv\_assy              & t/o ---        & t/o ---       & t/o 5310766     & t/o 9843636     & t/o 1817613    & t/o 2533516    & 0              & 0             & t/o 4746831     & t/o 9396796     & 0              & 0              \\ \hline
+ex1\_scaledup         & t/o ---        & t/o ---       & t/o 5645713     & t/o 7728176     & t/o 2104104    & t/o 2390636    & 2564           & 5803          & t/o 5067926     & t/o 6798534     & 0              & 0              \\ \hline
+mult\_3operands       & t/o ---        & t/o ---       & t/o 6782457     & t/o 16078792    & t/o 1378502    & t/o 2446893    & t/o ---        & t/o ---       & t/o 5430491     & t/o 15757282    & t/o 943459     & t/o 1749318    \\ \hline
+ex3                   & 4109           & 5402          & 1682            & 3166            & 3374           & 4754           & 905            & 1321          & 3882            & 7305            & 0              & 0              \\ \hline
+mot\_ex2\_scaledup\_2 & t/o ---        & t/o ---       & 4515365         & 6312242         & t/o 1765847    & t/o 1956570    & 358075         & 496151        & 30264           & 57778           & 0              & 0              \\ \hline
+\end{tabular}
+\end{table}
