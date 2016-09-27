@@ -1,24 +1,31 @@
 \begin{table}[t]
 \centering
-\caption{Long multiplication experiments. Times are in seconds.}
+\caption{Multiplication experiments. Times are in seconds.}
 \label{my-label}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
                       & \multicolumn{4}{c|}{\textsc{SMTSolver}}                    & \multicolumn{4}{c|}{$\ourtool$}                              \\ \hline
 Benchmark             & $\zthree$ & $\boolector$ & $\cvcfour$ & \textsc{Portfolio} & $\zthree$ & $\boolector$ & $\cvcfour$ & \textsc{Portfolio} \\ \hline
+base                  & 184.3    & 42.2         & 16.54      & 16.54                & 0.53      & 43.5         & 0.01       & 0.01                 \\ \hline
 ex1                   & 2.99      & 0.7          & 0.36       & 0.36                 & 0.33      & 0.8          & 0.01       & 0.01                 \\ \hline
-base                  & 184.25    & 42.2         & 16.54      & 16.54                & 0.53      & 43.5         & 0.01       & 0.01                 \\ \hline
-ex2\_scaledup         & t/o       & 1718.1       & 2826.31    & 1718.1               & 3.15      & 1519.4       & 0.01       & 0.01                 \\ \hline
-mot\_ex1\_scaledup\_2 & t/o       & t/o          & t/o        & t/o                  & 1581.36   & 13.8         & 0.01       & 0.01                 \\ \hline
+ex1\_sc         & t/o       & t/o          & t/o        & t/o                  & 1.75      & t/o          & 0.01       & 0.01                 \\ \hline
 ex2                   & 0.78      & 0.2          & 0.08       & 0.08                 & 0.44      & 0.3          & 0.01       & 0.01                 \\ \hline
-mot\_base\_scaledup   & t/o       & t/o          & t/o        & t/o                  & 13.03     & 1005.0       & 0.01       & 0.01                 \\ \hline
-ex3\_scaledup         & t/o       & 1068.8       & t/o        & 1068.8               & 3.45      & 313.2        & 0.01       & 0.01                 \\ \hline
-ex5\_scaledup\_2      & 287.31    & 62.8         & 42.36      & 42.36                & 303.59    & 12.8         & 0.01       & 0.01                 \\ \hline
-ex5\_scaledup         & 0.46      & 0.2          & 0.03       & 0.03                 & 0.82      & 0.2          & 0.01       & 0.01                 \\ \hline
-sv\_assy              & t/o       & t/o          & t/o        & t/o                  & 0.07      & t/o          & 0.01       & 0.01                 \\ \hline
-ex1\_scaledup         & t/o       & t/o          & t/o        & t/o                  & 1.75      & t/o          & 0.01       & 0.01                 \\ \hline
-mult\_3operands       & t/o       & t/o          & t/o        & t/o                  & t/o       & t/o          & t/o        & t/o                  \\ \hline
+ex2\_sc         & t/o       & 1718       & 2826    & 1718               & 3.15      & 1519       & 0.01       & 0.01                 \\ \hline
 ex3                   & 1.38      & 0.3          & 0.08       & 0.08                 & 0.46      & 0.7          & 0.01       & 0.01                 \\ \hline
-mot\_ex2\_scaledup\_2 & t/o       & t/o          & t/o        & t/o                  & 2231.14   & 13.7         & 0.01       & 0.01                 \\ \hline
+ex3\_sc         & t/o       & 1068       & t/o        & 1068               & 3.45      & 313.2        & 0.01       & 0.01                 \\ \hline
+ex4         & 0.46      & 0.2          & 0.03       & 0.03                 & 0.82      & 0.2          & 0.01       & 0.01                 \\ \hline
+ex4\_sc     & 287.3    & 62.8         & 42.36      & 42.36                & 303.6    & 12.8         & 0.01       & 0.01                 \\ \hline
+sv\_assy              & t/o       & t/o          & t/o        & t/o                  & 0.07      & t/o          & 0.01       & 0.01                 \\ \hline
+mot\_base   & t/o       & t/o          & t/o        & t/o                  & 13.03     & 1005       & 0.01       & 0.01                 \\ \hline
+mot\_ex1 & t/o       & t/o          & t/o        & t/o                  & 1581   & 13.8         & 0.01       & 0.01                 \\ \hline
+mot\_ex2 & t/o       & t/o          & t/o        & t/o                  & 2231   & 13.7         & 0.01       & 0.01                 \\ \hline \hline
+wal\_4bit  & 0.09      & 0.05         & 0.02       & 0.02                 & 0.09      & 0.1          & 0.04       & 0.09                 \\ \hline
+wal\_6bit  & 2.86      & 0.6          & 0.85       & 0.6                  & 0.28      & 0.8          & 14.36      & 0.28                 \\ \hline
+wal\_8bit  & 209.8    & 54.6         & 225.1     & 54.6                 & 0.59      & 30.0         & 3471    & 0.59                 \\ \hline
+wal\_10bit & t/o       & 1523       & t/o        & 1523               & 1.03      & 98.6         & t/o        & 1.03                 \\ \hline
+wal\_12bit & t/o       & t/o          & t/o        & t/o                  & 1.55      & 182.3        & t/o        & 1.55                 \\ \hline
+wal\_14bit & t/o       & t/o          & t/o        & t/o                  & 2.27      & 228.5        & t/o        & 2.27                 \\ \hline
+wal\_16bit & t/o       & t/o          & t/o        & t/o                  & 2.95      & 481.7        & t/o        & 2.95                 \\ \hline
+
 \end{tabular}
 \end{table} 

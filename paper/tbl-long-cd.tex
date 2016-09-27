@@ -1,33 +1,31 @@
 \begin{sidewaystable}[t]
 \centering
-\caption{Long multiplication experiments. Conflicts and decisions.}
+\caption{Conflicts and decisions in the experiments}
 \label{my-label}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
                       & \multicolumn{6}{c|}{\textsc{SMTSolver}}                                                            & \multicolumn{6}{c|}{$\ourtool$}                                                                      \\ \hline
 Benchmark             & \multicolumn{2}{c|}{$\zthree$} & \multicolumn{2}{c|}{$\boolector$} & \multicolumn{2}{c|}{$\cvcfour$} & \multicolumn{2}{c|}{$\zthree$} & \multicolumn{2}{c|}{$\boolector$} & \multicolumn{2}{c|}{$\cvcfour$} \\ \hline
                       & Conflicts      & Decisions     & Conflicts       & Decisions       & Conflicts      & Decisions      & Conflicts      & Decisions     & Conflicts       & Decisions       & Conflicts      & Decisions      \\ \hline
-ex1                   & 7444           & 9065          & 7320            & 9892            & 8396           & 10652          & 474            & 890           & 7090            & 9558            & 0              & 0              \\ \hline
-base                  & 171910         & 203432        & 170161          & 227577          & 127057         & 147950         & 724            & 1433          & 148102          & 194369          & 0              & 0              \\ \hline
-ex2\_scaledup         & t/o ---        & t/o ---       & 3349696         & 4912946         & 1947242        & 2255638        & 5076           & 8981          & 2714038         & 4264345         & 0              & 0              \\ \hline
-mot\_ex1\_scaledup\_2 & t/o ---        & t/o ---       & t/o 4412624     & t/o 6137811     & t/o 1746651    & t/o 1993209    & 280936         & 409480        & 30264           & 57778           & 0              & 0              \\ \hline
+base                  & 172k         & 203k        & 170k          & 228k          & 127k         & 148k         & 724            & 1433          & 148k          & 194k          & 0              & 0              \\ \hline
+ex1                   & 7444           & 9065          & 7320            & 9892            & 8396           & 10k          & 474            & 890           & 7090            & 9558            & 0              & 0              \\ \hline
+ex1\_sc         & t/o ---        & t/o ---       & t/o 5.6M     & t/o 7.7M     & t/o 2.1M    & t/o 2.3M    & 2564           & 5803          & t/o 5M     & t/o 6.8M     & 0              & 0              \\ \hline
 ex2                   & 2067           & 2599          & 1789            & 2612            & 2360           & 3374           & 919            & 1420          & 1747            & 2526            & 0              & 0              \\ \hline
-mot\_base\_scaledup   & t/o ---        & t/o ---       & t/o 6009588     & t/o 10133037    & t/o 2240716    & t/o 2951771    & 12524          & 30380         & 2400999         & 5518896         & 0              & 0              \\ \hline
-ex3\_scaledup         & t/o ---        & t/o ---       & 3792473         & 5869090         & t/o 2868121    & t/o 3586311    & 4814           & 9012          & 805318          & 1362330         & 0              & 0              \\ \hline
-ex5\_scaledup\_2      & 142861         & 165209        & 130092          & 165374          & 110914         & 130722         & 115803         & 138645        & 67426           & 114180          & 0              & 0              \\ \hline
-ex5\_scaledup         & 647            & 801           & 612             & 715             & 463            & 588            & 630            & 918           & 405             & 519             & 0              & 0              \\ \hline
-sv\_assy              & t/o ---        & t/o ---       & t/o 5310766     & t/o 9843636     & t/o 1817613    & t/o 2533516    & 0              & 0             & t/o 4746831     & t/o 9396796     & 0              & 0              \\ \hline
-ex1\_scaledup         & t/o ---        & t/o ---       & t/o 5645713     & t/o 7728176     & t/o 2104104    & t/o 2390636    & 2564           & 5803          & t/o 5067926     & t/o 6798534     & 0              & 0              \\ \hline
-mult\_3operands       & t/o ---        & t/o ---       & t/o 6782457     & t/o 16078792    & t/o 1378502    & t/o 2446893    & t/o ---        & t/o ---       & t/o 5430491     & t/o 15757282    & t/o 943459     & t/o 1749318    \\ \hline
+ex2\_sc         & t/o ---        & t/o ---       & 3.3M         & 4.9M         & 1.9M        & 2.3M        & 5076           & 8981          & 2.7M         & 4.3M         & 0              & 0              \\ \hline
 ex3                   & 4109           & 5402          & 1682            & 3166            & 3374           & 4754           & 905            & 1321          & 3882            & 7305            & 0              & 0              \\ \hline
-mot\_ex2\_scaledup\_2 & t/o ---        & t/o ---       & 4515365         & 6312242         & t/o 1765847    & t/o 1956570    & 358075         & 496151        & 30264           & 57778           & 0              & 0              \\ \hline
-wallace\_8bit  & 180162         & 209733        & 177636          & 249519          & 1227013        & 1140268        & 0              & 0             & 94502           & 174453          & 5970135        & 3883496        \\ \hline
-wallace\_10bit & t/o ---        & t/o ---       & 2723453         & 3756647         & t/o 5420337    & t/o 2207217    & 0              & 0             & 249700          & 519611          & t/o 2881323    & t/o 1261731    \\ \hline
-wallace\_6bit  & 8077           & 9831          & 6887            & 9544            & 11755          & 12192          & 0              & 0             & 8523            & 12986           & 68900          & 54773          \\ \hline
-wallace\_12bit & t/o ---        & t/o ---       & t/o 5253719     & t/o 6062943     & t/o 4106473    & t/o 1929190    & 0              & 0             & 416152          & 855007          & t/o 2300319    & t/o 916297     \\ \hline
-wallace\_16bit & t/o ---        & t/o ---       & t/o 4889101     & t/o 6602641     & t/o 1963724    & t/o 512303     & 0              & 0             & 941073          & 2065841         & t/o 672853     & t/o 196560     \\ \hline
-wallace\_4bit  & 363            & 435           & 283             & 343             & 396            & 479            & 0              & 0             & 300             & 378             & 442            & 486            \\ \hline
-wallace\_14bit & t/o ---        & t/o ---       & t/o 4953214     & t/o 6591292     & t/o 3073232    & t/o 907518     & 0              & 0             & 500794          & 999930          & t/o 1272949    & t/o 412051     \\ \hline
-
+ex3\_sc        & t/o ---        & t/o ---       & 3.8M         & 5.9M         & t/o 2.9M    & t/o 3.6M    & 4814           & 9012          & 805k          & 1.4M         & 0              & 0              \\ \hline
+ex4         & 647            & 801           & 612             & 715             & 463            & 588            & 630            & 918           & 405             & 519             & 0              & 0              \\ \hline
+ex4\_sc      & 143k         & 165k        & 130k          & 165k          & 110k         & 130k         & 115k         & 138k        & 67k           & 114k          & 0              & 0              \\ \hline
+sv\_assy              & t/o ---        & t/o ---       & t/o 5.3M     & t/o 9.8M     & t/o 1.8M    & t/o 2.5M    & 0              & 0             & t/o 4.7M     & t/o 9.4M     & 0              & 0              \\ \hline
+mot\_base   & t/o ---        & t/o ---       & t/o 6M     & t/o 10M    & t/o 2.2M    & t/o 2.9M    & 12k          & 30k         & 2.4M         & 5.5M         & 0              & 0              \\ \hline
+mot\_ex1 & t/o ---        & t/o ---       & t/o 4.4M     & t/o 6.1M     & t/o 1.7M    & t/o 2M    & 280k         & 409k        & 30k           & 57k           & 0              & 0              \\ \hline
+mot\_ex2 & t/o ---        & t/o ---       & 4.5M         & 6.3M         & t/o 1.7M    & t/o 1.9M    & 358k         & 496k        & 30k           & 57k           & 0              & 0              \\ \hline \hline
+wal\_4bit  & 363            & 435           & 283             & 343             & 396            & 479            & 0              & 0             & 300             & 378             & 442            & 486            \\ \hline
+wal\_6bit  & 8077           & 9831          & 6887            & 9544            & 11k          & 12k          & 0              & 0             & 8523            & 12k           & 68k          & 54k          \\ \hline
+wal\_8bit  & 180k         & 209k        & 177k          & 249k          & 1.2M        & 1.1M        & 0              & 0             & 94k           & 174k          & 5.9M        & 3.8M        \\ \hline
+wal\_10bit & t/o ---        & t/o ---       & 2.7M         & 3.7M         & t/o 5.4M    & t/o 2.2M    & 0              & 0             & 249k          & 519k          & t/o 2.8M    & t/o 1.2M    \\ \hline
+wal\_12bit & t/o ---        & t/o ---       & t/o 5.2M     & t/o 6M     & t/o 4.1M    & t/o 1.9M    & 0              & 0             & 416k          & 855k          & t/o 2.3M    & t/o 916k     \\ \hline
+wal\_14bit & t/o ---        & t/o ---       & t/o 4.9M     & t/o 6.5M     & t/o 3M    & t/o 907k     & 0              & 0             & 500k          & 999k          & t/o 1.2M    & t/o 412k     \\ \hline
+wal\_16bit & t/o ---        & t/o ---       & t/o 4.8M     & t/o 6.6M     & t/o 1.9M    & t/o 512k     & 0              & 0             & 941k          & 2M         & t/o 672k     & t/o 196k     \\ \hline
 \end{tabular}
 \end{sidewaystable}

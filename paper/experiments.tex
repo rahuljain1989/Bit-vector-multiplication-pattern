@@ -32,7 +32,7 @@ run the solvers in a separate process on the newly generated formula. We use the
 
 \paragraph{\bf Benchmarks}
 %
-Our experiments include 14 benchmarks.
+Our experiments include 20 benchmarks.
 %
 Initially, we received an industrial hardware verification benchmark in $\sysver$ involving long multiplication that was not solved by any of the solvers in 24 hours.
 %
@@ -59,24 +59,20 @@ We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$. Tables 1-2 pres
 %
 \input{tbl-long-time}
 
-In table 1 we present the results of the long multiplication experiments. The columns under $\textsc{SMTSolver}$ are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. 
+In table 1 we present the results of the long multiplication and Wallace tree multiplier experiments. The first 13 rows correspond to long multiplication experiments. The columns under $\textsc{SMTSolver}$ are the run times of the solvers to prove the satisfiability of the input benchmark. The solvers timout on most of the benchmarks. 
 
 The last three columns are the run times of the three versions of $\ourtool$ to prove the satisfiability of the benchmarks.
 % columns oursolver - time - using backend solvers -Z3, CVC4, Boolector respectively col. numbers  
 %
 $\ourtool$ with $\cvcfour$ makes best use of the added tautologies. $\cvcfour$ is quickly able to infer that the input formula and the added tautologies are negations of each other justifying the timings captured. 
-$\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, leading to more running time. $\boolector$ and $\zthree$ resort to bit blasting having not been able to detect the structural similarity. However, the added tautologies help $\boolector$ and $\zthree$ to reduce the search space, after the sat solver is invoked on the bit blasted formula.
+$\ourtool$ with $\boolector$ and $\zthree$ does not make the above inference, leading to more running time. $\boolector$ and $\zthree$ bit blast the benchmarks having not been able to detect the structural similarity. However, the added tautologies help $\boolector$ and $\zthree$ to reduce the search space, after the sat solver is invoked on the bit blasted formula.
 
 
-\input{tbl-wallace-time}
-
-In table 2 we present the results of the Wallace tree multiplier experiments. Since, the multiplier involves a series of half and full adders, the size of the input formula increases rapidly as the bit vector size increases. Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautology are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the inference, leading to larger run times. This is because of the synctactic structure of the learned tautology from our implementation inside $\zthree$. The input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Therefore, the added tautology has no `ands'. The difference in the synctactic structure between the input formula and the added tautology makes it difficult for $\boolector$ and $\cvcfour$ to make the above inference. 
+The last 7 rows correspond to the Wallace tree multiplier experiments. Since, the multiplier involves a series of half and full adders, the size of the input formula increases rapidly as the bit vector size increases. Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is quickly able to infer that the input formula and the added tautology are negations of each other. However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the inference, leading to larger run times. This is because of the synctactic structure of the learned tautology from our implementation inside $\zthree$. The input formula has `and' and `not' gates as its building blocks, whereas $\zthree$ transforms all `ands' to `ors'. Therefore, the added tautology has no `ands'. The difference in the synctactic structure between the input formula and the added tautology makes it difficult for $\boolector$ and $\cvcfour$ to make the above inference. 
 
 \input{tbl-long-cd}
-%\input{tbl-wallace-cd}
-\paragraph{\bf Observations}
 %
-One benchmark which shows no improvements within the set time limits is mult\_3\_operands. While all the other benchmarks above check for equality of multiplication of two bit vectors, mult\_3\_operands is an attempt to see if the approach works for multiplication of 3 operands which is carried out as two long multiplications. Our observations indicate that none of the solvers are able to infer the structural similarity based on the two tautologies added for the two long multiplications. We carried out similar experiments involving multiple operands, expressions of the form $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$. None of the solvers were able to make use of the added tautologies(one for each long multiplication). The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure use one assertion to infer the satisfiability of another does not seem to be well developed. 
+
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------

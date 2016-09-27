@@ -19,6 +19,10 @@ We are also planning to request \zthree~team to adopt our modification in their
 standard distribution.
 
 
+We carried out many other experiments involving different combinations of multiplications. One such experiment was multiplication of three bit vectors. Our observations indicate that none of the solvers are able to infer the structural similarity based on the two tautologies added for the two long multiplications. We carried out similar experiments involving multiple operands, expressions of the form $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$. None of the solvers were able to make use of the added tautologies(one for each long multiplication). The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure of using one assertion to infer the satisfiability of another does not seem to be well developed. We aim to bridge this gap as part of our future work.
+
+
+
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
 %%% Local Variables: 
