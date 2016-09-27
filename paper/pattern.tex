@@ -52,12 +52,16 @@ multiplication.
 \subsection{Partial products to operands}
 \input{alg-get-operand}
 
-\ashu{Needs some discussions about the nature of the algorithm.}
 In Algorithm~\ref{alg:operand}, we present a function
 $\textsc{getMultOperands}$ that takes a vector of multiset of partial
 products $\Lambda$ and block width $w$, and returns a set of matched
 multiplications.
 %
+The algorithm proceeds by choosing a pair of operands with
+insufficient information and backtracks if the guess is found to be
+wrong.
+
+
 At line 1, we compute $h$ and $l$ that establishes the range of search for
 the operands.
 %
@@ -246,7 +250,8 @@ or Wallace tree multiplication.
 For each discovered matching $x*y$, we add a bit-vector tautology $[x*y = t]$ 
 to the solvers, which is obtained after
 appropriately zero-padding $x$, $y$, and $t$.
- 
+%
+\ashu{disjunctive assertion of the tautologies} 
 
 % \ashu{Proof generation: Are we doing this??}
 

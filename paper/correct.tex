@@ -65,14 +65,18 @@ $w$, respectively.
   If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is valid.
 \end{thm}
 \begin{proof}
-  All we need to show that $t$ is intending to sum the partial products
-  stored in $\Lambda$. Rest of the proof follows the previous theorem.
+  %
+  All we need to show that $t$ summing the partial products stored in
+  $\Lambda$.
+  %
+  The rest of the proof follows the previous theorem.
 
   \ashu{needs tightening.}  
   Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
   the carry bits produced by the sum for $t_{i-1}$.
   %
-  The algorithm identifies the terms that are added to obtain $t_i$.
+  The algorithm identifies the terms that are added to obtain $t_i$
+  and collects the intermediate results of the sum in $\Delta_{i}$.
   %
   We only need to prove that the terms that are not identified as
   partial products are carry bits of the sum for $t_{i-1}$.
