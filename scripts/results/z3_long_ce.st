@@ -1,0 +1,341 @@
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex1.smt2
+unsat
+(:binary-propagations        16110
+ :conflicts                  474
+ :decisions                  890
+ :del-clause                 1455
+ :dyn-subsumption-resolution 194
+ :elim-bool-vars             261
+ :elim-clauses               12
+ :elim-literals              187
+ :max-memory                 0.67
+ :memory                     0.36
+ :minimized-lits             2177
+ :mk-binary-clause           862
+ :mk-bool-var                600
+ :mk-clause                  1428
+ :mk-ternary-clause          1763
+ :num-allocs                 391568
+ :probing-assigned           6
+ :propagations               6932
+ :restarts                   2
+ :rlimit-count               62569
+ :subsumed                   160
+ :subsumption-resolution     13
+ :ternary-propagations       19492
+ :time                       0.32
+ :total-time                 0.33)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/base.smt2
+unsat
+(:binary-propagations        28933
+ :conflicts                  724
+ :decisions                  1433
+ :del-clause                 2190
+ :dyn-subsumption-resolution 572
+ :elim-bool-vars             408
+ :elim-clauses               13
+ :elim-literals              200
+ :max-memory                 0.88
+ :memory                     0.37
+ :minimized-lits             5437
+ :mk-binary-clause           1357
+ :mk-bool-var                936
+ :mk-clause                  2210
+ :mk-ternary-clause          2742
+ :num-allocs                 1318807
+ :probing-assigned           4
+ :propagations               16094
+ :restarts                   5
+ :rlimit-count               114817
+ :subsumed                   253
+ :subsumption-resolution     2
+ :ternary-propagations       41920
+ :time                       0.52
+ :total-time                 0.53)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex2_scaledup.smt2
+unsat
+(:binary-propagations        187881
+ :conflicts                  5076
+ :decisions                  8981
+ :del-clause                 5392
+ :dyn-subsumption-resolution 5047
+ :elim-bool-vars             1005
+ :elim-clauses               143
+ :elim-literals              3410
+ :max-memory                 1.99
+ :memory                     0.34
+ :minimized-lits             58897
+ :mk-binary-clause           2863
+ :mk-bool-var                2096
+ :mk-clause                  8776
+ :mk-ternary-clause          6491
+ :num-allocs                 6886904
+ :propagations               270773
+ :restarts                   26
+ :rlimit-count               838047
+ :subsumed                   668
+ :ternary-propagations       353023
+ :time                       3.15
+ :total-time                 3.16)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/mot_ex1_scaledup_2.smt2
+unsat
+(:binary-propagations        155871917
+ :conflicts                  280936
+ :decisions                  409480
+ :del-clause                 316718
+ :dyn-subsumption-resolution 1570779
+ :elim-blocked-clauses       166
+ :elim-bool-vars             9922
+ :elim-clauses               7674
+ :elim-literals              50028
+ :gc-clause                  234402
+ :max-memory                 41.19
+ :memory                     0.64
+ :minimized-lits             55344271
+ :mk-binary-clause           33910
+ :mk-bool-var                20459
+ :mk-clause                  319503
+ :mk-ternary-clause          69528
+ :num-allocs                 7376920780.00
+ :probing-assigned           719
+ :propagations               276924903
+ :restarts                   664
+ :rlimit-count               582986970
+ :subsumed                   9909
+ :subsumption-resolution     13696
+ :ternary-propagations       164713609
+ :time                       1581.36
+ :total-time                 1581.36)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex2.smt2
+unsat
+(:binary-propagations        22975
+ :conflicts                  919
+ :decisions                  1420
+ :del-clause                 1592
+ :dyn-subsumption-resolution 357
+ :elim-bool-vars             255
+ :elim-clauses               174
+ :elim-literals              557
+ :max-memory                 0.66
+ :memory                     0.36
+ :minimized-lits             6717
+ :mk-binary-clause           828
+ :mk-bool-var                564
+ :mk-clause                  1794
+ :mk-ternary-clause          1734
+ :num-allocs                 382288
+ :probing-assigned           7
+ :propagations               19896
+ :restarts                   6
+ :rlimit-count               98360
+ :subsumed                   147
+ :subsumption-resolution     7
+ :ternary-propagations       39825
+ :time                       0.44
+ :total-time                 0.44)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/mot_base_scaledup.smt2
+unsat
+(:binary-propagations        955788
+ :conflicts                  12524
+ :decisions                  30380
+ :del-clause                 21786
+ :dyn-subsumption-resolution 18145
+ :elim-bool-vars             4052
+ :elim-clauses               515
+ :elim-literals              9839
+ :max-memory                 6.55
+ :memory                     0.42
+ :minimized-lits             288815
+ :mk-binary-clause           11121
+ :mk-bool-var                8140
+ :mk-clause                  28060
+ :mk-ternary-clause          24995
+ :num-allocs                 75397420
+ :propagations               1281502
+ :restarts                   52
+ :rlimit-count               3541650
+ :subsumed                   2633
+ :subsumption-resolution     14
+ :ternary-propagations       1161129
+ :time                       13.03
+ :total-time                 13.03)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex3_scaledup.smt2
+unsat
+(:binary-propagations        233700
+ :conflicts                  4814
+ :decisions                  9012
+ :del-clause                 7997
+ :dyn-subsumption-resolution 5217
+ :elim-bool-vars             1290
+ :elim-clauses               639
+ :elim-literals              7096
+ :max-memory                 2.48
+ :memory                     0.42
+ :minimized-lits             60792
+ :mk-binary-clause           4183
+ :mk-bool-var                2838
+ :mk-clause                  10061
+ :mk-ternary-clause          8691
+ :num-allocs                 10428393
+ :probing-assigned           12
+ :propagations               284225
+ :restarts                   24
+ :rlimit-count               879528
+ :subsumed                   854
+ :subsumption-resolution     9
+ :ternary-propagations       298147
+ :time                       3.45
+ :total-time                 3.46)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex5_scaledup_2.smt2
+unsat
+(:binary-propagations        18811815
+ :conflicts                  115803
+ :decisions                  138645
+ :del-clause                 129075
+ :dyn-subsumption-resolution 224419
+ :elim-blocked-clauses       50
+ :elim-bool-vars             2326
+ :elim-clauses               25217
+ :elim-literals              39504
+ :gc-clause                  66776
+ :max-memory                 15.94
+ :memory                     0.35
+ :minimized-lits             9896831
+ :mk-binary-clause           7785
+ :mk-bool-var                4705
+ :mk-clause                  124433
+ :mk-ternary-clause          15593
+ :num-allocs                 418170399
+ :probing-assigned           9
+ :propagations               38424401
+ :restarts                   312
+ :rlimit-count               86086976
+ :subsumed                   21587
+ :subsumption-resolution     11163
+ :ternary-propagations       32375106
+ :time                       303.59
+ :total-time                 303.59)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex5_scaledup.smt2
+unsat
+(:binary-propagations        59406
+ :conflicts                  630
+ :decisions                  918
+ :del-clause                 3463
+ :dyn-subsumption-resolution 186
+ :elim-bool-vars             504
+ :elim-clauses               684
+ :elim-literals              686
+ :max-memory                 1.03
+ :memory                     0.38
+ :minimized-lits             12651
+ :mk-binary-clause           1602
+ :mk-bool-var                1147
+ :mk-clause                  2622
+ :mk-ternary-clause          3485
+ :num-allocs                 1659977
+ :propagations               38467
+ :restarts                   4
+ :rlimit-count               201164
+ :subsumed                   266
+ :subsumption-resolution     8
+ :ternary-propagations       72367
+ :time                       0.81
+ :total-time                 0.82)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/sv_assy.smt2
+unsat
+(:max-memory   0.29
+ :memory       0.29
+ :num-allocs   7756
+ :rlimit-count 284
+ :time         0.06
+ :total-time   0.07)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex1_scaledup.smt2
+unsat
+(:binary-propagations        110377
+ :conflicts                  2564
+ :decisions                  5803
+ :del-clause                 5897
+ :dyn-subsumption-resolution 1845
+ :elim-bool-vars             1087
+ :elim-clauses               172
+ :elim-literals              1543
+ :max-memory                 1.77
+ :memory                     0.34
+ :minimized-lits             22407
+ :mk-binary-clause           3192
+ :mk-bool-var                2349
+ :mk-clause                  6797
+ :mk-ternary-clause          7032
+ :num-allocs                 6291504
+ :propagations               107397
+ :restarts                   14
+ :rlimit-count               421506
+ :subsumed                   712
+ :subsumption-resolution     5
+ :ternary-propagations       137189
+ :time                       1.75
+ :total-time                 1.75)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/mult_3operands.smt2
+timeout
+(:max-memory   166.45
+ :memory       72.40
+ :num-allocs   129356061034.00
+ :rlimit-count 979929845
+ :time         3596.63
+ :total-time   3596.63)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/ex3.smt2
+unsat
+(:binary-propagations        34829
+ :conflicts                  905
+ :decisions                  1321
+ :del-clause                 1595
+ :dyn-subsumption-resolution 544
+ :elim-bool-vars             255
+ :elim-clauses               160
+ :elim-literals              461
+ :max-memory                 0.68
+ :memory                     0.36
+ :minimized-lits             5415
+ :mk-binary-clause           984
+ :mk-bool-var                628
+ :mk-clause                  1812
+ :mk-ternary-clause          1793
+ :num-allocs                 403630
+ :probing-assigned           9
+ :propagations               19613
+ :restarts                   5
+ :rlimit-count               113425
+ :subsumed                   126
+ :subsumption-resolution     9
+ :ternary-propagations       43074
+ :time                       0.46
+ :total-time                 0.46)
+/home/intelproject/Desktop/Examples/Rahul_Jain_Examples/Bit-vector-multiplication-pattern/scripts/../benchmark_long/original_files/mot_ex2_scaledup_2.smt2
+unsat
+(:binary-propagations        217190026
+ :conflicts                  358075
+ :decisions                  496151
+ :del-clause                 395849
+ :dyn-subsumption-resolution 1870703
+ :elim-blocked-clauses       212
+ :elim-bool-vars             10053
+ :elim-clauses               5949
+ :elim-literals              75307
+ :gc-clause                  314001
+ :max-memory                 40.52
+ :memory                     0.64
+ :minimized-lits             89663116
+ :mk-binary-clause           34238
+ :mk-bool-var                20490
+ :mk-clause                  395699
+ :mk-ternary-clause          70282
+ :num-allocs                 9298022804.00
+ :probing-assigned           796
+ :propagations               388026338
+ :restarts                   856
+ :rlimit-count               814585355
+ :subsumed                   11975
+ :subsumption-resolution     10699
+ :ternary-propagations       226441899
+ :time                       2231.14
+ :total-time                 2231.14)
