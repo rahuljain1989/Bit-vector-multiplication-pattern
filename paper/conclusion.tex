@@ -10,7 +10,7 @@ We are currently extending our procedure to support Booth multiplier
 and other difficult arithmetic patterns.
 %
 We are also working to add proof generation support
-for the added valid formulas.
+for the added tautologies.
 %
 We could not include proof generation in this work, since basic infrastructure
 of proof generation is missing in $\zthree$~bit-vector rewriter module.
@@ -19,7 +19,7 @@ We are also planning to request \zthree~team to adopt our modification in their
 standard distribution.
 
 
-We plan to extend our work to problems involving different combinations of multiplications. For example, $(X*(Y*Z))*W$ involves three multiplications. We could chose to specify the implementation of the three multiplications to be either of Long, Wallace, Booth multiplication or an unspecified multiplication. To enable the pattern detection in arbitrary arithmetic formulas, we need to modify the word level reasoning in the solvers.  
+We plan to extend our work to problems involving different combinations of multiplications. For example, $(X*(Y*Z))*W$ involves three multiplications. We could chose to specify the implementation of the three multiplications to be either of Long, Wallace, Booth multiplication or an unspecified multiplication. To enable the pattern detection in arbitrary arithmetic formulas, we are working to modify the word level reasoning in the solvers.  
 %we could further extend our work to complicated word level formulas involving bit vector multiplication like $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$.
 
 %None of the solvers were able to make use of the added tautologies(one for each long multiplication). 
