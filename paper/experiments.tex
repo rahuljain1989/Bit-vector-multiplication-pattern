@@ -1,9 +1,9 @@
 %
-We have implemented our algorithms as a part of $\zthree$~\cite{z3} SMT solver\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}}.
+We have implemented our algorithms as a part of $\zthree$ SMT solver\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}}.
 %
  We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
 %
-We compare our tool with $\zthree$, $\boolector$\cite{boolector} and $\cvcfour$\cite{cvc4}.
+We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
 Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
@@ -40,7 +40,7 @@ The example inspired our current work and to evaluate it we generated several si
 %
 For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or set them to zero.
 %
-Our $\sysver$ benchmarks are fed to STEWord~\cite{Word-level-Symbolic-Trajectory-Evaluation}, a hardware verification tool.
+Our $\sysver$ benchmarks are fed to STEWord~\cite{wste}, a hardware verification tool.
 %
 STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula.
 %

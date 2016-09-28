@@ -69,10 +69,10 @@ passes followed by bit-blasting, i.e., translating input to
 a Boolean satisfiability problem(SAT problem).
 %
 The bit-blasted SAT problem is solved using conflict driven clause
-learning(CDCL) based procedures.
+learning(CDCL)\cite{cdcl1,cdcl2} based procedures.
 %
 Some of the leading SMT solvers are
-\zthree, \boolector, and \cvcfour.
+$\zthree$\cite{zthree}, $\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
 
 For our algorithm, we assume that a  $\qfbv$~SMT
 solver $\textsc{SMTSolver}$ 
@@ -174,7 +174,7 @@ $$
 \end{example}
 
 
-\subsubsection{Wallace tree multiplier}
+\subsubsection{Wallace tree multiplier\cite{wallace}}
 %
 Wallace tree decomposes the multiplication all the way down to single bits.
 %
