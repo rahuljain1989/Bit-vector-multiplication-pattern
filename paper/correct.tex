@@ -1,5 +1,5 @@
 We need to prove that each $[x*y = t]$ added in $\textsc{OurSolver}$
-is a valid formula.
+is a tautology.
 %
 First we will prove the correctness of $\textsc{getMultOperands}$.
 %
@@ -47,7 +47,7 @@ $w$, respectively.
 \end{proof}
 
 \begin{thm}
-  If $m*n\in$ \textsc{MatchLong}$(t)$, $[m*n = t]$ is valid.
+  If $m*n\in$ \textsc{MatchLong}$(t)$, $[m*n = t]$ is a tautology.
 \end{thm}
 \begin{proof}
   We collect partial products with appropriate offsets $o$ at line 5.
@@ -58,11 +58,11 @@ $w$, respectively.
   $\textsc{getMultOperands}(\Lambda,w)$ returns the
   matches that produces the sums.
   %
-  Therefore, $[m*n = t]$ is valid.
+  Therefore, $[m*n = t]$ is a tautology.
 \end{proof}
 
 \begin{thm}
-  If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is valid.
+  If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is a tautology.
 \end{thm}
 \begin{proof}
   %
