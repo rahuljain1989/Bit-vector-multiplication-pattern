@@ -88,7 +88,7 @@ In each iteration, it assigns values to $x_i$, $y_i$, and $backtrack_i$.
 %
 
 The algorithm may not have enough information at the $i$th iteration
-and the chosen value for $x_i$ and $y_i$ is be wrong.
+and the chosen value for $x_i$ and $y_i$ is wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
 it jumps to line 31.
@@ -112,15 +112,15 @@ At index $i$, the sum of the aligned partial products is the following.
 $$
 x_{h}*y_{i} + \underbrace{x_{h-1}*y_{i+1} + \dots + x_{i+1}*y_{h-1}}_{\text{operands seen at the earlier iterations}} + x_{i}*y_{h}
 $$
-We have already chosen the operands of the middle multiplications in
+We have already chosen the operands of the middle partial products in
 the previous iterations.
 %
-Only the multiplications at the extreme ends have $y_i$ and $x_i$ that are
+Only the partial products at the extreme ends have $y_i$ and $x_i$ that are
 not assigned yet.
 %
-In the loop at line 10, we remove the middle multiplications.
+In the loop at line 10, we remove the middle partial products.
 %
-If any of the needed multiplication is missing then we may have made a mistake
+If any of the needed partial product is missing then we may have made a mistake
 earlier and we jump for backtracking.
 %
 After the loop, we should be left with at most two partial products in $C$.
@@ -164,8 +164,8 @@ such that the total number of their trailing zero blocks is $l-1$.
 %
 We add the matched $x*y$ to the match store $M$.
 %
-And, the algorithm proceeds for backtracking to find if more matching
-exists.
+And, the algorithm proceeds for backtracking to find if more matchings
+exist.
 
 \subsection{Matching Wallace tree multiplication}
 \input{alg-match-wallace-tree}
