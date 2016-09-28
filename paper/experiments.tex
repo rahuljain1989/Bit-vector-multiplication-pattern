@@ -70,7 +70,7 @@ the long multiplication experiments.
 The columns under $\textsc{SMTSolver}$ are the run times of the
 solvers to prove the satisfiability of the input benchmark.
 %
-The solvers timout on most of the benchmarks.
+The solvers timeout on most of the benchmarks.
 %
 
 \input{tbl-long-time}
@@ -107,7 +107,7 @@ are negations of each other.
 However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the
 inference, leading to larger run times.
 %
-This is because of the synctactic structure of the learned tautology
+This is because of the syntactic structure of the learned tautology
 from our implementation inside $\zthree$.
 %
 The input formula has `and' and `not' gates as its building blocks,
@@ -115,7 +115,7 @@ whereas $\zthree$ transforms all `ands' to `ors'.
 %
 Therefore, the added tautology has no `ands'.
 %
-The difference in the synctactic structure between the input formula
+The difference in the syntactic structure between the input formula
 and the added tautology makes it difficult for $\boolector$ and
 $\cvcfour$ to make the above inference.
 %
