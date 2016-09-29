@@ -2,17 +2,18 @@
 In this section, we will present our method for solving
 formulas that contain implementations of multiplications.
 %
-Our method first attempts to match multiplications that
+Our method attempts to match multiplications that
 are decomposed using long or Wallace tree multiplication.
 %
 If we match some subterms of the input formula
-are indeed instances of the
+as instances of the
 multiplications, we add tautologies stating that the terms are 
 equal to the multiplications of the matched bit-vectors.
 %
 Our matching method may find multiple matches for a subterm.
 %
-We add a tautology for each match.
+We add a tautology for each match to the input and solve using
+an available solver.
 %
 Let us first present our method of matching long multiplication. 
 
@@ -26,7 +27,7 @@ The algorithm and the subsequent algorithms are written such that as soon
 as it becomes clear that no multiplication can be matched then
 they return empty set. 
 %
-At line 1, we match $t$ with a sum of concatenations and if the match fails
+At line 1, we match $t$ with a sum of concatenations, and if the match fails
 then clearly $t$ is not a long multiplication.
 %
 At line 2, we find a partial product among $s_{ij}$ and extract
@@ -36,16 +37,17 @@ The loop at line $4$ populates the vector of the set of partial products $\Lambd
 %
 $\Lambda_i$ denotes the partial products that are aligned at the $i$th block.
 %
-Each $s_{ij}$ must either be $0$ or a partial product of width $w$.
+Each $s_{ij}$ must either be $0$ or a partial product of the form mentioned in the
+condition at line 7.
 %
-Otherwise, $t$ is declared unmatched at line 8. 
+Otherwise, $t$ is declared unmatched at line 9. 
 %
-At line 5, we compute the alignment $o$ for $s_{ij}$.
+At line 5, we have computed the alignment $o$ for $s_{ij}$.
 %
-If $s_{ij}$ happens to be a partial product then it is inserted in
-$\Lambda_o$ at line 7.
+If $s_{ij}$ happens to be a partial product, it is inserted in
+$\Lambda_o$ at line 8.
 %
-At line 9, we call $\textsc{getMultOperands}$ to identify the operands
+At line 10, we call $\textsc{getMultOperands}$ to identify the operands
 of the multiplication from $\Lambda$ if $t$ is indeed a long
 multiplication.
 

@@ -5,12 +5,13 @@
    \Require $t$ : a term in $\qfbv$
    \Ensure $M$ : matched multiplications := $\emptyset$
    \If{ $t == (s_{1k_1} \concat ... \concat s_{11})+...+(s_{pk_p} \concat ... \concat s_{p1})$}
-   \State Let $w$ be such that for some $s_{ij} = (0^{w} \concat a) * (0^{w} \concat b)$ and  $len(a) == w$ %:=  minimum bit length of $s_{ij}$
+   \State Let $w$ be such that for some $s_{ij} = (0^{w} \concat a) * (0^{w} \concat b)$ and  $len(a) ==len(b) == w$ %:=  minimum bit length of $s_{ij}$
    \State $\Lambda := \lambda i. \emptyset$
    \For{ each $s_{ij}$ }
    \State $o := (\sum_{j' < j} len( s_{ij'}))/w$
    \IIf{ $s_{ij} == 0$ } {\bf continue;}
-   \If{ $s_{ij} == (0^{w} \concat a) * (0^{w} \concat b)$  and $len(a) == w$} $\Lambda_o.insert( a * b )$
+   \If{ $s_{ij} == (0^{w} \concat a) * (0^{w} \concat b)$  and $len(a) == len(b) == w $} 
+   \State $\Lambda_o.insert( a * b )$
    \Else~\Return{$\emptyset$}
    \EndIf
    \EndFor
