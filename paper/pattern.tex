@@ -48,7 +48,7 @@ If $s_{ij}$ happens to be a partial product, it is inserted in
 $\Lambda_o$ at line 8.
 %
 At line 10, we call $\textsc{getMultOperands}$ to identify the operands
-of the multiplication from $\Lambda$ if $t$ is indeed a long
+of the long multiplication from $\Lambda$ if $t$ is indeed a long
 multiplication.
 
 \subsection{Partial products to operands}
@@ -59,13 +59,13 @@ $\textsc{getMultOperands}$ that takes a vector of multiset of partial
 products $\Lambda$ and block width $w$, and returns a set of matched
 multiplications.
 %
-The algorithm proceeds by choosing a pair of operands with
+The algorithm proceeds by incrementally choosing a pair of operands with
 insufficient information and backtracks if the guess is found to be
 wrong.
 
 
-At line 1, we compute $h$ and $l$ that establishes the range of search for
-the operands.
+At line 1, we compute $h$ and $l$ that establishes the range of the
+search for the operands.
 %
 We maintain two candidate operands $x$ and $y$ of size $hw$.
 %
@@ -78,19 +78,19 @@ non-empty entry in $\Lambda$ must be a singleton set.
 If $\Lambda_h$ contains a single partial product $a*b$,
 we assign $x_h$ and $y_h$ the operands of $a*b$ arbitrarily.
 %
-Otherwise, we declare the match has failed by returning $\emptyset$.
-%
 We assign $\lfalse$ to $backtrack_h$, which states that
 no need of backtracking at index $h$.
 %
-The loop at line 8 iterates over index $i$ starting from $h$ and decreases
-$i$ in each iteration.
+If $\Lambda_h$ does not contain a single partial product,
+we declare the match has failed by returning $\emptyset$.
+%
+The loop at line 8 iterates over index $i$ from $h$ to $1$.
 %
 In each iteration, it assigns values to $x_i$, $y_i$, and $backtrack_i$. 
 %
 
 The algorithm may not have enough information at the $i$th iteration
-and the chosen value for $x_i$ and $y_i$ is wrong.
+and the chosen value for $x_i$ and $y_i$ may be wrong.
 %
 Whenever, the algorithm realizes that such a mistake has happened
 it jumps to line 31.
@@ -125,9 +125,10 @@ In the loop at line 10, we remove the middle partial products.
 If any of the needed partial product is missing then we may have made a mistake
 earlier and we jump for backtracking.
 %
-After the loop, we should be left with at most two partial products in $C$.
+After the loop, we should be left with at most two partial products in $C$
+corresponding to $x_{h}*y_{i}$ and $x_{i}*y_{h}$.
 %
-We match $C$ with five patterns at lines 14-19 and
+We match $C$ with the five patterns at lines 14-19 and
 update $x_i$, $y_i$, and $backtrack_i$ accordingly.
 %
 If none of the pattern match, we jump for backtracking at line 20.
@@ -151,7 +152,7 @@ are two possibilities.
 \item[line 17:] If $C = \{x_h*b\}$ and $b$ is not $y_h$ then 
   similar to the first case there is an ambiguity in
   choosing $x_i$ and $y_i$ if $x_h == y_h$. Line 18 is similar.
-\item[line 19:] If $C$ is empty then there is no uncertainly. % $x_i = y_i = 0$.
+\item[line 19:] If $C$ is empty then there is no uncertainty. % $x_i = y_i = 0$.
 \end{itemize}
 %
 At line 21-22, we update $l_x$ and $l_y$ appropriately.
@@ -181,15 +182,15 @@ partial products and carry bits.
 %
 The half and full adders are defined as follows.
 \begin{align*}
-sumHalf(a,b) = a \lxor b  \qquad& \qquad sumFull(a,b,c) = a \lxor b \lxor c\\
-carryHalf(a,b) = a \land b \qquad&\qquad
-carryFull(a,b,c) = (a \land b) \lor (b \land c) \lor (c \land a).
+sumHalf(a,b) = a \lxor b  \qquad& \quad sumFull(a,b,c) = a \lxor b \lxor c\\
+carryHalf(a,b) = a \land b \qquad&\quad
+carryFull(a,b,c) = (a \land b) \lor (b \land c) \lor (c \land a)
 \end{align*}
 %
 The sum output of a half/full adders are the result of 
 xor operations of inputs.
 %
-To find the input to the adders, we start from an
+To find the input to the cascaded adders, we start from an
 output bit and follow backward until we find the input that
 are not the result of some xor.
 
@@ -197,7 +198,7 @@ In Algorithm~\ref{alg:wallace}, we present a function
 $\textsc{MatchWallace}$ that takes a $\qfbv$ term $t$ and returns a
 set of matched multiplications.
 %
-At line 1, $t$ is matched with a concatenation of single bit terms $t_1$,..,$t_n$.
+At line 1, $t$ is matched with a concatenation of single bit terms $t_k$,..,$t_1$.
 %
 Similar to Algorithm~\ref{alg:long},
 we maintain the partial product store $\Lambda$.
