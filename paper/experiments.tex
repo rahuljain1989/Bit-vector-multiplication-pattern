@@ -21,30 +21,22 @@ We used  $\zthree$, $\boolector$, and $\cvcfour$ for the variations.
 
 In each case we stop the instrumented-$\zthree$ solver after running our matching algorithms,
 print the learned tautologies in a file along with the input formula, and
-run the solvers in a separate process on the newly generated formula. 
-The time taken to run our matching algorithms and generate the new formula is less than one second across all our benchmarks, and hence is not reported. 
-
-We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. 
-%In the case of $\zthree$,
-%we insert the learned tautologies in the $\zthree$ solver within the current execution.
-
-We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
-% %
-% The mode allows us to run the other solvers 
+run the solvers in a separate process on the pre-processed formula. 
+The time taken to run our matching algorithms and generate the pre-processed formula is less than one second across all our benchmarks, and hence is not reported. 
+We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
 
 \paragraph{\bf Benchmarks}
 %
-Our experiments include 20 benchmarks.
+Our experiments include 20 benchmarks. 
 %
-Initially, we received an industrial hardware verification benchmark
-in $\sysver$ involving long multiplication that was not solved by any
+Initially, we received the motivating example described in Section~\ref{sec:intro} involving long multiplication that was not solved by any
 of the solvers in 24 hours.
 %
-The example inspired our current work and to evaluate it we generated several similar benchmarks.
+This example inspired our current work and to evaluate it we generated several similar benchmarks.
 %
-For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or set them to zero.
+For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or setting them to zero.
 %
-Our $\sysver$ benchmarks are fed to STEWord~\cite{wste}, a hardware verification tool.
+Our benchmarks were written in $\sysver$ and fed to STEWord~\cite{wste}, a hardware verification tool.
 %
 STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula.
 %
@@ -54,7 +46,7 @@ In the process, $\boolector$ extensively simplifies the input formula but retain
 %
 We have generated benchmarks also for Wallace tree multiplier similar to the long multiplication.
 %
-For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord.
+For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were un-satisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
 %
 
 \paragraph{\bf Results}
