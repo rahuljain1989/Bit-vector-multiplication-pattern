@@ -61,9 +61,9 @@ bit-widths are often implemented cleverly in embedded systems, using a
 composition of several smaller and well-characterized blocks.  For
 example, a $128$-bit multiplier may be implemented using one of
 several multiplication algorithms, viz. long
-multiplication~\cite{long-mult}, Booth-encoded
-multiplication~\cite{booth-mult} or Wallace-tree
-multiplication~\cite{wallace-mult}, after partitioning its $128$-bit
+multiplication~\cite{long}, Booth-encoded
+multiplication~\cite{booth} or Wallace-tree
+multiplication~\cite{wallace}, after partitioning its $128$-bit
 operands into narrower, say $8$-bit wide, blocks.  SMT formulas
 resulting from WBMC/WSTE of such systems are therefore likely to
 contain terms with higher-level arithmetic operators (viz. $128$-bit
