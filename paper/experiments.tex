@@ -8,23 +8,27 @@ We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
 \paragraph{\bf Implementation}
-We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows an easy access to the abstract syntax tree of the input formula.
+We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows an easy access to the abstract syntax tree of the input formula. We call this version of $\zthree$ as instrumented-$\zthree$.
 %
 An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
 %
 We implemented various preliminary checks including the ones mentioned in Algorithm 1. For example, we ensure that the size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
 %
-We have implemented three version of $\ourtool$ by varying the choice of $\textsc{SMTSolver}$.
+We have implemented three versions of $\ourtool$ by varying the choice of $\textsc{SMTSolver}$.
 %
 We used  $\zthree$, $\boolector$, and $\cvcfour$ for the variations. 
 %
-In the case of $\zthree$,
-we insert the learned tautologies in the $\zthree$ solver within the current execution.
-%
-For $\boolector$ and $\cvcfour$,
-we stop the $\zthree$ solver after running our matching algorithms,
+
+In each case we stop the instrumented-$\zthree$ solver after running our matching algorithms,
 print the learned tautologies in a file along with the input formula, and
-run the other solvers in a separate process on the newly generated formula. The time taken to run our matching algorithms and generate the new formula is less than one second across all our benchmarks, and hence is not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
+run the solvers in a separate process on the newly generated formula. 
+The time taken to run our matching algorithms and generate the new formula is less than one second across all our benchmarks, and hence is not reported. 
+
+We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. 
+%In the case of $\zthree$,
+%we insert the learned tautologies in the $\zthree$ solver within the current execution.
+
+We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
 % %
 % The mode allows us to run the other solvers 
 
