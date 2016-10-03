@@ -1,0 +1,211 @@
+% Bit-vector is important
+%
+In recent years, SMT solving has emerged as a powerful technique for
+testing, analysis and verification of hardware and software systems.
+A wide variety of tools today use SMT solvers as part of their core
+reasoning engines; examples include bounded model
+checkers~\cite{hwcbmc,boolector,ebmc,cbmc}, static assertion
+checkers~\cite{corral,boogie}, word-level symbolic trajectory
+evaluators~\cite{wste}, constrained test
+generators~\cite{crv1,crv2,dart}, concolic simulators~\cite{concolic},
+among others.  A common approach used by these tools is to model the
+behaviour of a system using formulas in a combination of first-order
+theories, and reduce the given problem to checking the
+(un)satisfiability of a formula in the combined theory.  SMT solvers
+play a central role in this scheme of things, since they combine
+decision procedures of individual first-order theories to check the
+satisfiability of a formula in the combined theory.  Not surprisingly,
+techniques to improve the performance of SMT solvers have attracted
+significant attention over the years.  The literature contains a rich
+body of heuristic strategies for improving the performance of
+theory-specific solvers (see~\cite{deMoura2013} for an excellent
+exposition).  In this paper, we add to the repertoire of such
+heuristics by proposing a pre-processing step that conjoins an input
+formula with specially constructed assertions, without changing its
+semantics. We focus on formulas in the quantifier-free theory of
+fixed-width bit-vectors with multiplication, and show by means of
+experiments that our strategy yields significant performance benefits
+for three state-of-the-art SMT solvers, namely
+{\zthree}~\cite{zthree}, {\cvcfour}~\cite{cvcfour} and
+{\boolector}~\cite{boolector}.  Our experiments demonstrate that our
+heuristc can achieve reduction in solving times for multiple examples,
+by upto several orders of magnitude, especially when the input formula
+is unsatisfiable.
+
+%% Theories commonly
+%% supported in modern SMT solvers include the quantifier-free theories
+%% of fixed-width bit-vectors, arrays, lists, strings, among
+%% others~\cite{kroening-book,smtlibv2}.
+%% Since reasoning in these individual theories is often much more
+%% efficient than reasoning about the bit-level representation of the
+%% corresponding data types, techniques based on SMT solving hold a lot
+%% of promise as far as scaling to large applications is concerned.  The
+%% impressive progress made in SMT solving over the last two
+%% decades~\cite{smtprogress} has also substantially lived up to this
+%% hope. 
+
+Our primary motivation comes from word-level bounded model checking
+(WBMC)~\cite{cbmc,hwcbmc} and word-level symbolic trajectory
+evaluation (WSTE)~\cite{wste} of embedded hardware systems.
+Specifically, we focus on systems that process data, represented as
+fixed-width bit-vectors, using arithmetic operators.  Examples of such
+systems include digital signal processing filters, graphics
+accelerators, encryption and decryption modules, custom datapath
+implementations etc.  When reasoning about these systems, it is often
+necessary to check whether a high-level property, specified using
+bit-vector arithmetic operators (viz. addition, multiplication,
+division), is satisfied by a model of the system implementng a
+data-processing algorithm.  For reasons related to performance, power,
+area, ease of design etc., complex arithmetic operators with large
+bit-widths are often implemented cleverly in embedded systems, using a
+composition of several smaller and well-characterized blocks.  For
+example, a $128$-bit multiplier may be implemented using one of
+several multiplication algorithms, viz. long
+multiplication~\cite{long-mult}, Booth-encoded
+multiplication~\cite{booth-mult} or Wallace-tree
+multiplication~\cite{wallace-mult}, after partitioning its $128$-bit
+operands into narrower, say $8$-bit wide, blocks.  SMT formulas
+resulting from WBMC/WSTE of such systems are therefore likely to
+contain terms with higher-level arithmetic operators (viz. $128$-bit
+multiplication) encoding the specification, and terms that encode a
+lower-level implementation of these operators in the system (viz. a
+Wallace-tree multiplier).  Efficiently reasoning about such formulas
+requires exploiting the semantic equivalence of these alternative
+representations of arithmetic operators.  Unfortunately, our study,
+which focuses on systems using the multiplication operator, reveals
+that three state-of-the-art SMT solvers ({\zthree}, {\cvcfour} and
+{\boolector}) encounter serious performance bottlenecks in identifying
+these equivalences.  This shows up conspicuously when reasoning about
+the unsatisfiability of formulas.
+
+\noindent {\bfseries \emph{A motivating example:}} To illustrate
+the severity of the problem, we consider the SMT formula arising out
+of WSTE applied to a serial multiplier circuit, originally used as a
+benchmark in~\cite{wste}.  The circuit reads in two $32$-bit operands
+sequentially and stores them in internal registers, before multiplying
+them and making the $64$-bit result available in an output register.
+The circuit also has several control signals that can be used to
+change the flow of control, effectively delaying the computation of
+the result.
+
+The property to be checked asserts that if $a$ and $b$ denote the two
+operands that are read in, then after the computation is over, the
+output register indeed has the product $a * b$, where ``*'' denotes
+$32$-bit multiplication.  The RTL design (i.e. system implementation),
+as used in~\cite{wste}, makes use of the ``*'' operator in
+System-Verilog, effectively specifying a $32$-bit multiplication
+operation directly.  The SMT formula resuting from a WSTE run on this
+example therefore contains terms with only $32$-bit multiplication
+operators, and no terms encoding a lower-level implementation of the
+multiplication operator.  This formula is shown to be unsatisfiable
+within a fraction of a second by {\boolector} (and also by {\cvcfour}
+and {\zthree}).  Note that in WSTE (as also in WBMC), the SMT formula
+encodes violation of a property by a bounded run of the systems; hence
+unsatisfiability of the formula implies the absence of any bounded
+violating runs.
+
+We now change the RTL in the above example to represent the
+implementation of $32$-bit multiplication by the long-multiplication
+algorithm, where each $32$-bit operand is partitioned into $8$-bit
+blocks.  The corresponding WSTE run now yields an SMT formula that
+contains terms with $32$-bit multiplication operators (derived from
+the property being checked), and also terms that encode the
+implementation of $32$-bit multiplication using the
+long-multiplication algorithm.  Interestingly, none of {\boolector},
+{\cvcfour} and {\zthree} succeeded in deciding the satisfiability of
+the resulting formula even after $24$ hours on the same computing
+platform.  The heuristic strategies in all the three solvers failed to
+identify the semantic equivalence of terms encoding alternative
+representations of $32$-bit multiplication, and proceeded
+to \emph{bit-blast} the formulas, leading to this spectacular
+performance degradation.
+
+The above example demonstrates that the problem of not being able to
+identify equivalence of alternative representations of arithmetic
+operators plagues multiple state-of-the-art SMT solvers.  Therefore, a
+heuristic that is generic (not solver-specific) would be highly
+desirable.  This motivates us to ask: \emph{Can we pre-process an SMT
+formula with terms encoding alternative representations of bit-vector
+arithmetic operators, in a solver-independent manner, so that multiple
+solvers benefit from it?}  We answer this question positively in this
+paper for the multiplication operator.  Note, however, that like all
+heuristics, we cannot guarantee that all solvers will benefit from our
+heuristic on all problem instances.  For example, the problem
+described in the motivating example is shown to be unsatisfiable by
+{\zthree} in 0.073s and by {\cvcfour} in 0.017s, after application of
+our heuristic. Interestingly, {\boolector} didn't benefit from our
+heuristic in this case, although there are other examples where
+{\boolector} benefits significantly, as shown in
+Section~\ref{sec:experiments}.  This is not surprising, since it is
+well-known that a heuristic that works well on one problem instance
+may not work well for another, even for the same
+solver~\cite{deMoura2013}.
+
+At first sight, identifying equivalence between terms encoding
+alternative representations of arithmetic operators appears to be one
+of reverse-engineering an implementation of the operator.  Indeed,
+this reverse-engineering problem has been addressed to varying extents
+by earlier researchers in different
+contexts~\cite{earlier-pat-match-synopsys}.  A closer inspection,
+however, reveals that there are subtle complications that arise if we
+simply replace a term representing an arithmetic operation at one
+level by another term representing the same operation at a different
+level. First, and contrary to intuition, the same decomposed
+implementation may correspond to multiple reverse-engineered
+bit-vector operations.  Second, even if we are able to recover a
+complex word-level operation from a sub-formula corresponding to a
+decomposition in the given SMT formula, rewriting the sub-formula with
+the recovered operation may not correlate with improved performance
+when checking the (un)satisfiability check of the overall SMT formula.
+This can happen for various reasons:
+\begin{itemize}
+\item When multiple word-level operations can be recovered from the
+  same sub-formula, one cannot decide a priori which word-level
+  operation will be beneficial for the overall satisfiability check.
+\item The recovery is a local ``peep-hole'' operation that looks only
+  at the sub-formula matching a specific ``pattern''.  Specifically,
+  the recovery is oblivious of the context in which the sub-formula
+  appears in the overal SMT formula, and rewriting the sub-formula
+  with the recovered word-level operation may not help (and may even
+  hurt) the overall (un)satisfiability check.  
+\item In general, the sub-formula matching a pre-specified ``pattern''
+  may help in simplifying some part of the SMT formula, while the
+  recovered word-level operation may help in simplifying some other
+  part of the SMT formula.  Re-writing the matched sub-formula with
+  the recovered operation therefore precludes using the sub-formula
+  to simplify the SMT formula.
+\end{itemize}
+Thus, naively replacing a pattern corresponding to a decomposed
+implementation with the bit-level operator is unlikely to help SMT
+solving in any but the simplest of cases.
+
+In this paper, we present a pre-processing heuristic to address the
+above problem, focusing only on bit-vector multiplication.  Given a
+bit-vector formula $\varphi$ that contains terms with two different
+representations of bit-vector multiplication, our heuristic searches
+for patterns corresponding to two multiplication algorithms (long
+multiplication and Wallace-tree multiplication) in the terms. Instead
+of rewriting the matched sub-terms directly, as in earlier work, we
+conjoin the formula $\varphi$ with additional assertions that equate a
+matched sub-term with the corresponding bit-vector operator.  Since no
+re-writes are done, this allows us to express multiple equivalences in
+a convenient way.  Our experiments show that the added assertions
+succeed in preventing bit-blasting in several cases, while in other
+cases they significantly help in pruning the search space even after
+bit-blasting.  Both benefits eventually translate to improved
+performance of the SMT solver.  Since our heuristic simply
+pre-processes the input formula by adding assertions, it is
+independent of the internals of any specific SMT solver, and can be
+combined with multiple solvers.  Indeed.  our experiments show that
+the performance of different SMT solvers on the pre-processed formula
+can vary.  Hence, we propose a portfolio approach to solving the
+pre-processed formulas, and show experimentally that a portfolio
+solver using pre-processed formulas significantly outperforms a
+portfolio solver using the original formulas.
+
+
+
+%% Many hardware and software verification problems are translated to the
+%% satisfiability of quantifier free bit-vector(QF\_BV)
+%% formulas~\cite{hardware,cbmc,more}.
+%
