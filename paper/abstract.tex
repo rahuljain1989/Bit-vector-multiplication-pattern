@@ -1,30 +1,32 @@
 %
-The SMT solvers for the theory of bit-vectors are widely used.
+SMT solvers for the theory of fixed-width bit-vectors are widely used.
 %
-The bit-vector formulas often involve word-level arithmetic
+Bit-vector formulas often involve word-level arithmetic
 operations.
 %
-The bit-vector formulas with multiplications
-are particularly hard for SMT solvers.
+Empirical evidence shows that bit-vector formulas with multiplication
+are often hard for SMT solvers to reason about.
 %
-Therefore, it is more important that a solver uses all 
-the structure available in the problem including the
+Therefore, it is important that an SMT solver uses all 
+the structure available in the problem, including the
 word-level reasoning.
 %
-Sometimes multiplications are decomposed and implemented in several
-ways and the solver fails to see the word-level multiplication. 
+Sometimes multiplication operators are decomposed and implemented in
+alternative ways, and the solver fails to identify the word-level
+multiplication operation.
 %
-In this paper, we present a solver that identifies the decomposed
-multipliers, adds theory axioms to the input formula that encodes
-equivalence of the decomposed multiplication and the word-level
-multiplication, and solves the modified input using an available
-solver.
+In this paper, we present a pre-processing heuristic that identifies
+the decomposed multipliers, and adds special assertions to the input
+formula that encodes equivalence of the decomposed multiplication and
+the word-level multiplication.  The pre-processed formulas are then
+solved using an available solver.
 %
-We have added the algorithms in the rewriting engine of $\zthree$
-and applied on benchmarks.
+We have implemented our pre-processing algorithms in the rewriting
+engine of $\zthree$ and applied these on a suite of benchmarks.
 %
-Our modification solves several formulas that are
-intractable by any other leading solver.
+Our experiments with three state-of-the-art SMT solvers show that our
+heuristic allows several formulas to be solved quickly, while the same
+formulas time out without the pre-processing step.
 %
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
