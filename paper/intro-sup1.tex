@@ -28,7 +28,7 @@ experiments that our strategy yields significant performance benefits
 for three state-of-the-art SMT solvers, namely
 {\zthree}~\cite{zthree}, {\cvcfour}~\cite{cvcfour} and
 {\boolector}~\cite{boolector}.  Our experiments demonstrate that our
-heuristc can achieve reduction in solving times for multiple examples,
+heuristic can achieve reduction in solving times for multiple examples,
 by upto several orders of magnitude, especially when the input formula
 is unsatisfiable.
 
@@ -54,7 +54,7 @@ accelerators, encryption and decryption modules, custom datapath
 implementations etc.  When reasoning about these systems, it is often
 necessary to check whether a high-level property, specified using
 bit-vector arithmetic operators (viz. addition, multiplication,
-division), is satisfied by a model of the system implementng a
+division), is satisfied by a model of the system implementing a
 data-processing algorithm.  For reasons related to performance, power,
 area, ease of design etc., complex arithmetic operators with large
 bit-widths are often implemented cleverly in embedded systems, using a
@@ -93,8 +93,8 @@ operands that are read in, then after the computation is over, the
 output register indeed has the product $a * b$, where ``*'' denotes
 $32$-bit multiplication.  The RTL design (i.e. system implementation),
 as used in~\cite{wste}, makes use of the ``*'' operator in
-System-Verilog, effectively specifying a $32$-bit multiplication
-operation directly.  The SMT formula resuting from a WSTE run on this
+$\sysver$, effectively specifying a $32$-bit multiplication
+operation directly.  The SMT formula resulting from a WSTE run on this
 example therefore contains terms with only $32$-bit multiplication
 operators, and no terms encoding a lower-level implementation of the
 multiplication operator.  This formula is shown to be unsatisfiable
@@ -165,7 +165,7 @@ This can happen for various reasons:
 \item The recovery is a local ``peep-hole'' operation that looks only
   at the sub-formula matching a specific ``pattern''.  Specifically,
   the recovery is oblivious of the context in which the sub-formula
-  appears in the overal SMT formula, and rewriting the sub-formula
+  appears in the overall SMT formula, and rewriting the sub-formula
   with the recovered word-level operation may not help (and may even
   hurt) the overall (un)satisfiability check.  
 \item In general, the sub-formula matching a pre-specified ``pattern''
