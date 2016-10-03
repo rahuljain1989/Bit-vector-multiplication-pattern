@@ -1,3 +1,59 @@
+The quest for heuristic strategies for improving the performance of
+SMT solvers dates back to the early days of SMT solving.  An excellent
+exposition on several important early strategies can be found
+in~\cite{barrett}.  The importance of orchestrating different
+heuristics in a problem-specific manner has been highlighted
+in~\cite{deMoura2013}, which also makes a strong case for developing
+languages that enables users to choose their preferred heuristics and
+tactics for specific problems.
+
+The works that come closest to our work are those developed in the
+context of verifying hardware implementations of word-level arithmetic
+operations.  There is a long history of heuristics for identifying
+bit-vector (or word-level) operators from gate-level implementations
+(see, for example,
+~\cite{kunz,ciesielski,reveng,earlier-pat-match-synopsys} for a small
+sampling).  The use of canonical representations of bit-vector
+arithmetic operations have also been explored in the context of
+verifying arithmetic circuits like multipliers
+(see~\cite{bmd,drechsler}, among others).  However, these
+representations usually scale poorly with the bit-width of the
+multiplier.  Equivalence checkers determine if two circuits, possibly
+designed in different ways, implement the same overall functionality.
+State-of-the-art hardware equivalence checking tools, like
+Hector~\cite{hector}, make use of sophisticated heuristics like
+structural similarities between sub-circuits, complex rewrite rules
+and heuristic sequencing of reasoning engines to detect equivalences
+between two versions of a circuit.  The rewrite rules used in
+Hector~\cite{kolbl} can detect different configurations of circuits
+implementing an arithmetic operator and replace them by the
+corresponding word-level operator.  Since these efforts are primarily
+targeted at establishing the functional equivalence of one circuit
+with another, replacing one circuit configuration with another often
+works profitably.  However, as argued in Section~\ref{sec:intro}, this
+is not always desirable when checking the satisfiability of a formula
+obtained from word-level BMC or word-level STE.  Hence, our approach
+differs from the use of rewrites used in hardware equivalence
+checkers, although there are close parallels between the two
+approaches.
+
+It is interesting to note that alternative representations of
+arithmetic operators are internally used in SMT solvers when
+bit-blasting high-level arithmetic operators.  However, since an
+operator may be implemented in multiple ways, each solver chooses one
+(or a few) ways of bit-blasting an operator.  For example,
+{\zthree}~\cite{zthree} uses a specific Wallace-tree implementation of
+multiplication when blasting multiplication operations.  Since a wide
+multiplication operator admits multiple Wallace-tree implementation,
+this may not match terms encoding the Wallace-tree implementation of
+the same operator in another part of the formula.  Similar heuristics
+for bit-blasting arithmetic operators are also used in other solvers
+like {\boolector}~\cite{boolector} and {\cvcfour}~\cite{cvcfour}.
+However, none of these are intended to help improve the performance
+(run-time) of the solver when reasoning about bit-vector formulas.
+Instead, they are used to shift the granularity of reasoning from
+word-level to bit-level for the sake of completeness, but often
+at the price of performance.
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
@@ -5,37 +61,3 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End: 
-
-The quest for heuristic strategies for improving the performance of
-SMT solvers dates back to the early days of SMT solving.  The list of
-papers that describe heuristics for SMT solving is a long and
-illustrious one.  Instead of citing these individual papers, we point
-the reader to an excellent exposition on this topic
-in~\cite{deMoura2013}, which also makes a strong case for developing
-languages that enables users to choose their preferred heuristics and
-tactics in SMT solvers.
-
-The works that come closest to our work are those developed in the
-context of verifying hardware implementations of word-level
-arithmetic.  Heuristics for identifying bit-vector (or word-level)
-operators from gate-level implementations of these operators have been
-developed and optimized by the hardware verification community for
-long~\cite{kunz,ciesielski,reveng,earlier-pat-match-synopsys}.  The
-use of canonical representations of bit-vector arithmetic operations
-have also been explored, as in~\cite{bmd,drechsler}, among others.
-These efforts were primarily intended to simplify word-level reasoning
-about circuits, and to verify that implementations of complex
-arithmetic operators like multiplication indeed implement the
-semantics of multiplication.  None of these works were, however,
-really targeted at developing SMT solving heuristics for the theory of
-fixed-width bit-vectors.
-
-The use of alternative representations of arithmetic operators has
-typically been used in SMT solvers when bit-blasting high-level
-operators.  For example, {\zthree}~\cite{zthree} uses a specific
-Wallace-tree implementation of multiplication when bit-blasting
-multiplication operations.  Similar heuristics are also followed in
-other solvers like {\boolector}~\cite{boolector} and
-{\cvcfour}~\cite{cvcfour}.  However, none of these are intended to
-help improve the performance (run-time) of the solver when reasoning
-about bit-vector formulas. 
