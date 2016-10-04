@@ -1,86 +1,93 @@
-In this section, we will present the syntax of
-the theory of quantifier-free fixed-width
-bit-vector formulas(\qfbv),
-the basics of solving methods used by SMT solvers,
-and the multiplication methods that are of our interest. 
+In this section, we present some basics of the theory of
+quantifier-free fixed-width bit-vector formulas (\qfbv), and discuss
+two well-known multiplication algorithms of interest.
 
 %
 
-\subsection{\qfbv~syntax}
+\subsection{\qfbv: A short introduction}
 
 A bit-vector is a fixed sequence of bits.
 %
-We will denote bit-vectors by $x$,$y$,$z$, etc.
+We denote bit-vectors by $x$,$y$,$z$, etc., and often
 %
-We will refer to the blocks of bits in bit-vectors.
+refer to blocks of bits in a bit-vector.
 %
-Therefore, we may declare that a bit-vector $x$ is accessed in blocks
-of size $w$.
+For example, we may declare that a bit-vector $x$ is accessed in
+blocks of width $w$.
 %
-Let $x_i$ denote the $i$th block from the least significant
-bit(LSB).
+Let $x_i$ denote the $i$th block of bits, with the block containing
+the least significant bit (LSB) having index $0$.
 %
 % Similar notation is used for the vectors of any object.
 
 A $\qfbv$~term $t$ and formula $F$ is constructed using
-the following grammar.
+the following grammar
 \begin{align*}
-t ::= & t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
-F ::= & t = t \mid t \bowtie t \mid \lnot F \mid F \lor F \mid F \land F \mid F \lxor F \mid ... 
+t ::= &~ t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
+F ::= &~ t = t \mid t \bowtie t \mid \lnot F \mid F \lor F \mid F \land F \mid F \lxor F \mid ... 
 \end{align*}
-where $x$ is a bit-vector variable, 
-$n^w$ is a constant number represented in $w$ bits,
-$\bowtie \in \{\leq , <, \geq, > \}$, and
-$\concat$ is a binary operator that concatenates bit-vectors.
+where $x$ is a bit-vector variable, $n^w$ is a binary constant
+represented using $w$ bits, $\bowtie$ is a predicate in $\{\leq , <,
+\geq, > \}$, and $\concat$ is a binary operator that concatenates
+bit-vectors.
 %
-Here we are only presenting the parts of the theory
-that are relevant to our discussion.
+Note that we have only presented above parts of the grammar
+that are relevant to our discussion.  For more details,
+the reader is referred to~\cite{Kroeningbook,barrett}.
 %
-In this paper, all the variables and arithmetic operators are unsigned.
+We assume that all variables and arithmetic operators are unsigned.
+Following the SMTLIB~\cite{SMTLIB} convention, we also assume that
+arguments and results of an arithmetic operator have the same bit width.
 %
-All the inputs and outputs of arithmetic operators 
-have same bit length.
-%
-Let $len(t)$ denote the bit length of a term $t$.
+Let $len(t)$ denote the bit width of a term $t$.
 %
 If $w \geq len(t)$,
 let $zeroExt(t,w)$ be a shorthand for  $0^{w-len(t)}\concat t$.
 
-We know that $a * b$ is commutative and, in pattern matching,
-we will not make a distinction between $a*b$ and $b*a$.
+If an operator $\op$ is commutative, when matching patterns, we will
+not make a distinction between $a \op b$ and $b \op a$.
 %
-$t == s$ is true iff $t$ and $s$ are syntactically same.
+We use the notation ``$t == s$'' to denote that $t$ and $s$ are
+syntactically identical.
 %
-For bit-vectors $x$, $y$, and $t$, let $w= max( len(x),len(y), len(t))$.
+Given bit-vector terms $x$, $y$, and $t$, suppose $w = max(len(x),len(y),
+len(t))$.
 %
-Let $[x*y = t]$ denote term $x'*y'=t'$, where 
-$x' = zeroExt(x,w)$, $y' = zeroExt(y,w)$, and $t' = zeroExt(t,w)$.
+We use ``$[x*y = t]$'' to denote term $x'*y'=t'$, where $x' =
+zeroExt(x, w)$, $y' = zeroExt(y, w)$, and $t' = zeroExt(t, w)$.
 %
-Similarly, $[x*y]$ is defined.
+Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
+= zeroExt(x, len(x)+len(y))$ and $y' = zeroExt(y, len(x) + len(y))$.
 
-\subsection{SMT solvers for \qfbv}
+%% \subsection{SMT solvers for \qfbv}
 
-SMT(satisfiability modulo theory)
-solvers are specialized solvers that solve 
-formulas of a given theory.
+%% SMT(satisfiability modulo theory)
+%% solvers are specialized solvers that solve 
+%% formulas of a given theory.
 %
-The leading SMT solvers for \qfbv~apply several simplification
-passes followed by bit-blasting, i.e., translating input to
-a Boolean satisfiability problem(SAT problem).
+The leading SMT solvers for \qfbv~apply several simplification and
+re-writing passes to decide the satisfiability of the input formula.
+If these do not succeed in solving the problem, the solvers bit-blast
+the formula, i.e., translate the qbit-vector formula to an
+equivalent propositional formula on the constituent bits of the
+bit-vectors.  This reduces the bit-vector satisfiability problem to
+one of propositional satisfiability (SAT).
 %
-The bit-blasted SAT problem is solved using conflict driven clause
-learning(CDCL)\cite{cdcl1,cdcl2} based procedures.
+The bit-blasted SAT problem is then solved using conflict driven clause
+learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
 %
-Some of the leading SMT solvers are
-$\zthree$\cite{zthree}, $\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
+Some of the leading SMT solvers today are $\zthree$\cite{zthree},
+$\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
 
-For our algorithm, we assume that a  $\qfbv$~SMT
-solver $\textsc{SMTSolver}$ 
-with the standard interface is available.
+For our work, we assume access to a generic $\qfbv$~SMT solver, called
+$\textsc{SMTSolver}$, with the standard interface.
 %
-The interface includes a function $add(F)$ that adds a formula
-into the solver and a function $checkSat()$ that checks the
-satisfiability of the conjunction of the added formulas. 
+We assume that this interface includes a function $add(F)$ that adds a
+formula $F$ to the context of the solver, and a function $checkSat()$
+that checks the satisfiability of the conjunction of all formulas
+added to the context of the solver.  Note that such interface is
+available with most state-of-the-art solvers, viz. {\boolector},
+{\cvcfour} and {\zthree}.
 
 \subsection{Multipliers}
 
@@ -99,7 +106,7 @@ For example, long multiplier and Booth multiplier.
 %
 Here, we will discuss long and Wallace tree multiplier.
 
-\subsubsection{Long multiplier}
+\subsubsection{Long multiplier}\label{sec:long-mult}
 
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
 bits and are of size $kw$.
@@ -190,7 +197,12 @@ $$
 \end{center}
 
 
-Note that, if we had applied the long multiplication to $v_1 \concat 0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got the same partial products. This shows that simply knowing the collections of partial products at different indexes does not allow us to uniquely determine the operands. Recall that this problem was alluded to in the introduction.
+Note that, if we had applied the long multiplication to $v_1 \concat
+0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got
+the same partial products. This shows that simply knowing the
+collections of partial products at different indexes does not allow us
+to uniquely determine the operands. Recall that this problem was
+alluded to in Section~\ref{sec:intro}
 
 \end{example}
 
