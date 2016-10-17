@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Long multiplication experiments. Times are in seconds.}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+                      & \multicolumn{3}{c|}{\textsc{SMTSolver}}       & \multicolumn{3}{c|}{$\ourtool$}       \\ \hline
+Benchmark             & $\zthree$ & $\boolector$ & $\cvcfour$ & $\zthree$ & $\boolector$ & $\cvcfour$ \\ \hline
+base                  & 168.51  & 44.50       & 18.37     & 0.39     & 46.02        & 0.02      \\ \hline
+ex1\_scaledup         & t/o       & t/o          & t/o        & 1.50     & t/o          & 0.02      \\ \hline
+ex2\_scaledup         & t/o       & t/o          & t/o        & 2.57     & t/o          & 0.02      \\ \hline
+ex3\_scaledup         & t/o       & t/o          & t/o        & 2.78     & 472.39     & 0.03      \\ \hline
+ex5\_scaledup\_2      & 329.56  & 52.06       & 39.89     & 272.39  & 16.46       & 0.02      \\ \hline
+sv\_assy              & t/o       & t/o          & t/o        & 0.06     & t/o          & 0.02      \\ \hline
+mot\_base\_scaledup   & t/o       & t/o          & t/o        & 11.81    & t/o          & 0.02      \\ \hline
+mot\_ex1\_scaledup\_2 & t/o       & t/o          & t/o        & t/o       & 18.43       & 0.02      \\ \hline
+mot\_ex2\_scaledup\_2 & t/o       & t/o          & t/o        & t/o       & 15.57       & 0.02      \\ \hline
+mult\_3operands       & t/o       & t/o          & t/o        & t/o       & t/o          & t/o        \\ \hline
+\end{tabular}
+\end{table}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

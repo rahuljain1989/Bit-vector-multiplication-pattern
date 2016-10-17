@@ -1,0 +1,411 @@
+In this section, we present some basics of the theory of
+quantifier-free fixed-width bit-vector formulas (\qfbv), and discuss
+two well-known multiplication algorithms of interest.
+
+%
+
+\subsection{Theory of Bit-vectors}
+
+All computing systems operate by manipulating finite sequences of zeros and ones - bit-vectors. A computer system uses
+bit-vectors to encode information, for example numbers. Owing to the finite
+domain of these bit-vectors, the semantics of operations such as addition no
+longer matches what we are used to when reasoning about unbounded types,
+for example the natural numbers. As a simple example, consider the following formula:
+
+\[( x-y > 0) \leftrightarrow (x > y)
+\]
+
+\noindent This formula holds over the integers, but if x and y are interpreted as finite-width bit vectors, this equivalence
+no longer holds, owing to possible overflow of the subtraction operation.
+
+A bit-vector is a vector of Boolean values with a given length $l$:
+\[
+b:\{0,. . .,l-1\} \rightarrow \{0,1\}
+\]
+
+%
+\noindent We denote bit-vectors by $x$,$y$,$z$, etc., and often
+%
+refer to blocks of bits in a bit-vector.
+%
+For example, we may declare that a bit-vector $x$ is accessed in
+blocks of width $w$.
+%
+Let $x_i$ denote the $i$th block of bits, with the block containing
+the least significant bit (LSB) having index $0$.
+%
+% Similar notation is used for the vectors of any object.
+
+\subsection{Syntax}
+
+%A $\qfbv$~term $t$ and formula $F$ is constructed using
+%the following grammar
+%\begin{align*}
+%t ::= &~ t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
+%F ::= &~ t = t \mid t \bowtie t \mid \lnot F \mid F \lor F \mid F \land F %\mid F \lxor F \mid ... 
+%\end{align*}
+
+Grammar for a subset of bit-vector arithmetic:
+
+\vspace{0.2 cm}
+
+$formula ::= formula \land formula \mid \lnot formula \mid (formula) \mid atom$
+
+$atom ::= term$ $rel$ $term \mid Boolean$ $Identifier \mid term[constant]$ 
+
+$rel ::= $ $< \mid =$
+
+$term ::= term$ $op$ $term \mid x \mid \sim term \mid n^w \mid term[constant:constant] \mid$
+
+$\qquad \qquad ite(atom, term, term)$
+
+$op ::= + \mid - \mid \cdot \mid / \mid << \mid >> \mid \& \mid $ $\mid$ $\mid \otimes \mid \concat$
+
+\vspace{0.2 cm}
+
+\noindent where the operators have their usual meaning, $x$ is a bit-vector variable, $n^w$ is a binary constant
+represented using $w$ bits.
+%
+Note that we have only presented above parts of the grammar
+that are relevant to our discussion.  For more details,
+the reader is referred to~\cite{Kroeningbook,barrett}.
+%
+We assume that all variables and arithmetic operators are unsigned.
+Following the SMTLIB~\cite{SMTLIB} convention, we also assume that
+arguments and results of an arithmetic operator have the same bit width.
+%
+Let $len(t)$ denote the bit width of a term $t$.
+%
+If $w \geq len(t)$,
+let $zeroExt(t,w)$ be a shorthand for  $0^{w-len(t)}\concat t$.
+
+If an operator $\op$ is commutative, when matching patterns, we will
+not make a distinction between $a \op b$ and $b \op a$.
+%
+We use the notation ``$t == s$'' to denote that $t$ and $s$ are
+syntactically identical.
+%
+Given bit-vector terms $x$, $y$, and $t$, suppose $w = max(len(x),len(y),
+len(t))$.
+%
+We use ``$[x*y = t]$'' to denote term $x'*y'=t'$, where $x' =
+zeroExt(x, w)$, $y' = zeroExt(y, w)$, and $t' = zeroExt(t, w)$.
+%
+Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
+= zeroExt(x, len(x)+len(y))$ and $y' = zeroExt(y, len(x) + len(y))$.
+
+%% \subsection{SMT solvers for \qfbv}
+
+%% SMT(satisfiability modulo theory)
+%% solvers are specialized solvers that solve 
+%% formulas of a given theory.
+%
+
+\subsection{Signature}
+
+A typical signature $\Sigma_{bv}$ for selected functions and predicates of the bit-vector theory is presented below. The set of sorts $\Sigma_{bv}^S$ contains
+infinitely many sort symbols $[n]$ where n is a strictly positive natural number. Formally, $\Sigma_{bv}^S = \{[n] \mid n > 0 $ and $ n \in \mathcal{Z}\}$.
+\begin{table}
+\begin{tabular}{c | l | c | l }
+Symbol & Name & Arity & Sort Map $\tau$  \\
+\hline \hline
+$[0]_{[1]}$ & constant & 0 & $[1]$  \\
+$[01]_{[2]}$ & constant & 0 & $[2]$  \\ 
+$\concat$ & concat & 2 & $([n],[m],[n+m])$ \\
+$[i:j]$ & extract & 1 & $([n],[j-i+1])$ for $n > i > j \ge 0$
+ \\ 
+$\sim$ & bitwise not & 1 & $([n],[n])$  \\
+$\mid$ & bitwise or & 2 & $([n],[n],[n])$ \\
+$+$ & plus & 2 & $([n],[n],[n])$ \\
+$>>$ & right shift & 2 & $([n],[n],[n])$\\
+$=_{[n]}$ & equal & 2 & $([n],[n],Bool)$  \\
+$<$ & less than & 2 & $([n],[n],Bool)$ \\
+
+\end{tabular}
+\end{table}
+
+\subsection{Semantics}
+
+We now give a formal definition of the semantics of a fixed width bit-vector arithmetic formula. To help us define the semantics we first define three mappings:
+\begin{itemize}
+\item $bitToNat:[1] \rightarrow [0,1]$ defined as:
+bitToNat(b) = if $b = 1$ then $1$ else $0$.
+\item $natBv_n : \mathbb{N} \rightarrow [n]$ defined as: \\
+$natBv_n(x) = \lambda i : [0, n-1].if (x \div 2^i ) $mod $2$ = $0$ then $0$ else $1$
+\item $bvNat : [n]\rightarrow[0, 2^n-1]$ defined as: 
+$bvNat(f) = \sum^{n-1}_{i=0} bitToNat(f(i)).2^i$
+\end{itemize}
+
+\noindent $bitToNat$ converts one bit bit-vector to the corresponding natural number 0 or 1. $natBv_n$ converts natural numbers to their corresponding bit-vectors and $bvNat$ converts bit-vectors to their corresponding natural numbers. With these three mappings in place, the semantics can be given by:
+
+\begin{itemize}
+
+\item For $[n] \in \Sigma_{bv}^S$, $A_{[n]} = \{\lambda x : [0, n-1].f (x) \mid f : [0, n-1] \rightarrow \{0, 1\}\}$
+\item For constant symbols:
+\begin{itemize}
+\item  $\llbracket 0_{[1]}\rrbracket = \lambda x : [0].0$
+\item $\llbracket 1_{[1]}\rrbracket = \lambda x : [0].1$
+\end{itemize}
+\item For function symbols:
+\begin{itemize}
+
+\item $\llbracket a_{[n]} \concat b_{[m]}\rrbracket = \lambda x : [0, n+m-1].$if $x < m$ then $\llbracket b\rrbracket(x)$ else $\llbracket a\rrbracket(x-m)$
+
+\item $\llbracket a_{[n]} [i:j]\rrbracket = \lambda x : [0,i-j]. \llbracket a\rrbracket(j+x)$
+\item $\llbracket \sim a_{[n]}\rrbracket
+= \lambda x : [0, n-1].$ if $\llbracket a\rrbracket(x)=0$ then $1$ else $0$
+
+\item $\llbracket a_{[n]} \mid b_{[n]}\rrbracket = \lambda x : [0, n-1].$ if $\llbracket a\rrbracket(x) =1$ or $\llbracket b\rrbracket(x)=1$ then $1$ else $0$
+
+\item $ \llbracket a_{[n]} + b_{[n]}\rrbracket = natBv_n (bvNat(\llbracket a \rrbracket) + bvNat(\llbracket b \rrbracket))$
+
+\item $\llbracket a_{[n]} >> b_{[n]}\rrbracket = natBv_n (bvNat(\llbracket a \rrbracket) \div 2^{bvNat(\llbracket b \rrbracket)})$
+
+\end{itemize}
+
+\item For predicate symbols:
+\begin{itemize}
+\item $\llbracket a_{[n]} =_{[n]} b_{[n]}\rrbracket =$ if $(bvNat(\llbracket a \rrbracket) = (bvNat(\llbracket b \rrbracket)$ then $true$ else $false$
+\item $\llbracket a_{[n]} < b_{[n]}\rrbracket =$ if $(bvNat(\llbracket a \rrbracket) < (bvNat(\llbracket b \rrbracket)$ then $true$ else $false$
+\end{itemize}
+\end{itemize}
+
+The
+concatenation and extract operations are the only ones that can alter the
+length of bit-vectors. The arithmetic operations interpret the bit-vector as a base-2 natural number and are
+equivalent to the corresponding mod $2^n$ arithmetic operations, where n is the size of the bit-vectors.
+
+\subsection{Decision procedures for bit-vectors}
+
+The leading SMT solvers for \qfbv~apply several simplification and
+rewriting passes to decide the satisfiability of the input formula.
+If these do not succeed in solving the problem, the solvers bit-blast
+the formula, i.e., translate the bit-vector formula to an
+equivalent propositional formula on the constituent bits of the
+bit-vectors.  This reduces the bit-vector satisfiability problem to
+one of propositional satisfiability (SAT).
+%
+The bit-blasted SAT problem is then solved using conflict driven clause
+learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
+%
+
+Below we present a generic bit-blasting algorithm to decide the satisfiability of the input formula $\phi$. Some terminology:
+
+\begin{itemize}
+
+\item $At(\phi)\rightarrow$ set of atoms in $\phi$ 
+\item $a \in At(\phi)$ is replaced by $e(a) \rightarrow$ the propositional encoder of $a$ 
+\item Propositional skeleton $e(\phi) \rightarrow$ resulting formula after propositional encoding of the atoms 
+\item $T(\phi)\rightarrow$ set of terms in $\phi$ 
+\item $e(t)\rightarrow$ a vector of new Boolean variables for each BV term $t$ $\in T(\phi)$ 
+\item $e(t)_i\rightarrow$ variable for the bit with index $i$ of the term $t$ 
+\end{itemize}
+
+\input{alg-bitblast}
+
+For our work, we assume access to a generic $\qfbv$~SMT solver, called
+$\textsc{SMTSolver}$, with the standard interface.
+%
+We assume that this interface includes a function $add(F)$ that adds a
+formula $F$ to the context of the solver, and a function $checkSat()$
+that checks the satisfiability of the conjunction of all formulas
+added to the context of the solver.  Note that such interface is
+available with most state-of-the-art solvers, viz. {\boolector},
+{\cvcfour} and {\zthree}.
+
+\subsection{Multipliers}
+
+Multiplication is an expensive operation to implement in hardware.
+%
+There are several designs of multipliers for varying
+resource constraints.
+%
+If one can have a large number of gates then Wallace tree
+multiplier can be used.
+%
+Otherwise, one may decompose the multiplication task in
+small multiplications and combine the results appropriately.
+%
+For example, long multiplier and Booth multiplier.
+%
+Here, we will discuss long and Wallace tree multiplier.
+
+\subsubsection{Long multiplier}\label{sec:long-mult}
+
+Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
+bits and are of size $kw$.
+%
+% \ashu{Rahul: suggest a rewrite.}
+The long multiplier decomposes the $kw$ bits multiplication 
+into chunks of $w$ bits multiplications, called {\em partial products}.
+%
+The partial products are summed with appropriate offsets to obtain
+the final result.
+%
+The following notation is typically used to illustrate
+the long multiplication.
+%
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $x_{k}$ & ... & $x_1$&\\ 
+  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline
+  &&&$x_k*y_1$& ... & $x_1*y_1$&\\
+  &&$\iddots$&$\vdots$& $\iddots$ && \\
+  &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
+\end{tabular}  
+\end{center}
+$x_i * y_j$s are the partial products.
+%
+Each $x_i*y_j$ is left shifted $(i+j-2)w$ bits. 
+%
+In the above scheme all the partial products that have same offset are 
+aligned in single column.
+%
+After the shifts, all the partial results are added in some order.
+%
+The bit-width of the partial products is $2w$.
+%
+In the $\qfbv$ notation, $x_i * y_j$ is correctly denoted by
+$(0^w \concat x_i)*(0^w \concat y_j)$.
+%
+Therefore, the bits of the partial products in neighbouring columns overlap
+and they can not be simply concatenated.
+%
+The long multiplier does not specify the order of the addition
+of the shifted partial products.
+%
+Therefore, there are several possible designs for a given $k$ and $w$.
+
+\begin{example}
+  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
+  Let us apply long multiplication in multiplying
+  $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
+  We obtain the following partial products.
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $v_2$ & $0^2$ & $v_1$&\\ 
+  &&& $u_2$ & $v_2$ & $u_1$&$*$\\ \hline
+  &&&$v_2*u_1$& $0^4$ & $v_1*u_1$&\\
+  &&$v_2*v_2$&$0^4$& $v_1*v_2$ && \\
+  &$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
+\end{tabular}
+\end{center}
+We need to sum the partial products. However, if their non-zero bits 
+do not overlap then we can simply concatenate them.
+%
+And finally we may sum the concatenated vectors.
+%
+The following is one of the combination of the concatenations and 
+summations for the long multiplication.
+$$
+( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
+(v_2*u_2 \concat v_2*u_1 \concat 0^4) +
+(0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+$$
+\end{example}
+
+
+\begin{example}
+
+  As another interesting example, consider long multiplication applied to 
+  $v_2 \concat 0^2 \concat v_2$ and $0^2 \concat v_1 \concat v_1$.
+  We obtain the following partial products.
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $v_2$ & $0^2$ & $v_2$&\\ 
+  &&& $0^2$ & $v_1$ & $v_1$&$*$\\ \hline
+  &&&$v_1*v_2$& $0^4$ & $v_1*v_2$&\\
+  &&$v_1*v_2$&$0^4$& $v_1*v_2$ &+&\\\hline
+  %&$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
+\end{tabular}
+\end{center}
+
+
+Note that, if we had applied the long multiplication to $v_1 \concat
+0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got
+the same partial products. This shows that simply knowing the
+collections of partial products at different indexes does not allow us
+to uniquely determine the operands. Recall that this problem was
+alluded to in Section~\ref{sec:intro}
+
+\end{example}
+
+
+\subsubsection{Wallace tree multiplier\cite{wallace}}
+%
+Wallace tree decomposes the multiplication all the way down to single bits.
+%
+Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $1$
+bit and are of size $k$.
+%
+In a Wallace tree, a partial product is the multiplication of single
+bits $x_i*y_j$.
+%
+The multiplication of single bits is the conjunction of the bits, i.e.,
+$x_i \land y_j$.
+%
+There is no carry generated due to the multiplication of single bits.
+%
+The partial product $x_i*y_j$ is aligned with the $(i+j-2)$th bit of output.
+%
+Let us consider $o$th output bit.
+%
+All the partial products that are aligned to $o$ are summed using full adder 
+and half adders.
+%
+The full adders are used
+if more than two bits are available that are yet to be summed
+and half adders are used if there are only two bits that are left to be summed.
+%
+The carry bits that are generated by the adders are aligned to
+$(o+1)$th output bit.
+%
+The carry bits are summed to the partial products for $(o+1)th$ bit
+using adders as illustrated in the following figure.
+
+\begin{center}
+  \begin{tikzpicture}[node distance=4cm,thick]
+
+    \node[draw,rectangle, minimum width=2cm,minimum height=1cm] (a) {Adders};
+    \node[draw,rectangle, minimum width=2cm,minimum height=1cm, right of=a] (b) {Adders};
+
+    \draw[->] (a.south) -- node[right=1pt] {$o+1$} +(0,-.5);
+    \draw[->] (b.south) -- node[right=1pt] {$o$} +(0,-.5);
+
+    \draw[vecArrow] (b.220) |- ++(-1.5cm,-0.5) --node[right=1pt,yshift=-1cm,rotate = 90] {carry bits} ++(0,2.3cm) -| (a.40);
+
+    \draw[vecArrow] ($ (a.140) + (0,0.6cm) $) --node[above=1pt,yshift = 1mm] {
+      \begin{tabular}{c}
+        partial\\
+        products
+      \end{tabular}
+      } (a.140);
+    \draw[vecArrow] ($ (b.140) + (0,0.6cm) $) --node[above=1pt,yshift = 1mm] {
+      \begin{tabular}{c}
+        partial\\
+        products
+      \end{tabular}
+      } (b.140);
+
+    \draw[vecArrow,gray] ($ (b.50) + (1cm,0.8cm) $) -| (b.50);
+  \end{tikzpicture}  
+\end{center}
+
+Both the above multiplication methods do not
+fully specify the design.
+%
+Therefore, there are several ways to implement the multiplications.
+%
+Therefore, it is not trivial to verify that a hardware design indeed
+implements a multiplication.
+
+% \ashu{Needs more detailed discussion with example about how
+% verification problem may contain such multipliers expanded out!}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
+

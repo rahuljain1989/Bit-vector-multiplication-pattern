@@ -1,0 +1,44 @@
+\begin{algorithm}[t]
+ \caption{\textsc{MatchWallaceTree}($t$)}
+ \label{alg:wallace}
+ \begin{algorithmic}[1]
+   \Ensure $t$ : a term in $\qfbv$
+   \If{ $t == (t_{k} \concat ... \concat t_{1})$}
+   % \State $w$ :=  minimum bit length of $s_{ij}$
+   \State $\Lambda := \lambda i. \emptyset$;
+   $\Delta : $ vector of multiset of terms $ := \lambda i. \emptyset$
+   \For{ $i \in 1..k$ }
+   \IIf{$len(t_i) \neq 1 $}~\Return{$\emptyset$}
+   \State $S$ := $\{t_i\}$;$\Delta_i$ := $\{t_{i}\}$
+   \For{ $S \neq \emptyset$} 
+   \State $t \in S;$ $S := S - \{t\}$
+   \If{ $t == s_1 \lxor .... \lxor s_p$}
+   \State $S := S \union \{s_1,..,s_p\}$;$\Delta_i := \Delta_i \union \{s_1,..,s_p\}$
+   \ElsIf{$t == carryFull(a,b,c)$ and $a,b,c,a\lxor b,a\lxor b\lxor c \in \Delta_{i-1}$}
+   % \State $\Delta_i.insert( t )$
+   \State $\Delta_{i-1} := \Delta_{i-1}- \{a,b,c,a\lxor b\}$
+   \ElsIf{$t == carryHalf(a,b)$ and $a,b,a\lxor b \in \Delta_{i-1}$}
+   % \State $\Delta_i.insert( t )$
+   \State $\Delta_{i-1} := \Delta_{i-1}- \{a,b\}$
+   \ElsIf{$t == a \land b$}
+   \State $\Lambda_i.insert( a * b )$;
+   % \IIf{ $t \neq t_i$} $\Delta_i.insert( t )$
+   \Else~\Return{$\emptyset$}
+   \EndIf
+   \EndFor
+   \IIf{$ \Delta_{i-1} \neq \{t_{i-1}\} $}~\Return{$\emptyset$}
+   \EndFor
+   \State \Return{\textsc{getMultOperands}($\Lambda$,$1$)}
+   \EndIf
+   % \Else
+   \State~\Return{$\emptyset$}
+ \end{algorithmic}
+\end{algorithm}  
+
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

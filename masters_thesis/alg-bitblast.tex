@@ -1,0 +1,20 @@
+\begin{algorithm}[]
+ \caption{\textsc{Bit Blasting}}
+  \label{alg:bitblast}
+ \begin{algorithmic}[1]
+   \State B := e($\phi$);
+   \For{ $t_{[l]} \in T (\phi)$}
+   \For{ $i \in \{0,\dots, l-1\}$}
+   \State set $e(t)_i$ to a new Boolean variable;
+   \EndFor
+   \EndFor
+   \For{ $a \in At(\phi)$}
+   \State $B:=B \land Constraint(e, a);$
+   \EndFor
+   \For{ $t_{[l]} \in T(\phi)$}
+   \State $B:=B \land Constraint(e,t);$ 
+   \EndFor
+   \State \Return{$B$}
+ \end{algorithmic}
+\end{algorithm}  
+

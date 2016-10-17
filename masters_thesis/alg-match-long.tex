@@ -1,0 +1,31 @@
+\begin{algorithm}[t]
+ \caption{\textsc{MatchLong}($t$)}
+ \label{alg:long}
+ \begin{algorithmic}[1]
+   \Require $t$ : a term in $\qfbv$
+   \Ensure $M$ : matched multiplications := $\emptyset$
+   \If{ $t == (s_{1k_1} \concat ... \concat s_{11})+...+(s_{pk_p} \concat ... \concat s_{p1})$}
+   \State Let $w$ be such that for some $s_{ij} = (0^{w} \concat a) * (0^{w} \concat b)$ and  $len(a) ==len(b) == w$ %:=  minimum bit length of $s_{ij}$
+   \State $\Lambda := \lambda i. \emptyset$
+   \For{ each $s_{ij}$ }
+   \State $o := (\sum_{j' < j} len( s_{ij'}))/w$
+   \IIf{ $s_{ij} == 0$ } {\bf continue;}
+   \If{ $s_{ij} == (0^{w} \concat a) * (0^{w} \concat b)$  and $len(a) == len(b) == w $} 
+   \State $\Lambda_o.insert( a * b )$
+   \Else~\Return{$\emptyset$}
+   \EndIf
+   \EndFor
+   \State \Return{\textsc{getMultOperands}($\Lambda$,$w$)}
+   \EndIf
+   % \Else
+   \State \Return{$\emptyset$}
+ \end{algorithmic}
+\end{algorithm}  
+
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

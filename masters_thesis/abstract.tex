@@ -1,0 +1,37 @@
+%
+SMT solvers for the theory of fixed-width bit-vectors are widely used.
+%
+Bit-vector formulas often involve word-level arithmetic
+operations.
+%
+Empirical evidence shows that bit-vector formulas with multiplication
+are often hard for SMT solvers to reason about.
+%
+Therefore, it is important that an SMT solver uses all 
+the structure available in the problem, including the
+word-level reasoning.
+%
+Sometimes multiplication operators are decomposed and implemented in
+alternative ways, and the solver fails to identify the word-level
+multiplication operation.
+%
+In this paper, we present a pre-processing heuristic that identifies
+the decomposed multipliers, and adds special assertions to the input
+formula that encodes equivalence of the decomposed multiplication and
+the word-level multiplication.  The pre-processed formulas are then
+solved using an available solver.
+%
+We have implemented our pre-processing algorithms in the rewriting
+engine of $\zthree$ and applied these on a suite of benchmarks.
+%
+Our experiments with three state-of-the-art SMT solvers show that our
+heuristic allows several formulas to be solved quickly, while the same
+formulas time out without the pre-processing step.
+%
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

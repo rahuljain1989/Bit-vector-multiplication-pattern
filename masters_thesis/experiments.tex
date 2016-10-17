@@ -1,0 +1,155 @@
+%
+We have implemented\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}} our algorithms as a part of $\zthree$ SMT solver.
+%
+ We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
+%
+We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
+%
+Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
+
+\paragraph{\bf Implementation}
+We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows an easy access to the abstract syntax tree of the input formula. We call this version of $\zthree$ as instrumented-$\zthree$.
+%
+An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
+%
+We implemented various preliminary checks including the ones mentioned in Algorithm 1. For example, we ensure that the size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
+%
+We have implemented three versions of $\ourtool$ by varying the choice of $\textsc{SMTSolver}$.
+%
+We used  $\zthree$, $\boolector$, and $\cvcfour$ for the variations. 
+%
+
+In each case we stop the instrumented-$\zthree$ solver after running our matching algorithms,
+print the learned tautologies in a file along with the input formula, and
+run the solvers in a separate process on the pre-processed formula. 
+The time taken to run our matching algorithms and generate the pre-processed formula is less than one second across all our benchmarks, and hence is not reported. 
+We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
+
+\paragraph{\bf Benchmarks}
+%
+Our experiments include 20 benchmarks. 
+%
+Initially, we received the motivating example described in Section~\ref{sec:intro} involving long multiplication that was not solved by any
+of the solvers in 24 hours.
+%
+This example inspired our current work and to evaluate it we generated several similar benchmarks.
+%
+For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or setting them to zero.
+%
+Our benchmarks were written in $\sysver$ and fed to STEWord~\cite{wste}, a hardware verification tool.
+%
+STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula.
+%
+We convert the SMT1 formula to SMT2 format using $\boolector$.
+%
+In the process, $\boolector$ extensively simplifies the input formula but retains the overall structure.
+%
+We have generated benchmarks also for Wallace tree multiplier similar to the long multiplication.
+%
+For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were un-satisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
+%
+
+\paragraph{\bf Results}
+%
+We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
+%
+In the Tables~\ref{tbl:time}-\ref{tbl:cd}, we present the results of the experiments.
+%
+We chose timeout to be 3600 seconds.
+%
+In Table~\ref{tbl:time}, we present the timings of the long multiplication and
+Wallace tree multiplier experiments.
+%
+The first 13 rows correspond to
+the long multiplication experiments.
+%
+The columns under $\textsc{SMTSolver}$ are the run times of the
+solvers to prove the satisfiability of the input benchmark.
+%
+The solvers timeout on most of the benchmarks.
+%
+
+\input{tbl-long-time}
+
+The next three columns present the run times of the three versions of
+$\ourtool$ to prove the satisfiability of the benchmarks.
+%
+$\ourtool$ with $\cvcfour$ makes best use of the added tautologies.
+%
+$\cvcfour$ is quickly able to infer that the input formula and the
+added tautologies are negations of each other justifying the timings.
+%
+$\ourtool$ with $\boolector$ and $\zthree$ does not make the above
+inference, leading to more running times.
+%
+$\boolector$ and $\zthree$ bit blast the benchmarks having not been
+able to detect the structural similarity.
+%
+However, the added tautologies help $\boolector$ and $\zthree$ to
+reduce the search space, after the sat solver is invoked on the bit
+blasted formula.
+
+
+The last 7 rows correspond to the Wallace tree multiplier experiments.
+%
+Since the multiplier involves a series of half and full adders, the
+size of the input formula increases rapidly as the bit vector size
+increases.
+%
+Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is
+quickly able to infer that the input formula and the added tautology
+are negations of each other.
+%
+However, $\ourtool$ with $\boolector$ and $\cvcfour$ do not make the
+inference, leading to larger run times.
+%
+This is because of the syntactic structure of the learned tautology
+from our implementation inside $\zthree$.
+%
+The input formula has `and' and `not' gates as its building blocks,
+whereas $\zthree$ transforms all `ands' to `ors'.
+%
+Therefore, the added tautology has no `ands'.
+%
+The difference in the syntactic structure between the input formula
+and the added tautology makes it difficult for $\boolector$ and
+$\cvcfour$ to make the above inference.
+%
+
+We have seen that the solvers fail to apply the word level reasoning
+after adding the tautologies.
+%
+In the case, the solvers bit blast the formula and run a sat solver.
+%
+In Table~\ref{tbl:cd}, we present the number of conflicts and decisions within
+the sat solvers.
+%
+The number of conflicts and decisions on running $\ourtool$ with the
+three solvers, are considerably less than their $\textsc{SMTSolver}$
+counterparts in the most of the cases.
+%
+This demonstrates that the tautologies also help in reducing the
+search inside the sat solvers. 
+%
+$\ourtool$ with $\cvcfour$ has zero conflicts and
+decisions for all the long multiplication experiments, because the 
+word level reasoning solved the benchmarks.
+%
+Similarly, $\ourtool$ with $\zthree$ has zero conflicts and decisions for all the
+Wallace tree multiplier experiments.
+
+\input{tbl-long-cd}
+%
+
+
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+
+
+

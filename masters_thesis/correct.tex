@@ -1,0 +1,110 @@
+We need to prove that each $[x*y = t]$ added in $\textsc{OurSolver}$
+is a tautology.
+%
+First we will prove the correctness of $\textsc{getMultOperands}$.
+%
+If either of $x$ or $y$ is zero, we assume term $x*y$ is also simplified to zero.
+\begin{thm}
+ If $ x*y \in \textsc{getMultOperands}(\Lambda,w)$, then
+ $$
+ \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}
+ $$
+  where $x_k$ and $y_k$ are the $k$th block of $x$ and $y$ of size
+$w$, respectively.
+\end{thm}
+\begin{proof}
+  After each iteration of the loop at line 8,
+  if no backtracking triggered, the loop body ensures
+  that the following holds at the end, which readers may easily check.
+  \begin{equation}
+    \label{eq:container-inv}
+  \Lambda_i = \{ x_h*y_{i}, x_{h-1}*y_{i+1},....,x_{i}*y_h \}    
+  \end{equation}
+  Due to the above equation,
+  if $x_j*y_k \in \Lambda_i$, $ i = h-j-k$.
+  %
+  If the program enters at line 25, it has a successful match and $i=1$.
+  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_x}\}$
+  and $l = h - l_x - l_y$.
+  %
+  We choose $o \leq l$, and shift $x$ and $y$ according to lines 26-27.
+  After the shift, we need to write equation~\eqref{eq:container-inv}
+  as follows.
+  \begin{equation}
+    \label{eq:container-shifted}
+    \Lambda_i = \{ x_{h-(l_x-o)}*y_{i-(l_y-l+o)},...,x_{i-(l_x-o)}*y_{h-(l_y-l+o)} \}.
+  \end{equation}
+  We can easily verify that the sum of the indexes in each of
+  the partial products is $i$.
+  %
+  Since all $x_k$ is zero for $k > h-(l_x-o)$ and all $y_k$ is zero
+  for $k > h-(l_y-l+o)$,
+  we may rewrite equation~\eqref{eq:container-shifted}
+ as follows.
+  $$
+  \Lambda_i = \{ x_1*y_{i-1},....,x_{i-1}*y_1 \}.
+  $$
+\end{proof}
+
+\begin{thm}
+  If $m*n\in$ \textsc{MatchLong}$(t)$, $[m*n = t]$ is a tautology.
+\end{thm}
+\begin{proof}
+  We collect partial products with appropriate offsets $o$ at line 5.
+  %
+  The pattern of $t$ indicates that the net result is the sum of the 
+  partial products with the respective offsets. 
+  %
+  $\textsc{getMultOperands}(\Lambda,w)$ returns the
+  matches that produces the sums.
+  %
+  Therefore, $[m*n = t]$ is a tautology.
+\end{proof}
+
+\begin{thm}
+  If $m*n\in$ \textsc{MatchWallaceTree}$(t)$, $[m*n = t]$ is a tautology.
+\end{thm}
+\begin{proof}
+  %
+  All we need to show that $t$ is summing the partial products stored in
+  $\Lambda$.
+  %
+  The rest of the proof follows the previous theorem.
+
+  Each bit $t_i$ must be the sum of the partial products $\Lambda_i$ and 
+  the carry bits produced by the sum for $t_{i-1}$.
+  %
+  The algorithm identifies the terms that are added to obtain $t_i$
+  and collects the intermediate results of the sum in $\Delta_{i}$.
+  %
+  We only need to prove that the terms that are not identified as
+  partial products are carry bits of the sum for $t_{i-1}$.
+  %
+  Let us consider such a term $t$.
+  %
+  Let us suppose the algorithm identifies $t$ as an output of the carry
+  bit circuit of a full adder (half adder case is similar) with inputs
+  $a$, $b$, and $c$.
+  %
+  The algorithm also checks that $a$, $b$, $c$, $a \lxor b$ and
+  $a \lxor b \lxor c$ are the intermediate
+  results of the sum for $t_{i-1}$.
+  %
+  Therefore, $t$ is one of the carry bits.
+  %
+  Since $a$, $b$, $a \lxor b$ and $c$ are removed from $\Delta_{i-1}$
+  after the match of the adder,
+  all the identified adders are disjoint.
+  %
+  Since we require that all the elements of $\Delta_{i-1}$  are eventually
+  removed except $t_{i-1}$, all carry bits are added to obtain $t_i$.
+  %
+  Therefore, $\Lambda$ has the expected partial products of a Wallace tree.
+\end{proof}
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

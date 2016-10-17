@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: main.aux
+The style file: unsrt.bst
+Database file #1: biblio.bib
+Warning--entry type for "ebmc" isn't style-file defined
+--line 145 of file biblio.bib
+Warning--entry type for "long" isn't style-file defined
+--line 150 of file biblio.bib
+Warning--entry type for "booth" isn't style-file defined
+--line 155 of file biblio.bib
+Warning--entry type for "hector" isn't style-file defined
+--line 160 of file biblio.bib
+Warning--empty publisher in barrett
+Warning--can't use both author and editor fields in deMoura2013
+You've used 30 entries,
+            1791 wiz_defined-function locations,
+            614 strings with 9856 characters,
+and the built_in function-call counts, 9678 in all, are:
+= -- 914
+> -- 342
+< -- 22
++ -- 125
+- -- 95
+* -- 545
+:= -- 1263
+add.period$ -- 90
+call.type$ -- 30
+change.case$ -- 29
+chr.to.int$ -- 0
+cite$ -- 32
+duplicate$ -- 510
+empty$ -- 983
+format.name$ -- 95
+if$ -- 2356
+int.to.chr$ -- 0
+int.to.str$ -- 30
+missing$ -- 27
+newline$ -- 149
+num.names$ -- 28
+pop$ -- 163
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 382
+stack$ -- 0
+substring$ -- 753
+swap$ -- 243
+text.length$ -- 22
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 95
+width$ -- 32
+write$ -- 320
+(There were 6 warnings)

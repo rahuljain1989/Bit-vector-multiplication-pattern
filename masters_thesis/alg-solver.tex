@@ -1,0 +1,24 @@
+\begin{algorithm}[t]
+ \caption{\textsc{OurSolver}($F$)}
+ \label{alg:solver}
+ \begin{algorithmic}[1]
+   \Require $F$ : a $\qfbv$ formula
+   \Ensure sat/unsat/undef
+   \State \textsc{SMTSolver}.add($F$)
+   \For{ each subterm $t$ in $F$}
+   \If{ $M$ := \textsc{MatchLong}($t$) $\union$ \textsc{MatchWallaceTree}($t$) }
+   \For{ each $x*y \in M$}
+   \State \textsc{SMTSolver}.add($[x*y = t]$)
+   \EndFor
+   \EndIf
+   \EndFor
+   \State \Return{ \textsc{SMTSolver}.checkSat() }
+ \end{algorithmic}
+\end{algorithm}  
+
+%--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

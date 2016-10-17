@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Wallace tree experiments. Times are in seconds.}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+                & \multicolumn{3}{c|}{\textsc{SMTSolver}}       & \multicolumn{3}{c|}{$\ourtool$}       \\ \hline
+Benchmark       & $\zthree$ & $\boolector$ & $\cvcfour$ & $\zthree$ & $\boolector$ & $\cvcfour$ \\ \hline
+wallace\_4bits  & 0.08     & 0.04        & 0.04      & 0.08     & 0.05        & 0.05      \\ \hline
+wallace\_8bits  & 213.33  & 63.80      & 212.79   & 0.44     & 30.60       & t/o        \\ \hline
+wallace\_12bits & t/o       & t/o          & t/o        & 1.20     & 227.17     & t/o        \\ \hline
+wallace\_16bits & t/o       & t/o          & t/o        & 2.26     & 568.19    & t/o        \\ \hline
+\end{tabular}
+\end{table}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
