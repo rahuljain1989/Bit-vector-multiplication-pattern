@@ -393,32 +393,32 @@ using adders as illustrated in the following figure.
   \end{tikzpicture}  
 \end{center}
 
-The Wallace tree multiplier has three steps:
+The steps of Wallace tree multiplier can be summed up as:
 
 \begin{itemize}
 
-\item AND each bit of one of the arguments, by each bit of the other, yielding $n^2$ results. Depending on position of the multiplied bits, the wires carry different weights, for example wire of bit carrying result of $a_{2}b_{3}$ is 32.
-\item Reduce the number of partial products to two by layers of full and half adders.
-\item Group the wires in two numbers, and add them with a conventional adder.
+\item \textsc{Partial products generation} - Compute $n^2$ partial products, multiplying each bit of one of the arguments, by each bit of the other. Depending on position of the multiplied bits, the wires carry different weights, for example wire of bit carrying result of $a_{2}b_{3}$ is 32.
+\item \textsc{Reduction} - Reduce the number of partial products of each weight to atmost two by layers of full and half adders.
+\item \textsc{Final addition} - Group the wires in two numbers, and add them with a conventional adder.
 
 \end{itemize}
 
-The second phase works as follows. As long as there are three or more wires with the same weight add a following layer:
+The \textsc{reduction} step works as follows: As long as there are three or more wires with the same weight, add a following layer:
 
 \begin{itemize}
 
-\item Take any three wires with the same weights and input them into a full adder. The result will be an output wire of the same weight and an output wire with a higher weight for each three input wires.
-\item If there are two wires of the same weight left, input them into a half adder.
+\item Take any three wires with the same weights and input them into a full adder. The result will be an output wire of the same weight i.e $\sumOfFullAdder$ and an output wire with a higher weight i.e $\carryOfFullAdder$ for each three input wires.
+\item If there are two wires of the same weight left, input them into a half adder. The result will be an output wire of the same weight i.e $\sumOfHalfAdder$ and an output wire with a higher weight i.e $\carryOfHalfAdder$.
 \item If there is just one wire left, connect it to the next layer.
 \end{itemize}
 
 
 \begin{example}
 
-Let us multiply two 4 bit numbers $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using the above steps:
+Let us multiply two 4 bit bit-vectors $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using the above steps:
 
 \begin{enumerate}
-\item First we multiply every bit by every bit:
+\item Partial products generation: First we multiply every bit by every bit:
 \begin{itemize}
 \item weight 1 - $a_0b_0$
 \item weight 2 - $a_0b_1$, $a_1b_0$
@@ -441,7 +441,7 @@ Let us multiply two 4 bit numbers $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using the ab
 \end{itemize}
 
 \item Reduction layer 2: Add a full adder for weight 8, and half adders for weights 4, 16, 32, 64
-\item Group the wires into a pair of integers and an adder to add them.
+\item Final addition - Group the wires into a pair of integers and an adder to add them.
 \end{enumerate}
 \end{example}
 

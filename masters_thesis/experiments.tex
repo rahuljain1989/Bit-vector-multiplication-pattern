@@ -7,7 +7,7 @@ We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
 Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
 
-\paragraph{\bf Implementation}
+\subsection{\bf Implementation}
 We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows an easy access to the abstract syntax tree of the input formula. We call this version of $\zthree$ as instrumented-$\zthree$.
 %
 An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
@@ -25,7 +25,7 @@ run the solvers in a separate process on the pre-processed formula.
 The time taken to run our matching algorithms and generate the pre-processed formula is less than one second across all our benchmarks, and hence is not reported. 
 We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
 
-\paragraph{\bf Benchmarks}
+\subsection{\bf Benchmarks}
 %
 Our experiments include 20 benchmarks. 
 %
@@ -49,7 +49,7 @@ We have generated benchmarks also for Wallace tree multiplier similar to the lon
 For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were un-satisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
 %
 
-\paragraph{\bf Results}
+\subsection{\bf Results}
 %
 We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
