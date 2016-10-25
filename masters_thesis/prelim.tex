@@ -36,7 +36,7 @@ the least significant bit (LSB) having index $0$.
 %
 % Similar notation is used for the vectors of any object.
 
-\subsection{Syntax}
+\subsubsection{Syntax}
 
 %A $\qfbv$~term $t$ and formula $F$ is constructed using
 %the following grammar
@@ -101,11 +101,13 @@ Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
 %% formulas of a given theory.
 %
 
-\subsection{Signature}
+\subsubsection{Signature}
 
 A typical signature $\Sigma_{bv}$ for selected functions and predicates of the bit-vector theory is presented below. The set of sorts $\Sigma_{bv}^S$ contains
 infinitely many sort symbols $[n]$ where n is a strictly positive natural number. Formally, $\Sigma_{bv}^S = \{[n] \mid n > 0 $ and $ n \in \mathcal{Z}\}$.
-\begin{table}
+\begin{table}[h]
+\centering
+\caption{$\Sigma_{bv}$}
 \begin{tabular}{c | l | c | l }
 Symbol & Name & Arity & Sort Map $\tau$  \\
 \hline \hline
@@ -124,7 +126,7 @@ $<$ & less than & 2 & $([n],[n],Bool)$ \\
 \end{tabular}
 \end{table}
 
-\subsection{Semantics}
+\subsubsection{Semantics}
 
 We now give a formal definition of the semantics of a fixed width bit-vector arithmetic formula. To help us define the semantics we first define three mappings:
 \begin{itemize}
@@ -175,7 +177,7 @@ concatenation and extract operations are the only ones that can alter the
 length of bit-vectors. The arithmetic operations interpret the bit-vector as a base-2 natural number and are
 equivalent to the corresponding mod $2^n$ arithmetic operations, where n is the size of the bit-vectors.
 
-\subsection{Decision procedures for bit-vectors}
+\subsubsection{Decision procedures for bit-vectors}
 
 The leading SMT solvers for \qfbv~apply several simplification and
 rewriting passes to decide the satisfiability of the input formula.
@@ -390,6 +392,60 @@ using adders as illustrated in the following figure.
     \draw[vecArrow,gray] ($ (b.50) + (1cm,0.8cm) $) -| (b.50);
   \end{tikzpicture}  
 \end{center}
+
+The Wallace tree multiplier has three steps:
+
+\begin{itemize}
+
+\item AND each bit of one of the arguments, by each bit of the other, yielding $n^2$ results. Depending on position of the multiplied bits, the wires carry different weights, for example wire of bit carrying result of $a_{2}b_{3}$ is 32.
+\item Reduce the number of partial products to two by layers of full and half adders.
+\item Group the wires in two numbers, and add them with a conventional adder.
+
+\end{itemize}
+
+The second phase works as follows. As long as there are three or more wires with the same weight add a following layer:
+
+\begin{itemize}
+
+\item Take any three wires with the same weights and input them into a full adder. The result will be an output wire of the same weight and an output wire with a higher weight for each three input wires.
+\item If there are two wires of the same weight left, input them into a half adder.
+\item If there is just one wire left, connect it to the next layer.
+\end{itemize}
+
+
+\begin{example}
+
+Let us multiply two 4 bit numbers $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using the above steps:
+
+\begin{enumerate}
+\item First we multiply every bit by every bit:
+\begin{itemize}
+\item weight 1 - $a_0b_0$
+\item weight 2 - $a_0b_1$, $a_1b_0$
+\item weight 4 - $a_0b_2$, $a_1b_1$, $a_2b_0$
+\item weight 8 - $a_0b_3$, $a_1b_2$, $a_2b_1$, $a_3b_0$
+\item weight 16 - $a_1b_3$, $a_2b_2$, $a_3b_1$
+\item weight 32 - $a_2b_3$, $a_3b_2$
+\item weight 64 - $a_3b_3$
+\end{itemize}
+
+\item Reduction layer 1:
+\begin{itemize}
+\item Pass the only weight-1 wire through, output: 1 weight-1 wire
+\item Add a half adder for weight 2, outputs: 1 weight-2 wire, 1 weight-4 wire
+\item Add a full adder for weight 4, outputs: 1 weight-4 wire, 1 weight-8 wire
+\item Add a full adder for weight 8, and pass the remaining wire through, outputs: 2 weight-8 wires, 1 weight-16 wire
+\item Add a full adder for weight 16, outputs: 1 weight-16 wire, 1 weight-32 wire
+\item Add a half adder for weight 32, outputs: 1 weight-32 wire, 1 weight-64 wire
+\item Pass the only weight-64 wire through, output: 1 weight-64 wire
+\end{itemize}
+
+\item Reduction layer 2: Add a full adder for weight 8, and half adders for weights 4, 16, 32, 64
+\item Group the wires into a pair of integers and an adder to add them.
+\end{enumerate}
+\end{example}
+
+The benefit of the Wallace tree is that there are only $\mathcal{O}(\log n)$ reduction layers, and each layer has $\mathcal{O}(1)$ propagation delay. As making the partial products is $\mathcal{O}(1)$ and the final addition is $\mathcal{O}(\log n)$, the multiplication is $\mathcal{O}(\log n)$.
 
 Both the above multiplication methods do not
 fully specify the design.
