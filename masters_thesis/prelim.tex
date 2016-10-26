@@ -4,7 +4,7 @@ two well-known multiplication algorithms of interest.
 
 %
 
-\subsection{Theory of Bit-vectors}
+\section{Theory of Bit-vectors}
 
 All computing systems operate by manipulating finite sequences of zeros and ones - bit-vectors. A computer system uses
 bit-vectors to encode information, for example numbers. Owing to the finite
@@ -36,7 +36,7 @@ the least significant bit (LSB) having index $0$.
 %
 % Similar notation is used for the vectors of any object.
 
-\subsubsection{Syntax}
+\subsection{Syntax}
 
 %A $\qfbv$~term $t$ and formula $F$ is constructed using
 %the following grammar
@@ -94,14 +94,14 @@ zeroExt(x, w)$, $y' = zeroExt(y, w)$, and $t' = zeroExt(t, w)$.
 Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
 = zeroExt(x, len(x)+len(y))$ and $y' = zeroExt(y, len(x) + len(y))$.
 
-%% \subsection{SMT solvers for \qfbv}
+%% \section{SMT solvers for \qfbv}
 
 %% SMT(satisfiability modulo theory)
 %% solvers are specialized solvers that solve 
 %% formulas of a given theory.
 %
 
-\subsubsection{Signature}
+\subsection{Signature}
 
 A typical signature $\Sigma_{bv}$ for selected functions and predicates of the bit-vector theory is presented below. The set of sorts $\Sigma_{bv}^S$ contains
 infinitely many sort symbols $[n]$ where n is a strictly positive natural number. Formally, $\Sigma_{bv}^S = \{[n] \mid n > 0 $ and $ n \in \mathcal{Z}\}$.
@@ -126,7 +126,7 @@ $<$ & less than & 2 & $([n],[n],Bool)$ \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Semantics}
+\subsection{Semantics}
 
 We now give a formal definition of the semantics of a fixed width bit-vector arithmetic formula. To help us define the semantics we first define three mappings:
 \begin{itemize}
@@ -177,7 +177,7 @@ concatenation and extract operations are the only ones that can alter the
 length of bit-vectors. The arithmetic operations interpret the bit-vector as a base-2 natural number and are
 equivalent to the corresponding mod $2^n$ arithmetic operations, where n is the size of the bit-vectors.
 
-\subsubsection{Decision procedures for bit-vectors}
+\subsection{Decision procedures for bit-vectors}
 
 The leading SMT solvers for \qfbv~apply several simplification and
 rewriting passes to decide the satisfiability of the input formula.
@@ -216,13 +216,13 @@ available with most state-of-the-art solvers, viz. {\boolector},
 {\cvcfour} and {\zthree}.
 
 
-\subsection{Adders}
+\section{Adders}
 
 An adder is a digital circuit that performs addition of numbers.
 Although adders can be constructed for many numerical representations, such as binary-coded decimal or excess-3, the most common adders operate on binary numbers. We describe the two most commonly used 
 adders, namely half adder and full adder.
 
-\subsubsection{Half adder}
+\subsection{Half adder}
 
 The half adder adds two single binary digits a and b. It has two outputs, $\sumOfHalfAdder$ and $\carryOfHalfAdder$. The $\sumOfHalfAdder$ signal represents the value of the addition for the current digit. The $\carryOfHalfAdder$ signal represents an overflow into the next digit of a multi-digit addition.
 The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ and an AND gate for $\carryOfHalfAdder$.
@@ -231,7 +231,7 @@ The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ a
 \sumOfHalfAdder = a \oplus b \hspace{3 cm} \carryOfHalfAdder = a \land b 
 \]
 
-\subsubsection{Full adder}
+\subsection{Full adder}
 
 The full adder adds three single binary digits a, b and c. It also has two outputs, $\sumOfFullAdder$ and $\carryOfFullAdder$. Both the outputs have the same meaning as that for a Half adder, the only difference being that full adder adds three digits. The simplest full adder design incorporates two XOR gate for $\sumOfFullAdder$ and, three AND and 2 OR gates for $\carryOfFullAdder$. 
 
@@ -239,7 +239,7 @@ The full adder adds three single binary digits a, b and c. It also has two outpu
 \sumOfFullAdder = a \oplus b \oplus c \hspace{3 cm} \carryOfFullAdder = (a \land b) \lor (a \land c) \lor (b \land c) 
 \]
 
-\subsection{Multipliers}
+\section{Multipliers}
 
 Multiplication is an expensive operation to implement in hardware.
 %
@@ -256,7 +256,7 @@ For example, long multiplier and Booth multiplier.
 %
 Here, we will discuss long and Wallace tree multiplier.
 
-\subsubsection{Long multiplier}\label{sec:long-mult}
+\subsection{Long multiplier}\label{sec:long-mult}
 
 Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
 bits and are of size $kw$.
@@ -358,7 +358,7 @@ alluded to in Chapter~\ref{sec:intro}
 
 
 
-\subsubsection{Wallace tree multiplier\cite{wallace}}
+\subsection{Wallace tree multiplier\cite{wallace}}
 %
 Wallace tree decomposes the multiplication all the way down to single bits.
 %

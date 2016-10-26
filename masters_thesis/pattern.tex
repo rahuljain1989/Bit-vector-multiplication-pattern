@@ -17,7 +17,7 @@ an available solver.
 %
 Let us first present our method of matching long multiplication. 
 
-\subsection{Matching long multiplication}
+\section{Matching long multiplication}
 \input{alg-match-long}
 
 In Algorithm~\ref{alg:long}, we present a function $\textsc{MatchLong}$
@@ -51,7 +51,7 @@ At line 10, we call $\textsc{getMultOperands}$ to identify the operands
 of the long multiplication from $\Lambda$ if $t$ is indeed a long
 multiplication.
 
-\subsection{Partial products to operands}
+\section{Partial products to operands}
 \input{alg-get-operand}
 
 In Algorithm~\ref{alg:operand}, we present a function
@@ -170,7 +170,7 @@ We add the matched $x*y$ to the match store $M$.
 And, the algorithm proceeds for backtracking to find if more matchings
 exist.
 
-\subsection{Matching Wallace tree multiplication}
+\section{Matching Wallace tree multiplication}
 \input{alg-match-wallace-tree}
 
 A Wallace tree has a cascade of adders that take partial products 
@@ -239,7 +239,7 @@ After the loop at line 3, we have collected the partial products in $\Lambda$.
 At line 18, we call $\textsc{getMultOperands}(\Lambda,1)$ to get all
 the matching multiplications.
 
-\subsection{Our solver}
+\section{Our solver}
 \input{alg-solver}
 
 Using the above pattern matching algorithms, we modify an existing
