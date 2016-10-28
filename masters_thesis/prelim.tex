@@ -231,6 +231,26 @@ The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ a
 \sumOfHalfAdder = a \oplus b \hspace{3 cm} \carryOfHalfAdder = a \land b 
 \]
 
+\begin{figure}
+\centering
+\begin{circuitikz}
+\draw (0, 4)node[xor port] (xorone){}
+(0, 2)node[and port] (and){}
+(xorone.in 1) node[left=0.5cm](a) {a}
+(xorone.in 2) node[left=0.5cm](b) {b}
+(xorone.out) node[right=0.1cm](c) {$\sumOfHalfAdder$}
+(and.out) node[right=0.1cm](d) {$\carryOfHalfAdder$}
+
+(a.east) to[short,-*] (xorone.in 1) |- (and.in 1)
+(b.east) to[short,-*] ($(b.east)!.5!(xorone.in 2)$) coordinate (branch)
+    -- (xorone.in 2)
+(branch) |- (and.in 2); 
+\end{circuitikz}
+
+\caption{Half adder circuit}
+\label{fig:halfadder} 
+\end{figure}
+
 \subsection{Full adder}
 
 The full adder adds three single binary digits a, b and c. It also has two outputs, $\sumOfFullAdder$ and $\carryOfFullAdder$. Both the outputs have the same meaning as that for a Half adder, the only difference being that full adder adds three digits. The simplest full adder design incorporates two XOR gate for $\sumOfFullAdder$ and, three AND and 2 OR gates for $\carryOfFullAdder$. 
