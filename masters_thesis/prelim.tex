@@ -231,24 +231,27 @@ The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ a
 \sumOfHalfAdder = a \oplus b \hspace{3 cm} \carryOfHalfAdder = a \land b 
 \]
 
-\begin{figure}
+\begin{figure}[h]
+\usetikzlibrary[arrows]
 \centering
-\begin{circuitikz}
-\draw (0, 4)node[xor port] (xorone){}
-(0, 2)node[and port] (and){}
-(xorone.in 1) node[left=0.5cm](a) {a}
-(xorone.in 2) node[left=0.5cm](b) {b}
-(xorone.out) node[right=0.1cm](c) {$\sumOfHalfAdder$}
-(and.out) node[right=0.1cm](d) {$\carryOfHalfAdder$}
+\begin{tikzpicture}[circuit logic US, minimum height=10mm]
+\matrix[column sep=10mm]
+{
+\node (i0) {$a$}; & & \\
+& \node [xor gate] (xor1) {}; & \node (o1) {$\sumOfHalfAdder$};\\
+\node (i1) {$b$}; & \node[and gate] (and1) {}; & \node (o2) {$\carryOfFullAdder$};\\
+};
+ 
+\draw (i0.east) -- ++(right:3mm) |- (xor1.input 1);
+\draw (i1.east) -- ++(right:3mm) |- (xor1.input 2);
+\draw (xor1.output) -- ++(right:3mm) |- (o1.west);
 
-(a.east) to[short,-*] (xorone.in 1) |- (and.in 1)
-(b.east) to[short,-*] ($(b.east)!.5!(xorone.in 2)$) coordinate (branch)
-    -- (xorone.in 2)
-(branch) |- (and.in 2); 
-\end{circuitikz}
+\draw[*-] (xor1.input 1) ++(-7mm,0.5mm) |- (and1.input 1);
+\draw[*-] (xor1.input 2) ++(-4mm,0.5mm) |- (and1.input 2);
 
+\draw (and1.output) -- ++(right:3mm) |- (o2.west);
+\end{tikzpicture}
 \caption{Half adder circuit}
-\label{fig:halfadder} 
 \end{figure}
 
 \subsection{Full adder}
@@ -258,6 +261,47 @@ The full adder adds three single binary digits a, b and c. It also has two outpu
 \[
 \sumOfFullAdder = a \oplus b \oplus c \hspace{3 cm} \carryOfFullAdder = (a \land b) \lor (a \land c) \lor (b \land c) 
 \]
+
+\begin{figure}[h]
+\usetikzlibrary[arrows]
+\centering
+\begin{tikzpicture}[circuit logic US, minimum height=10mm]
+\matrix[column sep=10mm]
+{
+\node (i0) {$a$}; & & & & & \\
+& \node [xor gate] (xor1) {}; & \node[xor gate] (xor2) {}; & & &\\
+\node (i1) {$b$}; & & \node (cin) {}; & & \node (o1) {$\sumOfFullAdder$}; &\\
+& & \node[and gate] (and1) {}; & & &\\
+\node (i2) {$c$}; & & \node[and gate] (and2) {}; & \node[or gate] (or1) {};& &\\
+& & \node[and gate] (and3) {}; & & \node[or gate] (or2) {}; & \node (o2) {$\carryOfFullAdder$};\\
+};
+ 
+\draw (i0.east) -- ++(right:3mm) |- (xor1.input 1);
+\draw (i1.east) -- ++(right:3mm) |- (xor1.input 2);
+\draw (xor1.output) -- ++(right:3mm) |- (xor2.input 1);
+\draw (xor2.output) -- ++(right:3mm) |- (o1.west);
+
+\draw[*-] (xor1.input 1) ++(-7mm,0.5mm) |- (and1.input 1);
+\draw[*-] (xor1.input 2) ++(-4mm,0.5mm) |- (and1.input 2);
+
+\draw[*-] (and1.input 2) ++(-7mm,0.5mm) |- (and2.input 1);
+\draw (i2.east) -- ++(right:3mm) |- (and2.input 2);
+\draw[*-] (and2.input 2) ++(-10mm,-0.5mm) |- (xor2.input 2);
+
+\draw[*-] (and1.input 1) ++(-15mm,0.5mm) |- (and3.input 1);
+\draw (i2.east)  |- (and3.input 2);
+
+\draw (and1.output)  -- ++(right:3mm) |- (or1.input 1);
+\draw (and2.output)  -- ++(right:3mm) |- (or1.input 2);
+
+\draw (or1.output)  -- ++(right:3mm) |- (or2.input 1);
+\draw (and3.output)  -- ++(right:3mm) |- (or2.input 2);
+\draw (or2.output) -- ++(right:3mm) |- (o2.west);
+
+
+\end{tikzpicture}
+\caption{Full adder circuit}
+\end{figure}
 
 \section{Multipliers}
 
