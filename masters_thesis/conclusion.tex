@@ -20,6 +20,7 @@ detection in arbitrary arithmetic formulas, we are working to modify
 the word level reasoning in the solvers.
 We could further extend our work to complicated word level formulas involving bit vector multiplication like $X*X + Y*Y$, $X*(Y+Z)$, $(X*(Y*Z))*W$.
 
+One benchmark which shows no improvements within time limits is mult\_3\_operands. The benchmark timed out in all the cases and hence is not reported. While all the other benchmarks above check for equality of multiplication of two bit vectors, mult\_3\_operands is an attempt to see if the approach works for multiplication of 3 operands which is carried out as 2 long multiplications. Our observations indicate that none of the solvers are able to infer the structural similarity based on the 2 tautologies added for the 2 long multiplications.
 None of the solvers were able to make use of the added tautologies(one for each long multiplication). 
 The problem seems to be on two fronts: one is that to check equality of two terms, the solvers want exact structural similarity and secondly the infrastructure of using one assertion to infer the satisfiability of another does not seem to be well developed. 
 We aim to bridge this gap as part of our future work.
