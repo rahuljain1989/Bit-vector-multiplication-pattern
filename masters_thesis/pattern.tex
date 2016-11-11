@@ -198,7 +198,7 @@ In Algorithm~\ref{alg:wallace}, we present a function
 $\textsc{MatchWallace}$ that takes a $\qfbv$ term $t$ and returns a
 set of matched multiplications.
 %
-At line 1, $t$ is matched with a concatenation of single bit terms $t_k$,..,$t_1$.
+At line 1, $t$ is matched with $(u_{1k} \concat ... \concat u_{11}) + (u_{2k} \concat ... \concat u_{21})$ i.e sum of two terms which are concatenation of single bit terms. This corresponds to the \textsc{Final addition} step described in Section~\ref{sec:prelim}.
 %
 Similar to Algorithm~\ref{alg:long},
 we maintain the partial product store $\Lambda$.
@@ -207,7 +207,7 @@ For each $i$,
 we also maintain the multiset of terms $\Delta_i$ that were used as 
 inputs to the adders for the $i$th bit.
 %
-In the loop at line 6, we traverse down the subterms until
+In the loop at line 8, we traverse down the subterms until
 a subterm is not the result of a xor.
 %
 In the traversal, we also collect the inputs of the visited xors
@@ -219,24 +219,24 @@ If the term $t$ is not the result of xors then
 we have the following possibilities.
 %
 \begin{itemize}
-\item[line 10-13:]
+\item[line 12-15:]
   If $t$ is the carry bit of a half/full adder, and the inputs, the intermediate
   result of the sum bit, and the output sum bit
   of the adder are in $\Delta_{i-1}$ then we remove the inputs and intermediate result
   of the adder from $\Delta_{i-1}$.
   We do not remove the output sum bit from $\Delta_{i-1}$, since it may be
   used as input to some other adder.
-\item[line 14-15:] If $t$ is a partial product, we record it in $\Lambda_i$.
-\item[line 16:] Otherwise, we return $\emptyset$.
+\item[line 16-17:] If $t$ is a partial product, we record it in $\Lambda_i$.
+\item[line 18:] Otherwise, we return $\emptyset$.
 \end{itemize}
-At line 17, we check that $\Delta_{i-1} = \{t_{i-1}\}$, i.e., all carry bits from
+At line 19, we check that $\Delta_{i-1} = \{t_{i-1}\}$, i.e., all carry bits from
 the adders for $t_{i-1}$ are consumed by the adders for $t_i$ exactly once.
 %
 Again if the check fails, we return $\emptyset$.
 %
 After the loop at line 3, we have collected the partial products in $\Lambda$.
 %
-At line 18, we call $\textsc{getMultOperands}(\Lambda,1)$ to get all
+At line 20, we call $\textsc{getMultOperands}(\Lambda,1)$ to get all
 the matching multiplications.
 
 \section{Our solver}

@@ -3,13 +3,15 @@
  \label{alg:wallace}
  \begin{algorithmic}[1]
    \Ensure $t$ : a term in $\qfbv$
-   \If{ $t == (t_{k} \concat ... \concat t_{1})$}
+   \If{ $t == (u_{1k} \concat ... \concat u_{11}) + (u_{2k} \concat ... \concat u_{21})$}
    % \State $w$ :=  minimum bit length of $s_{ij}$
    \State $\Lambda := \lambda i. \emptyset$;
    $\Delta : $ vector of multiset of terms $ := \lambda i. \emptyset$
    \For{ $i \in 1..k$ }
+   \For{ $j \in 1..2$ }
+   \State $t_i = u_{ji}$
    \IIf{$len(t_i) \neq 1 $}~\Return{$\emptyset$}
-   \State $S$ := $\{t_i\}$;$\Delta_i$ := $\{t_{i}\}$
+   \State $S$ := $\{t_i\}$; $\Delta_i$ := $\{t_{i}\}$
    \For{ $S \neq \emptyset$} 
    \State $t \in S;$ $S := S - \{t\}$
    \If{ $t == s_1 \lxor .... \lxor s_p$}
@@ -27,6 +29,7 @@
    \EndIf
    \EndFor
    \IIf{$ \Delta_{i-1} \neq \{t_{i-1}\} $}~\Return{$\emptyset$}
+   \EndFor
    \EndFor
    \State \Return{\textsc{getMultOperands}($\Lambda$,$1$)}
    \EndIf

@@ -426,7 +426,7 @@ alluded to in Chapter~\ref{sec:intro}
 %
 Wallace tree decomposes the multiplication all the way down to single bits.
 %
-Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $1$
+Let us consider bit-vectors $x$ and $y$ that are accessed in  blocks of $1$
 bit and are of size $k$.
 %
 In a Wallace tree, a partial product is the multiplication of single
@@ -486,7 +486,7 @@ The steps of Wallace tree multiplier can be summed up as:
 
 \begin{itemize}
 
-\item \textsc{Partial products generation} - Compute $n^2$ partial products, multiplying each bit of one of the arguments, by each bit of the other. Depending on position of the multiplied bits, the wires carry different weights, for example wire of bit carrying result of $a_{2}b_{3}$ is 32.
+\item \textsc{Partial products generation} - Compute $n^2$ partial products, multiplying each bit of one of the arguments, by each bit of the other. Depending on position of the multiplied bits, the wires carry different weights, for example wire of bit carrying result of $a_{2}b_{3}$ has weight 32.
 \item \textsc{Reduction} - Reduce the number of partial products of each weight to atmost two by layers of full and half adders.
 \item \textsc{Final addition} - Group the wires in two numbers, and add them with a conventional adder.
 
@@ -534,7 +534,129 @@ Let us multiply two 4 bit bit-vectors $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using th
 \end{enumerate}
 \end{example}
 
+\begin{figure}[h]
+\usetikzlibrary[arrows]
+\centering
+\begin{tikzpicture}[circuit logic US, minimum height=10mm]
+\matrix[column sep = 5mm, row sep = 1mm]
+{
+\node (a3) {$a_3$}; & \node (a2) {$a_2$}; & \node (a1) {$a_1$}; & \node (a0) {$a_0$}; & \node (b3) {$b_3$}; & \node (b2) {$b_2$}; & \node (b1) {$b_1$}; & \node (b0) {$b_0$}; & \node (name1) {$PP$}; & \node (name2) {$RL1$}; & \node (name3) {$RL2$}; & & \node (name4) {$Add$};\\
+& & & & & & & & \node[and gate] (and00) {$a_0b_0$}; & \\
+& & & & & & & & \node[and gate] (and01) {$a_0b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha1) {HA1:wt2}; & \\
+& & & & & & & & \node[and gate] (and10) {$a_1b_0$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha3) {HA3:wt4}; &\\
+& & & & & & & & \node[and gate] (and02) {$a_0b_2$}; & \\
+& & & & & & & & \node[and gate] (and11) {$a_1b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa1) {FA1:wt4}; &\\
+& & & & & & & & \node[and gate] (and20) {$a_2b_0$}; & \\
+& & & & & & & & \node[and gate] (and03) {$a_0b_3$}; & \\
+& & & & & & & & \node[and gate] (and12) {$a_1b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa2) {FA2:wt8}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa4) {FA4:wt8}; &\\
+& & & & & & & & \node[and gate] (and21) {$a_2b_1$}; & & & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (adder) {Final Adder};\\
+& & & & & & & & \node[and gate] (and30) {$a_3b_0$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha4) {HA4:wt16}; &\\
+& & & & & & & & \node[and gate] (and13) {$a_1b_3$}; & \\
+& & & & & & & & \node[and gate] (and22) {$a_2b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa3) {FA3:wt16}; &\\
+& & & & & & & & \node[and gate] (and31) {$a_3b_1$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha5) {HA5:wt32}; &\\
+& & & & & & & & \node[and gate] (and23) {$a_2b_3$}; & \\
+& & & & & & & & \node[and gate] (and32) {$a_3b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha2) {HA2:wt32}; &\\
+& & & & & & & & \node[and gate] (and33) {$a_3b_3$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha6) {HA6:wt64}; &\\
+};
+
+\draw (a3.south) -- ++(right:0mm) |- (and33.input 1);
+\draw (a2.south) -- ++(right:0mm) |- (and23.input 1);
+\draw (a1.south) -- ++(right:0mm) |- (and13.input 1);
+\draw (a0.south) -- ++(right:0mm) |- (and03.input 1);
+
+\draw (b3.south) -- ++(right:0mm) |- (and33.input 2);
+\draw (b2.south) -- ++(right:0mm) |- (and32.input 1);
+\draw (b1.south) -- ++(right:0mm) |- (and31.input 1);
+\draw (b0.south) -- ++(right:0mm) |- (and30.input 1);
+
+\draw (a0)  |- (and00.input 1);
+\draw (b0)  |- (and00.input 2);
+
+\draw (a0)  |- (and01.input 1);
+\draw (b1)  |- (and01.input 2);
+
+\draw (a1)  |- (and10.input 1);
+\draw (b0)  |- (and10.input 2);
+
+\draw (a0)  |- (and02.input 1);
+\draw (b2)  |- (and02.input 2);
+
+\draw (a1)  |- (and11.input 1);
+\draw (b1)  |- (and11.input 2);
+
+\draw (a2)  |- (and20.input 1);
+\draw (b0)  |- (and20.input 2);
+
+\draw (b3)  |- (and03.input 2);
+
+\draw (a1)  |- (and12.input 1);
+\draw (b2)  |- (and12.input 2);
+
+\draw (a2)  |- (and21.input 1);
+\draw (b1)  |- (and21.input 2);
+
+\draw (a3)  |- (and30.input 2);
+
+\draw (b3)  |- (and13.input 2);
+
+\draw (a2)  |- (and22.input 1);
+\draw (b2)  |- (and22.input 2);
+
+\draw (a3)  |- (and31.input 2);
+
+\draw (a3)  |- (and32.input 2);
+\draw (b3)  |- (and23.input 2);
+
+\draw (and01.output) |- (ha1);
+\draw (and10.output) -- ++(right:2mm) |- (ha1.205) ;
+
+\draw (and02.output) -- ++(right:1mm) |- (fa1.145);
+\draw (and11.output)  |- (fa1);
+\draw (and20.output) -- ++(right:1mm) |- (fa1.205);
+
+\draw (and03.output) -- ++(right:1mm) |- (fa2.145);
+\draw (and12.output)  |- (fa2);
+\draw (and21.output) -- ++(right:1mm) |- (fa2.205);
+
+
+\draw (and13.output) -- ++(right:1mm) |- (fa3.145);
+\draw (and22.output)  |- (fa3);
+\draw (and31.output) -- ++(right:1mm) |- (fa3.205);
+
+
+\draw (and32.output) |- (ha2);
+\draw (and23.output) -- ++(right:2mm) |- (ha2.155) ;
+
+\draw[transform canvas={yshift=-5pt}] (ha1.east) -- ++(right:3mm) |- (ha3.155);
+
+\draw[transform canvas={yshift=+5pt}] (fa1.east) -- ++(right:3mm) |- (ha3.205);
+
+\draw[transform canvas={yshift=-5pt}] (fa1.east) -- ++(right:3mm) |- (fa4.145);
+
+\draw[transform canvas={yshift=+5pt}] (fa2.east) |- (fa4.175);
+
+\draw (and30.output) -- ++(right:25mm) |- (fa4.205);
+\draw[transform canvas={yshift=-5pt}] (fa2.east) -- ++(right:4mm)|- (ha4.155);
+\draw[transform canvas={yshift=+5pt}] (fa3.east) -- ++(right:3mm) |- (ha4.205);
+
+\draw[transform canvas={yshift=-5pt}] (fa3.east) -- ++(right:3mm) |- (ha5.155);
+
+\draw[transform canvas={yshift=+5pt}] (ha2.east) -- ++(right:3mm) |- (ha5.205);
+
+\draw[transform canvas={yshift=-5pt}] (ha2.east) -- ++(right:3mm) |- (ha6.155);
+
+\draw (and33.output) |- (ha6);
+
+\end{tikzpicture}
+\caption{Example 3}
+\end{figure}
+
+
 The benefit of the Wallace tree is that there are only $\mathcal{O}(\log n)$ reduction layers, and each layer has $\mathcal{O}(1)$ propagation delay. As making the partial products is $\mathcal{O}(1)$ and the final addition is $\mathcal{O}(\log n)$, the multiplication is $\mathcal{O}(\log n)$.
+
+
+
+
 
 Both the above multiplication methods do not
 fully specify the design.
