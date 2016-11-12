@@ -538,25 +538,25 @@ Let us multiply two 4 bit bit-vectors $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using th
 \usetikzlibrary[arrows]
 \centering
 \begin{tikzpicture}[circuit logic US, minimum height=10mm]
-\matrix[column sep = 5mm, row sep = 1mm]
+\matrix[column sep = 7mm, row sep = 0.5mm]
 {
-\node (a3) {$a_3$}; & \node (a2) {$a_2$}; & \node (a1) {$a_1$}; & \node (a0) {$a_0$}; & \node (b3) {$b_3$}; & \node (b2) {$b_2$}; & \node (b1) {$b_1$}; & \node (b0) {$b_0$}; & \node (name1) {$PP$}; & \node (name2) {$RL1$}; & \node (name3) {$RL2$}; & & \node (name4) {$Add$};\\
-& & & & & & & & \node[and gate] (and00) {$a_0b_0$}; & \\
-& & & & & & & & \node[and gate] (and01) {$a_0b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha1) {HA1:wt2}; & \\
-& & & & & & & & \node[and gate] (and10) {$a_1b_0$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha3) {HA3:wt4}; &\\
-& & & & & & & & \node[and gate] (and02) {$a_0b_2$}; & \\
-& & & & & & & & \node[and gate] (and11) {$a_1b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa1) {FA1:wt4}; &\\
-& & & & & & & & \node[and gate] (and20) {$a_2b_0$}; & \\
-& & & & & & & & \node[and gate] (and03) {$a_0b_3$}; & \\
-& & & & & & & & \node[and gate] (and12) {$a_1b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa2) {FA2:wt8}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa4) {FA4:wt8}; &\\
-& & & & & & & & \node[and gate] (and21) {$a_2b_1$}; & & & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (adder) {Final Adder};\\
+\node (a3) {$a_3$}; &[-5mm] \node (a2) {$a_2$}; &[-5mm] \node (a1) {$a_1$}; &[-5mm] \node (a0) {$a_0$}; &[-5mm] \node (b3) {$b_3$}; &[-5mm] \node (b2) {$b_2$}; &[-5mm] \node (b1) {$b_1$}; &[-5mm] \node (b0) {$b_0$}; & \node (name1) {$PP$}; & \node (name2) {$RL1$}; & \node (name3) {$RL2$}; & & \node (name4) {$Add$};\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and00) {$a_0b_0$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and01) {$a_0b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha1) {HA1:wt2}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and10) {$a_1b_0$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha3) {HA3:wt4}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and02) {$a_0b_2$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and11) {$a_1b_1$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa1) {FA1:wt4}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and20) {$a_2b_0$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and03) {$a_0b_3$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and12) {$a_1b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa2) {FA2:wt8}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa4) {FA4:wt8}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and21) {$a_2b_1$}; & & & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (adder) {Final Adder};\\
 & & & & & & & & \node[and gate] (and30) {$a_3b_0$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha4) {HA4:wt16}; &\\
-& & & & & & & & \node[and gate] (and13) {$a_1b_3$}; & \\
-& & & & & & & & \node[and gate] (and22) {$a_2b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa3) {FA3:wt16}; &\\
-& & & & & & & & \node[and gate] (and31) {$a_3b_1$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha5) {HA5:wt32}; &\\
-& & & & & & & & \node[and gate] (and23) {$a_2b_3$}; & \\
-& & & & & & & & \node[and gate] (and32) {$a_3b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha2) {HA2:wt32}; &\\
-& & & & & & & & \node[and gate] (and33) {$a_3b_3$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha6) {HA6:wt64}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and13) {$a_1b_3$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and22) {$a_2b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (fa3) {FA3:wt16}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and31) {$a_3b_1$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha5) {HA5:wt32}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and23) {$a_2b_3$}; & \\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and32) {$a_3b_2$}; & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha2) {HA2:wt32}; &\\
+&[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] &[-5mm] \node[and gate] (and33) {$a_3b_3$}; & & \node[draw,rectangle, minimum width=1.5cm,minimum height=1.5cm] (ha6) {HA6:wt64}; &\\
 };
 
 \draw (a3.south) -- ++(right:0mm) |- (and33.input 1);
