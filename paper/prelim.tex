@@ -83,7 +83,7 @@ For our work, we assume access to a generic $\qfbv$~SMT solver, called
 $\textsc{SMTSolver}$, with a standard interface.
 %
 We assume that this interface provides access to two functions: (i) $add(F)$, that adds a
-formula $F$ to the context of the solver, and (ii) $checkSat()$
+formula $F$ to the context of the solver, and (ii) $checkSat()$,
 that checks the satisfiability of the conjunction of all formulas
 added to the context of the solver.  Note that such interfaces are commonly
 available with state-of-the-art SMT solvers, viz. {\boolector},
@@ -114,7 +114,7 @@ is deferred as part of future work. %Multiplication is an expensive operation to
 
 Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k.w$. 
 % \ashu{Rahul: suggest a rewrite.}
-The long multiplier decomposes the multiplication of two $k.w$ wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
+The long multiplier decomposes the multiplication of two $k.w$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
 result. 
 %
 %The partial products are summed with appropriate offsets to obtain
@@ -146,15 +146,15 @@ After the left shifts, all the partial results are added in some order.
 Note that the bit-width of each partial products is $2.w$.
 %
 Since the syntax of $\qfbv$ requires the bit-widths of arguments and result of the $*$ operator to be the same, we
-denote the partial product, $x_i * y_j$ as 
+denote the partial product $x_i * y_j$ as 
 $(0^w \concat x_i)*(0^w \concat y_j)$ for our purposes. Note
 further that the bits of the partial products in neighbouring columns (in the
-above representation of long multiplication) overlap, and hence the sums of the
-various columns can not be simply concatenated. The long multiplier does not specify the order of the addition of the shifted partial products. Therefore, there are several possible designs for a given $k$ and $w$.
+above representation of long multiplication) overlap; hence the sums of the
+various columns can not be simply concatenated. The long multiplicication algorithm does not specify the order of the addition of the shifted partial products. Therefore, there are several possible designs for a given $k$ and $w$.
 
 \begin{example}
-  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
-  Let us apply long multiplication in multiplying
+  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of width 2.
+  Let us apply long multiplication to calculate
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
@@ -166,13 +166,16 @@ various columns can not be simply concatenated. The long multiplier does not spe
   &$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-We need to sum the partial products. However, if their non-zero bits 
-do not overlap then we can simply concatenate them.
+Note that while adding the shifted partial products, if the non-zero bits of a
+subset of shifted partial products do not overlap, then we can simply concatenate
+them to obtain their sum. Finally, we can sum the concatenated vectors thus
+obtained to calculate the overall product. The following is one of the combination
+of the concatenations and summations for the long multiplication.
 %
-And finally we may sum the concatenated vectors.
+%And finally we may sum the concatenated vectors.
 %
-The following is one of the combination of the concatenations and 
-summations for the long multiplication.
+%The following is one of the combination of the concatenations and 
+%summations for the long multiplication.
 $$
 ( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
 (v_2*u_2 \concat v_2*u_1 \concat 0^4) +
