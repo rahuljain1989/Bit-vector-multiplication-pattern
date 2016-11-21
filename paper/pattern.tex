@@ -25,7 +25,7 @@ that takes a $\qfbv$ term $t$ and returns a set of matched multiplications.
 %
 The algorithm and the subsequent algorithms are written such that as soon
 as it becomes clear that no multiplication can be matched then
-they return empty set. 
+they return the empty set. 
 %
 At line 1, we match $t$ with a sum of concatenations, and if the match fails
 then clearly $t$ is not a long multiplication.
@@ -78,8 +78,7 @@ non-empty entry in $\Lambda$ must be a singleton set.
 If $\Lambda_h$ contains a single partial product $a*b$,
 we assign $x_h$ and $y_h$ the operands of $a*b$ arbitrarily.
 %
-We assign $\lfalse$ to $backtrack_h$, which states that
-no need of backtracking at index $h$.
+We assign $\lfalse$ to $backtrack_h$, which states that there is no need of backtracking at index $h$.
 %
 If $\Lambda_h$ does not contain a single partial product,
 we declare the match has failed by returning $\emptyset$.
@@ -187,12 +186,11 @@ carryHalf(a,b) = a \land b \qquad&\quad
 carryFull(a,b,c) = (a \land b) \lor (b \land c) \lor (c \land a)
 \end{align*}
 %
-The sum output of a half/full adders are the result of 
-xor operations of inputs.
+The sum outputs of half/full adders are the results of xor operations of inputs.
 %
 To find the input to the cascaded adders, we start from an
 output bit and follow backward until we find the input that
-are not the result of some xor.
+is not the result of some xor.
 
 In Algorithm~\ref{alg:wallace}, we present a function
 $\textsc{MatchWallace}$ that takes a $\qfbv$ term $t$ and returns a

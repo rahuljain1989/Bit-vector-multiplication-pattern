@@ -16,8 +16,8 @@
    \State $i := i - 1; C := \Lambda_i$
    \For{ $j \in (h-1)..(i+1)$}
    \If{$x_{j} \neq 0$ and $y_{h+i-j} \neq 0$}
-   \IIf{ $x_j*x_{h+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
-   \State $C := C - \{x_j*x_{h+i-j}\}$
+   \IIf{ $x_j*y_{h+i-j} \not\in C$} {\bf goto }{\textsc{Backtrack}}
+   \State $C := C - \{x_j*y_{h+i-j}\}$
    \EndIf
    \EndFor
    % \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}

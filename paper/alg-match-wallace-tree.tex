@@ -10,7 +10,7 @@
    \For{ $i \in 1..k$ }
    \IIf{$len(t_i) \neq 1 $}~\Return{$\emptyset$}
    \State $S$ := $\{t_i\}$;$\Delta_i$ := $\{t_{i}\}$
-   \For{ $S \neq \emptyset$} 
+   \While{ $S \neq \emptyset$}
    \State $t \in S;$ $S := S - \{t\}$
    \If{ $t == s_1 \lxor .... \lxor s_p$}
    \State $S := S \union \{s_1,..,s_p\}$;$\Delta_i := \Delta_i \union \{s_1,..,s_p\}$
@@ -25,7 +25,7 @@
    % \IIf{ $t \neq t_i$} $\Delta_i.insert( t )$
    \Else~\Return{$\emptyset$}
    \EndIf
-   \EndFor
+   \EndWhile
    \IIf{$ \Delta_{i-1} \neq \{t_{i-1}\} $}~\Return{$\emptyset$}
    \EndFor
    \State \Return{\textsc{getMultOperands}($\Lambda$,$1$)}
