@@ -16,7 +16,7 @@ For example, we may declare that a bit-vector $x$ is accessed in
 blocks of width $w$.
 %
 Let $x_i$ denote the $i$th block of bits, with the block containing
-the least significant bit (LSB) having index $0$.
+the least significant bit (LSB) having index $1$.
 %
 % Similar notation is used for the vectors of any object.
 
@@ -65,7 +65,7 @@ Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
 %% solvers are specialized solvers that solve 
 %% formulas of a given theory.
 %
-The leading SMT solvers for \qfbv~apply several simplification and
+State-of-the-art SMT solvers for \qfbv~apply several simplification and
 re-writing passes to decide the satisfiability of the input formula.
 If these do not succeed in solving the problem, the solvers bit-blast
 the formula, i.e., translate the qbit-vector formula to an
@@ -80,46 +80,48 @@ Some of the leading SMT solvers today are $\zthree$\cite{zthree},
 $\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
 
 For our work, we assume access to a generic $\qfbv$~SMT solver, called
-$\textsc{SMTSolver}$, with the standard interface.
+$\textsc{SMTSolver}$, with a standard interface.
 %
-We assume that this interface includes a function $add(F)$ that adds a
-formula $F$ to the context of the solver, and a function $checkSat()$
+We assume that this interface provides access to two functions: (i) $add(F)$, that adds a
+formula $F$ to the context of the solver, and (ii) $checkSat()$
 that checks the satisfiability of the conjunction of all formulas
-added to the context of the solver.  Note that such interface is
-available with most state-of-the-art solvers, viz. {\boolector},
+added to the context of the solver.  Note that such interfaces are commonly
+available with state-of-the-art SMT solvers, viz. {\boolector},
 {\cvcfour} and {\zthree}.
 
 \subsection{Multipliers}
 
-Multiplication is an expensive operation to implement in hardware.
+As discussed in Section~\ref{sec:intro}, there are several alternative multiplier implementa-
+tions that are used in hardware embedded systems. Among the most popular such implementations are long multipliers, Booth multipliers and Wallace-tree
+multipliers. In this work, we focus only on long multipliers and Wallace-tree
+multipliers. The study of our heuristic for systems containing Booth multipliers
+is deferred as part of future work. %Multiplication is an expensive operation to implement in hardware.
 %
-There are several designs of multipliers for varying
-resource constraints.
+%There are several designs of multipliers for varying
+%resource constraints.
 %
-If one can have a large number of gates then Wallace tree
-multiplier can be used.
+%If one can have a large number of gates then Wallace tree
+%multiplier can be used.
 %
-Otherwise, one may decompose the multiplication task in
-small multiplications and combine the results appropriately.
+%Otherwise, one may decompose the multiplication task in
+%small multiplications and combine the results appropriately.
 %
-For example, long multiplier and Booth multiplier.
+%For example, long multiplier and Booth multiplier.
 %
-Here, we will discuss long and Wallace tree multiplier.
+%Here, we will discuss long and Wallace tree multiplier.
 
 \subsubsection{Long multiplier}\label{sec:long-mult}
 
-Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
-bits and are of size $kw$.
-%
+Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k.w$. 
 % \ashu{Rahul: suggest a rewrite.}
-The long multiplier decomposes the $kw$ bits multiplication 
-into chunks of $w$ bits multiplications, called {\em partial products}.
+The long multiplier decomposes the multiplication of two $k.w$ wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
+result. 
 %
-The partial products are summed with appropriate offsets to obtain
-the final result.
+%The partial products are summed with appropriate offsets to obtain
+%the final result.
 %
 The following notation is typically used to illustrate
-the long multiplication.
+long multiplication.
 %
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
@@ -130,27 +132,25 @@ the long multiplication.
   &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
 \end{tabular}  
 \end{center}
-$x_i * y_j$s are the partial products.
+Here, the $x_i*y_j$s are the partial products.
 %
-Each $x_i*y_j$ is left shifted $(i+j-2)w$ bits. 
+The partial product $x_i*y_j$ is left shifted $(i+j-2).w$ bits before being added. In the above representation, all partial
+products that are left-shifted by the same amount are aligned in a single column.
+After the left shifts, all the partial results are added in some order. 
 %
-In the above scheme all the partial products that have same offset are 
-aligned in single column.
+%In the above scheme all the partial products that have same offset are 
+%aligned in single column.
 %
-After the shifts, all the partial results are added in some order.
+%After the shifts, all the partial results are added in some order.
 %
-The bit-width of the partial products is $2w$.
+Note that the bit-width of each partial products is $2.w$.
 %
-In the $\qfbv$ notation, $x_i * y_j$ is correctly denoted by
-$(0^w \concat x_i)*(0^w \concat y_j)$.
-%
-Therefore, the bits of the partial products in neighbouring columns overlap
-and they can not be simply concatenated.
-%
-The long multiplier does not specify the order of the addition
-of the shifted partial products.
-%
-Therefore, there are several possible designs for a given $k$ and $w$.
+Since the syntax of $\qfbv$ requires the bit-widths of arguments and result of the $*$ operator to be the same, we
+denote the partial product, $x_i * y_j$ as 
+$(0^w \concat x_i)*(0^w \concat y_j)$ for our purposes. Note
+further that the bits of the partial products in neighbouring columns (in the
+above representation of long multiplication) overlap, and hence the sums of the
+various columns can not be simply concatenated. The long multiplier does not specify the order of the addition of the shifted partial products. Therefore, there are several possible designs for a given $k$ and $w$.
 
 \begin{example}
   Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
@@ -202,7 +202,7 @@ Note that, if we had applied the long multiplication to $v_1 \concat
 the same partial products. This shows that simply knowing the
 collections of partial products at different indexes does not allow us
 to uniquely determine the operands. Recall that this problem was
-alluded to in Section~\ref{sec:intro}
+alluded to in Section~\ref{sec:intro}.
 
 \end{example}
 
