@@ -112,9 +112,9 @@ is deferred as part of future work. %Multiplication is an expensive operation to
 
 \subsubsection{Long multiplier}\label{sec:long-mult}
 
-Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k.w$. 
+Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k \cdot w$. 
 % \ashu{Rahul: suggest a rewrite.}
-The long multiplier decomposes the multiplication of two $k.w$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
+The long multiplier decomposes the multiplication of two $k \cdot w$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
 result. 
 %
 %The partial products are summed with appropriate offsets to obtain
@@ -132,7 +132,7 @@ long multiplication.
   &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
 \end{tabular}  
 \end{center}
-Here, the $x_i*y_j$s are the partial products. The partial product $x_i*y_j$ is left shifted $(i+j-2).w$ bits before being added. In the above representation, all partial
+Here, the $x_i*y_j$s are the partial products. The partial product $x_i*y_j$ is left shifted $(i+j-2) \cdot w$ bits before being added. In the above representation, all partial
 products that are left-shifted by the same amount are aligned in a single column.
 After the left shifts, all the partial results are added in some order. 
 %
@@ -141,7 +141,7 @@ After the left shifts, all the partial results are added in some order.
 %
 %After the shifts, all the partial results are added in some order.
 %
-Note that the bit-width of each partial product is $2.w$.
+Note that the bit-width of each partial product is $2 \cdot w$.
 %
 Since the syntax of $\qfbv$ requires the bit-widths of arguments and result of the $*$ operator to be the same, we
 denote the partial product $x_i * y_j$ as 
