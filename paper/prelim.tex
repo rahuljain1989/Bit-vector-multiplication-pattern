@@ -151,6 +151,27 @@ above representation of long multiplication) overlap; hence the sums of the
 various columns can not be simply concatenated. The long multiplication algorithm does not specify the order of the addition of the shifted partial products. Therefore, there are several possible designs for a given $k$ and $w$.
 
 \begin{example}
+  Consider bit-vectors $v_3,v_2,v_1$,  $u_3,u_2$, and $u_1$, each of width 2.
+  Let us apply long multiplication to calculate
+  $v_3 \concat v_2 \concat v_1$ and $u_3 \concat u_2 \concat u_1$.
+  We obtain the following partial products.
+\begin{center}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $v_3$ & $v_2$ & $v_1$&\\ 
+  &&& $u_3$ & $u_2$ & $u_1$&$*$\\ \hline
+  &$v_3*u_3$&& $v_3*u_1$ && $v_1*u_1$&\\
+  &&$v_2*u_3$&& $v_2*u_1$ && \\
+  &&$v_3*u_2$&& $v_1*u_2$ && \\
+  &&&$v_2*u_2$&&& \\
+  &&&$v_1*u_3$&  & +&\\\hline
+\end{tabular}
+\end{center}
+The example demonstrates one feasible way of arranging the partial products. The key point as stated above is, each partial product $x_i * y_j$ is twice the width of $x_i$ and $y_j$, assuming both to be of the same size. So in our representation, we ideally cannot have two partial products next to each other in any row. However, in the next two examples we do not face this representational constraint. 
+
+\end{example}
+
+
+\begin{example}
   Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of width 2.
   Let us apply long multiplication to calculate
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
@@ -196,8 +217,6 @@ $$
   %&$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-
-
 Note that, if we had applied the long multiplication to $v_1 \concat
 0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got
 the same partial products. This shows that simply knowing the
