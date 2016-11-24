@@ -141,6 +141,41 @@ Wallace tree multiplier experiments.
 \input{tbl-long-cd}
 %
 
+\paragraph{\bf Limitations}
+%
+Our implementation and method have several limitations
+in solving the target bit-vector problems.
+%
+We have only considered a limited space of implementations of the
+multipliers and the implementations may include several other
+optimizations, e.g., multiplying with constants using bit-shifting.
+%
+The multipliers may be applied recursively, e.g.,
+the partial products in the long multiplication may be
+implemented using Wallace tree.
+%
+Adding assertions in the formula may hurt solving time, because
+it may also be bit-blasted by the solver and overwhelms
+the underlying SAT solver
+%
+On top of that, the added assertions themselves are rewritten and
+unrecognizable by the equality checker.
+%
+Since the nature of our method is to exploit the potential
+structure in the input, we must also adopt all parts of the solver
+to be aware of it, which is our future goal.
+%
+We are currently working to tag the added assertions such that they
+are neither simplified in pre-processing nor bit-blasted in the final
+solving.
+%
+They should only contribute to the word-level reasoning.
+%
+Our experiments do not include examples where multiplication
+is embedded deep in a large formula.
+%
+We also working to make our implementation robust such that
+it can reliably work on larger examples.
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
