@@ -48,10 +48,6 @@ We have generated benchmarks also for Wallace tree multiplier similar to the lon
 %
 For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were unsatisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
 %
-\ashu{We also applied our tool on SMT-LIB benchmarks and the tool did not match
-to any patterns.
-%
-So, we are not reporting any detailed analysis on SMT-LIB benchmarks.}
 
 \paragraph{\bf Results}
 %
@@ -139,8 +135,21 @@ $\ourtool$ with $\cvcfour$ has zero conflicts and
 decisions for all the long multiplication experiments, because the 
 word level reasoning solved the benchmarks.
 %
-Similarly, $\ourtool$ with $\zthree$ has zero conflicts and decisions for all the
-Wallace tree multiplier experiments.
+Similarly, $\ourtool$ with $\zthree$ has zero conflicts and decisions
+for all the Wallace tree multiplier experiments.
+
+\ashu{
+%
+We also applied $\ourtool$ with $\zthree$ on SMT-LIB benchmarks and compared 
+with the original $\zthree$.
+%
+$\ourtool$ was able to handle $..\%$ of the benchmarks.
+%
+We observed timings for $..\%$ of the benchmarks did not change more than $5\%$,
+$..\%$ of the benchmarks increased more than $5\%$,
+and 
+$..\%$ of the benchmarks decreased more than $5\%$.
+}
 
 \input{tbl-long-cd}
 %
