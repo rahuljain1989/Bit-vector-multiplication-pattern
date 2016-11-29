@@ -1,7 +1,7 @@
 %
 We have implemented\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}} our algorithms as a part of $\zthree$ SMT solver.
 %
- We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
+We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
 %
 We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
@@ -48,6 +48,10 @@ We have generated benchmarks also for Wallace tree multiplier similar to the lon
 %
 For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were unsatisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
 %
+\ashu{We also applied our tool on SMT-LIB benchmarks and the tool did not match
+to any patterns.
+%
+So, we are not reporting any detailed analysis on SMT-LIB benchmarks.}
 
 \paragraph{\bf Results}
 %
