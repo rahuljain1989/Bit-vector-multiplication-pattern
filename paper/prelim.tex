@@ -164,9 +164,8 @@ various columns can not be simply concatenated. The long multiplication algorith
   & $v_3*u_3$ & $v_2*u_3$ &$v_1*u_3$&  & +&\\\hline
 \end{tabular}
 \end{center}
-The following is one of the combination
-of the concatenations and summations of the partial products
-to obtain the final result.
+The following formula is a combination of the partial products using
+ concatenations and summations to obtain the final result.
 \begin{align*}
   (v_3*u_3 \concat v_3*u_1 \concat v_1*u_1) +
   (0^2 \concat v_2*u_3 \concat v_2*u_1 \concat 0^2) +\\
@@ -174,11 +173,10 @@ to obtain the final result.
   (0^4 \concat v_2*u_2 \concat 0^4) + (0^4 \concat v_1*u_3 \concat 0^4)
 \end{align*}
 %
-Each partial product $x_i * y_j$ is 4 bit wide.
+%Each partial product $x_i * y_j$ is 4 bit wide.
 %
-In contrast to our the above tabular representation, we cannot
-two partial products next to each other concatenated.
-
+In the formula we cannot concatenate 
+two partial products which appear next to each other in the tabular representation.
 
 \end{example}
 
