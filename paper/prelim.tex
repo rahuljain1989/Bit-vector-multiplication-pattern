@@ -164,13 +164,21 @@ various columns can not be simply concatenated. The long multiplication algorith
   & $v_3*u_3$ & $v_2*u_3$ &$v_1*u_3$&  & +&\\\hline
 \end{tabular}
 \end{center}
-The example demonstrates one feasible way of arranging the partial products. The key point as stated above is, each partial product $x_i * y_j$ is twice the width of $x_i$ and $y_j$, assuming both to be of the same size. So in our representation, we ideally cannot have two partial products next to each other in any row. However, in the next two examples we do not face this representational constraint. The following is one of the combination
-of the concatenations and summations for the long multiplication.
-$(v_3*u_3 \concat 0^4 \concat v_3*u_1 \concat 0^4 \concat v_1*u_1) +
- (0^4 \concat v_2*u_3 \concat 0^4 \concat v_2*u_1 \concat 0^4) +
- (0^4 \concat v_3*u_2 \concat 0^4 \concat v_1*u_2 \concat 0^4) +
- (0^8 \concat v_2*u_2 \concat 0^8) +
- (0^8 \concat v_1*u_3 \concat 0^8)$
+The following is one of the combination
+of the concatenations and summations of the partial products
+to obtain the final result.
+\begin{align*}
+  (v_3*u_3 \concat v_3*u_1 \concat v_1*u_1) +
+  (0^2 \concat v_2*u_3 \concat v_2*u_1 \concat 0^2) +\\
+  (0^2 \concat v_3*u_2 \concat v_1*u_2 \concat 0^2) +
+  (0^4 \concat v_2*u_2 \concat 0^4) + (0^4 \concat v_1*u_3 \concat 0^4)
+\end{align*}
+%
+Each partial product $x_i * y_j$ is 4 bit wide.
+%
+In contrast to our the above tabular representation, we cannot
+two partial products next to each other concatenated.
+
 
 \end{example}
 
