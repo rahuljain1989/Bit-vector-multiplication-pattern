@@ -32,10 +32,9 @@ targeted at establishing the functional equivalence of one circuit
 with another, replacing one circuit configuration with another often
 works profitably.  However, as argued in Section~\ref{sec:intro}, this
 is not always desirable when checking the satisfiability of a formula
-obtained from word-level BMC or word-level STE.  Hence, our approach
+obtained from word-level BMC or STE.  Hence, our approach
 differs from the use of rewrites used in hardware equivalence
-checkers, although there are close parallels between the two
-approaches.
+checkers, although there are close parallels between the two. %approaches.
 
 It is interesting to note that alternative representations of
 arithmetic operators are internally used in SMT solvers when
@@ -54,6 +53,7 @@ However, none of these are intended to help improve the performance
 Instead, they are used to shift the granularity of reasoning from
 word-level to bit-level for the sake of completeness, but often
 at the price of performance.
+% \vspace{-1ex}
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
 
