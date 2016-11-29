@@ -82,33 +82,29 @@ $\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
 For our work, we assume access to a generic $\qfbv$~SMT solver, called
 $\textsc{SMTSolver}$, with a standard interface.
 %
-We assume that this interface provides access to two functions: (i) $add(F)$, that adds a
-formula $F$ to the context of the solver, and (ii) $checkSat()$,
-that checks the satisfiability of the conjunction of all formulas
-added to the context of the solver.  Note that such interfaces are commonly
-available with state-of-the-art SMT solvers, viz. {\boolector},
-{\cvcfour} and {\zthree}.
+We assume that the interface provides access to two functions: (i)
+$add(F)$, that adds a formula $F$ to the context of the solver, and
+(ii) $checkSat()$, that checks the satisfiability of the conjunction
+of all formulas added to the context of the solver.
+%
+Note that such interfaces are commonly available with state-of-the-art
+SMT solvers, viz. {\boolector}, {\cvcfour} and {\zthree}.
 
 \subsection{Multipliers}
 
-As discussed in Section~\ref{sec:intro}, there are several alternative multiplier implementa-
-tions that are used in hardware embedded systems. Among the most popular such implementations are long multipliers, Booth multipliers and Wallace-tree
-multipliers. In this work, we focus only on long multipliers and Wallace-tree
-multipliers. The study of our heuristic for systems containing Booth multipliers
-is deferred as part of future work. %Multiplication is an expensive operation to implement in hardware.
+As discussed in Section~\ref{sec:intro}, there are several alternative
+multiplier implementations that are used in hardware embedded
+systems.
 %
-%There are several designs of multipliers for varying
-%resource constraints.
+Among the most popular such implementations are long
+multipliers, Booth multipliers and Wallace-tree multipliers.
 %
-%If one can have a large number of gates then Wallace tree
-%multiplier can be used.
+In this work, we focus only on long multipliers and Wallace-tree
+multipliers.
 %
-%Otherwise, one may decompose the multiplication task in
-%small multiplications and combine the results appropriately.
-%
-%For example, long multiplier and Booth multiplier.
-%
-%Here, we will discuss long and Wallace tree multiplier.
+The study of our heuristic for systems containing Booth multipliers is
+deferred as part of future work. 
+
 
 \subsubsection{Long multiplier}\label{sec:long-mult}
 
@@ -156,6 +152,7 @@ various columns can not be simply concatenated. The long multiplication algorith
   $v_3 \concat v_2 \concat v_1$ and $u_3 \concat u_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
+\vspace{-1ex}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $v_3$ & $v_2$ & $v_1$&\\ 
   &&& $u_3$ & $u_2$ & $u_1$&$*$\\ \hline
@@ -163,6 +160,7 @@ various columns can not be simply concatenated. The long multiplication algorith
   && $v_3*u_2$ & $v_2*u_2$ & $v_1*u_2$ && \\
   & $v_3*u_3$ & $v_2*u_3$ &$v_1*u_3$&  & +&\\\hline
 \end{tabular}
+\vspace{-1ex}
 \end{center}
 The following formula is a combination of the partial products using
  concatenations and summations to obtain the final result.
@@ -187,6 +185,7 @@ two partial products which appear next to each other in the tabular representati
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
+  \vspace{-2ex}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $v_2$ & $0^2$ & $v_1$&\\ 
   &&& $u_2$ & $v_2$ & $u_1$&$*$\\ \hline
@@ -205,13 +204,14 @@ of the concatenations and summations for the long multiplication.
 %
 %The following is one of the combination of the concatenations and 
 %summations for the long multiplication.
+\vspace{-1ex}
 $$
 ( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
 (v_2*u_2 \concat v_2*u_1 \concat 0^4) +
 (0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+\vspace{-1ex}
 $$
 \end{example}
-
 
 \begin{example}
 
@@ -269,7 +269,7 @@ The carry bits are summed to the partial products for $(o+1)th$ bit
 using adders as illustrated in the following figure.
 
 \begin{center}
-  \begin{tikzpicture}[node distance=4cm,thick]
+  \begin{tikzpicture}[node distance=4cm,thick,scale=0.9]
 
     \node[draw,rectangle, minimum width=2cm,minimum height=1cm] (a) {Adders};
     \node[draw,rectangle, minimum width=2cm,minimum height=1cm, right of=a] (b) {Adders};
