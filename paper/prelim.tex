@@ -79,7 +79,8 @@ learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
 Some of the leading SMT solvers today are $\zthree$\cite{zthree},
 $\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
 
-For our work, we assume access to a generic $\qfbv$~SMT solver, called
+For our work,
+we assume access to a generic $\qfbv$~SMT solver, called
 $\textsc{SMTSolver}$, with a standard interface.
 %
 We assume that the interface provides access to two functions: (i)
@@ -104,8 +105,8 @@ multipliers.
 %
 The study of our heuristic for systems containing Booth multipliers is
 deferred as part of future work. 
-
-
+ 
+\vspace{-4ex}
 \subsubsection{Long multiplier}\label{sec:long-mult}
 
 Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k \cdot w$. 
@@ -122,8 +123,8 @@ long multiplication.
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $x_{k}$ & ... & $x_1$&\\ 
-  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline
-  &&&$x_k*y_1$& ... & $x_1*y_1$&\\
+  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline\vspace{-2pt}
+  &&&$x_k*y_1$& ... & $x_1*y_1$&\\\vspace{-2pt}
   &&$\iddots$&$\vdots$& $\iddots$ && \\
   &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
 \end{tabular}  
@@ -148,11 +149,11 @@ various columns can not be simply concatenated. The long multiplication algorith
 
 \begin{example}
   Consider bit-vectors $v_3,v_2,v_1$,  $u_3,u_2$, and $u_1$, each of width 2.
-  Let us apply long multiplication to calculate
+  Let us apply long multiplication on
   $v_3 \concat v_2 \concat v_1$ and $u_3 \concat u_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
-\vspace{-1ex}
+\vspace{-2ex}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $v_3$ & $v_2$ & $v_1$&\\ 
   &&& $u_3$ & $u_2$ & $u_1$&$*$\\ \hline
@@ -160,15 +161,17 @@ various columns can not be simply concatenated. The long multiplication algorith
   && $v_3*u_2$ & $v_2*u_2$ & $v_1*u_2$ && \\
   & $v_3*u_3$ & $v_2*u_3$ &$v_1*u_3$&  & +&\\\hline
 \end{tabular}
-\vspace{-1ex}
+% \vspace{-1ex}
 \end{center}
 The following formula is a combination of the partial products using
  concatenations and summations to obtain the final result.
+\vspace{-1ex}
 \begin{align*}
   (v_3*u_3 \concat v_3*u_1 \concat v_1*u_1) +
   (0^2 \concat v_2*u_3 \concat v_2*u_1 \concat 0^2) +\\
   (0^2 \concat v_3*u_2 \concat v_1*u_2 \concat 0^2) +
   (0^4 \concat v_2*u_2 \concat 0^4) + (0^4 \concat v_1*u_3 \concat 0^4)
+\vspace{-1ex}
 \end{align*}
 %
 %Each partial product $x_i * y_j$ is 4 bit wide.
@@ -181,7 +184,7 @@ two partial products which appear next to each other in the tabular representati
 
 \begin{example}
   Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of width 2.
-  Let us apply long multiplication to calculate
+  Let us apply long multiplication on
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
@@ -200,10 +203,6 @@ them to obtain their sum. Finally, we can sum the concatenated vectors thus
 obtained to calculate the overall product. The following is one of the combination
 of the concatenations and summations for the long multiplication.
 %
-%And finally we may sum the concatenated vectors.
-%
-%The following is one of the combination of the concatenations and 
-%summations for the long multiplication.
 \vspace{-1ex}
 $$
 ( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
@@ -236,7 +235,7 @@ alluded to in Section~\ref{sec:intro}.
 
 \end{example}
 
-
+\vspace{-4ex}
 \subsubsection{Wallace tree multiplier\cite{wallace}}
 %
 Wallace tree decomposes the multiplication all the way down to single bits.
