@@ -1,32 +1,26 @@
 %
-SMT solvers for the theory of fixed-width bit-vectors are widely used.
+%SMT solvers for the theory of fixed-width bit-vectors are widely used.
 %
-Bit-vector formulas often involve word-level arithmetic
-operations.
+Bit-vector formulas arising from hardware verification problems often
+contain word-level arithmetic operations.  Empirical evidence shows
+that state-of-the-art SMT solvers are not very efficient at reasoning about
+bit-vector formulas with multiplication.  This is particularly true
+when multiplication operators are decomposed and represented in
+alternative ways in the formula. %% In such cases, the solver may fail
+%to identify the word-level
+%% multiplication operation and end up bit-blasting..
+%% %
+%Therefore, it is important for an SMT solver to uses all the structure
+%available in the problem, including the word-level reasoning.
 %
-Empirical evidence shows that bit-vector formulas with multiplication
-are often hard for SMT solvers to reason about.
 %
-Therefore, it is important that an SMT solver uses all 
-the structure available in the problem, including the
-word-level reasoning.
-%
-Sometimes multiplication operators are decomposed and implemented in
-alternative ways, and the solver fails to identify the word-level
-multiplication operation.
-%
-In this paper, we present a pre-processing heuristic that identifies
-the decomposed multipliers, and adds special assertions to the input
-formula that encodes equivalence of the decomposed multiplication and
-the word-level multiplication.  The pre-processed formulas are then
-solved using an available solver.
-%
-We have implemented our pre-processing algorithms in the rewriting
-engine of $\zthree$ and applied these on a suite of benchmarks.
-%
-Our experiments with three state-of-the-art SMT solvers show that our
-heuristic allows several formulas to be solved quickly, while the same
-formulas time out without the pre-processing step.
+We present a pre-processing heuristic that identifies certain types of
+decomposed multipliers, and adds special assertions to the input
+formula encoding the equivalence of sub-terms to word-level
+multiplication.  The pre-processed formulas are then solved using an
+SMT solver.  Our experiments with three  SMT solvers
+show that our heuristic allows several formulas to be solved quickly,
+while the same formulas time out without the pre-processing step.
 %
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
