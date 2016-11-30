@@ -12,7 +12,7 @@ spell:
 #	aspell -t -l en_us -c $(MAIN).tex
 
 zip:
-	zip -r $(MAIN).zip *.tex */*.tex *.bib *.cls
+	zip -r $(MAIN).zip *.tex */*.tex *.bib *.cls *.bbl
 
 clean:
 	rm -f $(MAIN).aux $(MAIN).bbl $(MAIN).blg $(MAIN).bst $(MAIN).dvi $(MAIN).fdb_latexmk $(MAIN).fls $(MAIN).idx $(MAIN).lof $(MAIN).log $(MAIN).nav $(MAIN).out $(MAIN).pdf $(MAIN).snm $(MAIN).synctex.gz $(MAIN).toc

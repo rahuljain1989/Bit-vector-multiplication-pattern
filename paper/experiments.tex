@@ -138,18 +138,18 @@ word level reasoning solved the benchmarks.
 Similarly, $\ourtool$ with $\zthree$ has zero conflicts and decisions
 for all the Wallace tree multiplier experiments.
 
-\ashu{
-%
-We also applied $\ourtool$ with $\zthree$ on SMT-LIB benchmarks and compared 
-with the original $\zthree$.
-%
-$\ourtool$ was able to handle $..\%$ of the benchmarks.
-%
-We observed timings for $..\%$ of the benchmarks did not change more than $5\%$,
-$..\%$ of the benchmarks increased more than $5\%$,
-and 
-$..\%$ of the benchmarks decreased more than $5\%$.
-}
+% \ashu{
+% %
+% We also applied $\ourtool$ with $\zthree$ on SMT-LIB benchmarks and compared 
+% with the original $\zthree$.
+% %
+% $\ourtool$ was able to handle $..\%$ of the benchmarks.
+% %
+% We observed timings for $..\%$ of the benchmarks did not change more than $5\%$,
+% $..\%$ of the benchmarks increased more than $5\%$,
+% and 
+% $..\%$ of the benchmarks decreased more than $5\%$.
+% }
 
 \input{tbl-long-cd}
 %
@@ -188,7 +188,10 @@ Our experiments do not include examples where multiplication
 is embedded deep in a large formula.
 %
 We are also working to make our implementation robust such that
-it can reliably work on larger examples.
+it can reliably work on larger examples, in particular on all the 
+SMT-LIB benchmarks.
+%
+More results may be found in the direction at~\cite{arxiv-version}.
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
