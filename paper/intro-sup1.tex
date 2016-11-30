@@ -18,8 +18,9 @@ theories, and reduce the given problem to checking the
 play a central role in this approach, since they combine decision
 procedures of individual first-order theories to check the
 satisfiability of a formula in the combined theory.  Not surprisingly,
-techniques to improve the performance of SMT solvers have attracted
-significant attention over the years %% .  The literature contains a
+heuristic techniques to improve the performance of SMT solvers have
+attracted significant attention over the years %% .  The literature
+%contains a
 %rich
 %% body of heuristic strategies for improving the performance of
 %% theory-specific solvers
@@ -85,8 +86,9 @@ our study, which focuses on systems using the multiplication operator,
 reveals that three state-of-the-art SMT solvers
 ({\zthree}~\cite{zthree}, {\cvcfour}~\cite{cvcfour} and
 {\boolector}~\cite{boolector}) encounter serious performance
-bottlenecks in identifying these equivalences.  This manifests
-dramatically when reasoning about the unsatisfiability of formulas.
+bottlenecks in identifying these equivalences.  Our limited
+experiments show that these bottlenecks manifest most conspicuously
+when reasoning about the unsatisfiability of formulas.
 
 \noindent {\bfseries \emph{A motivating example:}} To illustrate
 the severity of the problem, we consider the SMT formula arising out
@@ -98,20 +100,20 @@ them and makes the $64$-bit result available in an output register.
 %% several control signals that can be used to change the flow of
 %% control, effectively delaying the computation of the result.
 
-The property to be checked asserts that if $a$ and $b$ denote the two
-operands that are read in, then after the computation is over, the
-output register indeed has the product $a *_{[32]} b$, where
-$*_{[32]}$ denotes $32$-bit multiplication.  The system implementation
-in~\cite{wste}, described in $\sysver$ (a hardware description
-language), makes use of the multiplication operator in $\sysver$
-with $32$-bit operands.  The Language Reference Manual of $\sysver$
-specifies that this amounts to using a $32$-bit multiplication
-operation directly.  The SMT formula resulting from a WSTE run on this
-example therefore contains terms with only $32$-bit multiplication
-operators, and no terms encoding a lower-level multiplier
-implementation.  This formula is shown to be unsatisfiable within a
-fraction of a second by {\boolector} (and also by {\cvcfour} and
-{\zthree}).%%   Note that in WSTE (as also in WBMC), the SMT formula
+The property to be checked asserts that if $a$ and $b$ denote the
+word-level operands that are read in, then after the computation is
+over, the output register indeed has the product $a *_{[32]} b$, where
+$*_{[32]}$ denotes $32$-bit multiplication.  The system implementation,
+as used in~\cite{wste}, is described in $\sysver$ (a hardware description
+language) and makes use of the multiplication operator (i.e., {\tt *}) in
+$\sysver$ with $32$-bit operands.  The Language Reference Manual of
+$\sysver$ specifies that this amounts to using a $32$-bit
+multiplication operation directly.  The SMT formula resulting from a
+WSTE run on this example therefore contains terms with only $32$-bit
+multiplication operators, and no terms encoding a lower-level
+multiplier implementation.  This formula is proved unsatisfiable
+in a fraction of a second by {\boolector}, {\cvcfour}
+and {\zthree}.%% Note that in WSTE (as also in WBMC), the SMT formula
 %% encodes violation of a property by a bounded run of the system. Hence,
 %% unsatisfiability of the formula implies the absence of any bounded
 %% violating runs.
@@ -125,10 +127,11 @@ property being checked), and also terms that encode the implementation
 of a $32$-bit multiplier using long-multiplication.  Surprisingly,
 none of {\boolector}, {\cvcfour} and {\zthree} succeeded in deciding
 the satisfiability of the resulting formula even after $24$ hours on
-the same computing platform.  The heuristic strategies in these
-solvers fail to identify the semantic equivalence of terms encoding
-alternative representations of $32$-bit multiplication, and proceed
-to bit-blast the formulas, leading to this dramatic run-time blowup.
+the same computing platform as in the original experiment.  The
+heuristic strategies in these solvers failed to identify the
+equivalence of terms encoding alternative representations of $32$-bit
+multiplication, and proceeded to bit-blast the formulas, resulting in this
+dramatic blowup in run-time.
 
 \noindent {\bfseries \emph{Problem formulation:}} 
 The above example demonstrates that the inability to identify semantic
@@ -140,19 +143,20 @@ This motivates us to ask: \emph{Can we heuristically pre-process an
 SMT formula containing terms encoding alternative representations of
 bit-vector arithmetic operators, in a solver-independent manner, so
 that multiple solvers benefit from it?}  We answer this question
-positively for the multiplication operator.  The motivating example,
-that originally timed out after $24$ hours on three solvers, is shown
-to be unsatisfiable by {\zthree} in 0.073s and by {\cvcfour} in
-0.017s, after applying our heuristic. However, {\boolector} does not
-benefit from our heuristic on this example.  However, it benefits in
-several other examples, as discussed in Section~\ref{sec:experiments}.
+positively in this paper, for the multiplication operator.  The
+motivating example, that originally timed out after $24$ hours on
+three solvers, is shown to be unsatisfiable by {\zthree} in 0.073s and
+by {\cvcfour} in 0.017s, after applying our heuristic. Although
+{\boolector} does not benefit from our heuristic on this example,
+it benefits in several other examples, as discussed in
+Section~\ref{sec:experiments}.
 
 \noindent {\bfseries \emph{Term re-writing vs adding tautological assertions:}} 
 Prima facie, the above problem can be solved by reverse-engineering a
 lower-level representation of a bit-vector arithmetic operator, and by
 re-writing terms encoding this representation with terms using the
 higher-level bit-vector operator.  Indeed, variants of this approach
-have been used in different
+have been used earlier in different
 contexts~\cite{kunz,ciesielski,kolbl,reveng,earlier-pat-match-synopsys}.
 In the context of SMT solving, however, more caution is needed.
 %we need to be careful%% complications can potentially
@@ -161,15 +165,15 @@ In the context of SMT solving, however, more caution is needed.
 %operator by another term encoding a different representation.
 As shown in Example $2$ of Section~\ref{sec:long-mult}, the same
 collection of terms (in this case, sums-of-partial-products) can arise
-from two different long-multiplication operations.  This makes it
+from two different word-level multiplication operations.  This makes it
 difficult to decide which of several term re-writes should be
 used when there are alternatives. %% to help the SMT solver
 %% decide the satisfiability of the input formula.
 %Furthermore,
 Even if the above dilemma doesn't arise, re-writing one term with
-another is a ``peep-hole'' transformation, that may not always
-correlate with improved solver performance for various
-reasons.  %% Indeed,
+another is a ``peep-hole'' transformation that may not always
+correlate with improved solver performance. % for various
+%reasons.  %% Indeed,
 %% term re-writing is a ``peep-hole'' transformation that is oblivious of
 %% the overall context in which the terms appear in the SMT formula.
 %% What appears beneficial locally may not be beneficial in the overall
@@ -180,9 +184,9 @@ reasons.  %% Indeed,
 For example, one term may enable a re-write rule that helps simplify
 one sub-formula, while a syntactically distinct but semantically
 equivalent term may enable another re-write rule that helps simplify
-another sub-formula. Re-writing one term by another precludes the
-possibility of both terms contributing to improved performance of
-the solver.%satisfiability check.
+another sub-formula. Re-writing one term by another prevents
+both terms from jointly contributing to simplifications and improving
+the solver's performance.%satisfiability check.
 
 %% Re-writing a term encoding a low-level representation of an arithmetic
 %% operator with another term representing the same operator at a higher
@@ -193,21 +197,22 @@ bit-vector formula $\varphi$ containing terms with different
 representations of multiplication, our heuristic searches for patterns
 in the terms corresponding to two multiplication algorithms, i.e.,
 long multiplication and Wallace-tree multiplication. Instead of
-re-writing the matched sub-terms with bit-vector multiplication, we
-conjoin $\varphi$ with assertions that semantically equate a matched
-sub-term with the corresponding multiplication term.  Note that each
-added assertion is a tautology, and hence does not change the
-semantics of the formula.  Since no re-writes are done, we can express
-multiple semantic equivalences without removing any syntactic term
-from the formula.  This is an important departure from earlier
-techniques, such as~\cite{kolbl}, that rely on sophisticated re-writes
-of the formula. Our experiments show that the added tautological
-assertions succeed in preventing bit-blasting in several cases, while
-in other cases, they help in pruning the search space even after
-bit-blasting.  Both effects translate to improved performance of the
-SMT solver.  Furthermore, since our heuristic only adds assertions to
-the input formula, it is relatively independent of the internals of
-any specific solver, and can be used with multiple solvers. %% Our
+re-writing the matched terms directly with bit-vector multiplication
+terms, we conjoin $\varphi$ with assertions that semantically equate a
+matched term with the corresponding bit-vector multiplication term.
+Note that each added assertion is a tautology, and hence does not
+change the semantics of the formula.  Since no re-writes are done, we
+can express multiple semantic equivalences without removing any
+syntactic term from the formula.  This is an important departure from
+earlier techniques, such as~\cite{kolbl}, that rely on sophisticated
+re-writes of the formula. Our experiments show that the added
+tautological assertions succeed in preventing bit-blasting while
+solving in several cases, while in other cases, they help in pruning
+the search space even after bit-blasting.  Both effects eventually
+translate to improved performance of the SMT solver.  Furthermore,
+since our heuristic simply adds assertions to the input formula, it is
+relatively independent of the internals of any specific solver, and
+can be used with multiple solvers. %% Our
 %experiments show that the
 %performance
 %% of different SMT solvers on the pre-processed formulas can vary.

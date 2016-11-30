@@ -8,7 +8,7 @@ two well-known multiplication algorithms of interest.
 
 A bit-vector is a fixed sequence of bits.
 %
-We denote bit-vectors by $x$,$y$,$z$, etc., and often
+We denote bit-vectors by $x$, $y$, $z$ etc. and often
 %
 refer to blocks of bits in a bit-vector.
 %
@@ -20,7 +20,7 @@ the least significant bit (LSB) having index $1$.
 %
 % Similar notation is used for the vectors of any object.
 
-A $\qfbv$~term $t$ and formula $F$ is constructed using
+A $\qfbv$~term $t$ and formula $F$ are constructed using
 the following grammar
 \begin{align*}
 t ::= &~ t * t \mid t + t \mid x \mid n^w \mid t \concat t  ....\\
@@ -31,7 +31,7 @@ represented using $w$ bits, $\bowtie$ is a predicate in $\{\leq , <,
 \geq, > \}$, and $\concat$ is a binary operator that concatenates
 bit-vectors.
 %
-Note that we have only presented above parts of the grammar
+Note that we have only presented those parts of the $\qfbv$ grammar
 that are relevant to our discussion.  For more details,
 the reader is referred to~\cite{Kroeningbook,barrett}.
 %
@@ -47,13 +47,14 @@ let $zeroExt(t,w)$ be a shorthand for  $0^{w-len(t)}\concat t$.
 If an operator $\op$ is commutative, when matching patterns, we will
 not make a distinction between $a \op b$ and $b \op a$.
 %
-We use the notation ``$t == s$'' to denote that $t$ and $s$ are
-syntactically identical.
+We use the notation ``$t == s$'' to denote that terms $t$ and $s$ are
+\emph{syntactically identical}. The usual equality predicate, i.e. ``='',
+is used to denote \emph{semantic equivalence}.
 %
-Given bit-vector terms $x$, $y$, and $t$, suppose $w = max(len(x),len(y),
+Given bit-vector terms $x$, $y$, and $t$, suppose $w = \max(len(x) + len(y),
 len(t))$.
 %
-We use ``$[x*y = t]$'' to denote term $x'*y'=t'$, where $x' =
+We use ``$[x*y = t]$'' to denote the term $x'*y'= t'$, where $x' =
 zeroExt(x, w)$, $y' = zeroExt(y, w)$, and $t' = zeroExt(t, w)$.
 %
 Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
@@ -65,28 +66,30 @@ Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
 %% solvers are specialized solvers that solve 
 %% formulas of a given theory.
 %
-State-of-the-art SMT solvers for \qfbv~apply several simplification and
-re-writing passes to decide the satisfiability of the input formula.
-If these do not succeed in solving the problem, the solvers bit-blast
-the formula, i.e., translate the bit-vector formula to an
-equivalent propositional formula on the constituent bits of the
-bit-vectors.  This reduces the bit-vector satisfiability problem to
-one of propositional satisfiability (SAT).
+State-of-the-art SMT solvers for {\qfbv} apply several theory-specific
+simplification and re-write passes to decide the satisfiability of an
+input {\qfbv} formula.  If the application of these passes does not
+succeed in solving the problem, the solvers evnetually bit-blast the
+formula, i.e., translate it to an equivalent propositional formula on
+the constituent bits of the bit-vectors.  This reduces the bit-vector
+satisfiability problem to one of propositional satisfiability (SAT).
 %
-The bit-blasted SAT problem is then solved using conflict driven clause
-learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
+The bit-blasted problem is then solved using conflict driven clause
+learning (CDCL)\cite{cdcl1,cdcl2} based SAT decision procedures.
 %
-Some of the leading SMT solvers today are $\zthree$\cite{zthree},
-$\boolector$\cite{boolector}, and $\cvcfour$\cite{cvcfour}.
+Among the leading SMT solvers for {\qfbv} available today are
+$\zthree$\cite{zthree}, $\boolector$\cite{boolector} and
+$\cvcfour$\cite{cvcfour}; we use these extensively in our experiments
+to empirically evaluate our heuristic.
 
-For our work,
-we assume access to a generic $\qfbv$~SMT solver, called
-$\textsc{SMTSolver}$, with a standard interface.
+In the subsequent discussion, we assume access to a generic
+$\qfbv$~SMT solver, called $\textsc{SMTSolver}$, with a standard
+interface.
 %
-We assume that the interface provides access to two functions: (i)
+We assume that the interface provides access to two functions: (a)
 $add(F)$, that adds a formula $F$ to the context of the solver, and
-(ii) $checkSat()$, that checks the satisfiability of the conjunction
-of all formulas added to the context of the solver.
+(b) $checkSat()$, that checks the satisfiability of the conjunction of
+all formulas added to the context of the solver.
 %
 Note that such interfaces are commonly available with state-of-the-art
 SMT solvers, viz. {\boolector}, {\cvcfour} and {\zthree}.
@@ -103,15 +106,15 @@ multipliers, Booth multipliers and Wallace-tree multipliers.
 In this work, we focus only on long multipliers and Wallace-tree
 multipliers.
 %
-The study of our heuristic for systems containing Booth multipliers is
-deferred as part of future work. 
+The study of our heuristic pre-processing step for systems containing
+Booth multipliers is left as part of future work.
  
-\vspace{-4ex}
-\subsubsection{Long multiplier}\label{sec:long-mult}
+\vspace{-3ex}
+\subsubsection{Long multiplier:}\label{sec:long-mult}
 
 Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k \cdot w$. 
 % \ashu{Rahul: suggest a rewrite.}
-The long multiplier decomposes the multiplication of two $k \cdot w$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
+The long multiplier decomposes the multiplication of two $(k\cdot w)$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
 result. 
 %
 %The partial products are summed with appropriate offsets to obtain
@@ -140,18 +143,22 @@ After the left shifts, all the partial results are added in some order.
 %
 Note that the bit-width of each partial product is $2 \cdot w$.
 %
-Since the syntax of $\qfbv$ requires the bit-widths of arguments and result of the $*$ operator to be the same, we
-denote the partial product $x_i * y_j$ as 
-$(0^w \concat x_i)*(0^w \concat y_j)$ for our purposes. Note
-further that the bits of the partial products in neighbouring columns (in the
-above representation of long multiplication) overlap; hence the sums of the
-various columns can not be simply concatenated. The long multiplication algorithm does not specify the order of the addition of the shifted partial products. Therefore, there are several possible designs for a given $k$ and $w$.
+Since the syntax of $\qfbv$ requires the bit-widths of the arguments
+and result of the $*$ operator to be the same, we denote the partial
+product $x_i * y_j$ as $(0^w \concat x_i)*(0^w \concat y_j)$ for our
+purposes. Note further that the bits of the partial products in
+neighbouring columns (in the above representation of long
+multiplication) overlap; hence the sums of the various columns can not
+be simply concatenated. The long multiplication algorithm does not
+specify the order of addition of the shifted partial
+products. Therefore, there are several possible implementations for a
+given $k$ and $w$.
 
 \begin{example}
-  Consider bit-vectors $v_3,v_2,v_1$,  $u_3,u_2$, and $u_1$, each of width 2.
-  Let us apply long multiplication on
-  $v_3 \concat v_2 \concat v_1$ and $u_3 \concat u_2 \concat u_1$.
-  We obtain the following partial products.
+  Consider bit-vectors $v_3,v_2,v_1$, $u_3,u_2$, and $u_1$, each of
+  bit-width 2.  Let us apply long multiplication on $v_3 \concat v_2
+  \concat v_1$ and $u_3 \concat u_2 \concat u_1$.  We obtain the
+  following partial products.
 \begin{center}
 \vspace{-2ex}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
@@ -163,27 +170,29 @@ various columns can not be simply concatenated. The long multiplication algorith
 \end{tabular}
 % \vspace{-1ex}
 \end{center}
-The following formula is a combination of the partial products using
- concatenations and summations to obtain the final result.
+The following term is one (of several) possible combinations of the
+partial products using concatenations and summations to obtain the
+final product.
 \vspace{-1ex}
 \begin{align*}
-  (v_3*u_3 \concat v_3*u_1 \concat v_1*u_1) +
-  (0^2 \concat v_2*u_3 \concat v_2*u_1 \concat 0^2) +\\
-  (0^2 \concat v_3*u_2 \concat v_1*u_2 \concat 0^2) +
-  (0^4 \concat v_2*u_2 \concat 0^4) + (0^4 \concat v_1*u_3 \concat 0^4)
+  ((v_3*u_3) \concat (v_3*u_1) \concat (v_1*u_1)) +
+  (0^2 \concat (v_2*u_3) \concat (v_2*u_1) \concat 0^2) +\\
+  (0^2 \concat (v_3*u_2) \concat (v_1*u_2) \concat 0^2) +
+  (0^4 \concat (v_2*u_2) \concat 0^4) + (0^4 \concat (v_1*u_3) \concat 0^4)
 \vspace{-1ex}
 \end{align*}
 %
 %Each partial product $x_i * y_j$ is 4 bit wide.
 %
-In the formula we cannot concatenate 
-two partial products which appear next to each other in the tabular representation.
+Note that we did not concatenate two partial products that appear next
+to each other in the tabular representation, because their bits can
+potentially overlap.
 
 \end{example}
 
 
 \begin{example}
-  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of width 2.
+  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of bit-width 2.
   Let us apply long multiplication on
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
@@ -197,17 +206,19 @@ two partial products which appear next to each other in the tabular representati
   &$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-Note that while adding the shifted partial products, if the non-zero bits of a
-subset of shifted partial products do not overlap, then we can simply concatenate
-them to obtain their sum. Finally, we can sum the concatenated vectors thus
-obtained to calculate the overall product. The following is one of the combination
-of the concatenations and summations for the long multiplication.
+Note that while adding the shifted partial products, if the non-zero
+bits of a subset of shifted partial products do not overlap, then we
+can simply concatenate them to obtain their sum. Finally, we can sum
+the concatenated vectors thus obtained to calculate the overall
+product. The following is one possible combination of 
+concatenations and summations for the long multiplication in this
+example.
 %
 \vspace{-1ex}
 $$
-( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
-(v_2*u_2 \concat v_2*u_1 \concat 0^4) +
-(0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+( 0^4 \concat (v_1*u_2) \concat (v_1*u_1)) +
+((v_2*u_2) \concat (v_2*u_1) \concat 0^4) +
+(0^2 \concat (v_2*v_2) \concat (v_1*v_2) \concat 0^2)
 \vspace{-1ex}
 $$
 \end{example}
@@ -215,7 +226,8 @@ $$
 \begin{example}
 
   As another interesting example, consider long multiplication applied to 
-  $v_2 \concat 0^2 \concat v_2$ and $0^2 \concat v_1 \concat v_1$.
+  $v_2 \concat 0^2 \concat v_2$ and $0^2 \concat v_1 \concat v_1$, where
+  $v_1$ and $v_2$ have bit-width $2$.
   We obtain the following partial products.
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
@@ -226,17 +238,18 @@ $$
   %&$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-Note that, if we had applied the long multiplication to $v_1 \concat
-0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got
-the same partial products. This shows that simply knowing the
-collections of partial products at different indexes does not allow us
-to uniquely determine the operands. Recall that this problem was
-alluded to in Section~\ref{sec:intro}.
+Note that, if we had applied long multiplication to $v_1 \concat 0^2
+\concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have obtained
+the same set of shifted partial products. This shows that simply
+knowing the collections of shifted partial products does not permit
+uniquely determining the multiplier and multiplicand. Recall that
+this dilemma was alluded to in Section~\ref{sec:intro}, when discussing
+pattern-matching based re-writing.
 
 \end{example}
 
 \vspace{-4ex}
-\subsubsection{Wallace tree multiplier\cite{wallace}}
+\subsubsection{Wallace tree multiplier\cite{wallace}:}
 %
 Wallace tree decomposes the multiplication all the way down to single bits.
 %

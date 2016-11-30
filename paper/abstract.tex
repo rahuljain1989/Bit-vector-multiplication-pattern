@@ -16,8 +16,8 @@ alternative ways in the formula. %% In such cases, the solver may fail
 %
 We present a pre-processing heuristic that identifies certain types of
 decomposed multipliers, and adds special assertions to the input
-formula encoding the equivalence of sub-terms to word-level
-multiplication.  The pre-processed formulas are then solved using an
+formula that encode the equivalence of sub-terms and word-level
+multiplication terms.  The pre-processed formulas are then solved using an
 SMT solver.  Our experiments with three  SMT solvers
 show that our heuristic allows several formulas to be solved quickly,
 while the same formulas time out without the pre-processing step.
