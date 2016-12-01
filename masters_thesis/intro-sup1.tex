@@ -19,7 +19,7 @@ techniques to improve the performance of SMT solvers have attracted
 significant attention over the years.  The literature contains a rich
 body of heuristic strategies for improving the performance of
 theory-specific solvers (see~\cite{barrett,deMoura2013} for excellent
-expositions).  In this paper, we add to the repertoire of such
+expositions). In this paper, we add to the repertoire of such
 heuristics by proposing a pre-processing step that conjoins an input
 formula with specially constructed assertions, without changing its
 semantics. We focus on formulas in the quantifier-free theory of
@@ -27,7 +27,7 @@ fixed-width bit-vectors with multiplication, and show by means of
 experiments that our pre-processing heuristic yields significant
 performance benefits in many cases for three state-of-the-art SMT
 solvers, namely {\zthree}~\cite{zthree}, {\cvcfour}~\cite{cvcfour} and
-{\boolector}~\cite{boolector}.  Significantly, our heuristic helps
+{\boolector}~\cite{boolector}. Significantly, our heuristic helps
 reduce the solving time for multiple examples by upto several orders
 of magnitude when the input formula is unsatisfiable.
 
@@ -90,7 +90,8 @@ The property to be checked asserts that if $a$ and $b$ denote the two
 operands that are read in, then after the computation is over, the
 output register indeed has the product $a *_{[32]} b$, where
 $*_{[32]}$ denotes $32$-bit multiplication.  The RTL design
-(i.e. system implementation), as used in~\cite{wste}, makes use of the
+(i.e. system implementation), as used in~\cite{wste} is described in $\sysver$
+(a hardware description language) and makes use of the
 {\tt *} operator in $\sysver$, with $32$-bit operands.  The Language
 Reference Manual of $\sysver$ specifies that this amounts to using a
 $32$-bit multiplication operation directly.  The SMT formula resulting
@@ -165,7 +166,7 @@ reasoning about different sub-formulas of an SMT formula.  For
 example, one term may enable a re-write rule that helps simplify one
 sub-formula, while a syntactically distinct but semantically
 equivalent term may enable another re-write rule that helps simplify
-another sub-formula. Re-Writing one term by another precludes the
+another sub-formula. Re-writing one term by another precludes the
 possibility of both terms contributing to improving the performance of
 the overall satisfiability check.
 
