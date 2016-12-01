@@ -141,6 +141,49 @@ Wallace tree multiplier experiments.
 \input{tbl-long-cd}
 %
 
+\section{\bf Limitations}
+%
+Although our initial results are promising, our current implementation
+has several limitations as well.
+%
+We have only considered a limited space of low-level multiplier
+representations.  Actual representations may include several other
+optimizations, e.g., multiplying with constants using bit-shifting
+etc.
+%
+Multiplier operations may also be applied recursively, e.g., the
+partial products of a long multiplication may be obtained using
+Wallace tree multiplier.
+%
+While we have noticed significant benefits of adding tautological
+assertions encoding the equivalence of pattern-matched terms with
+bit-vector multiplication, in general, adding such assertions can hurt
+solving time as well.  This can happen if, for example, the assertions
+are themselves bit-blasted by the solver, thereby overwhelming the
+underlying SAT solver.
+%
+In addition, the added assertions may be re-written by optimization
+passes of the solver, in which case they may not help in identifying
+sub-terms representing multiplication in the overall formula.
+%
+Since the nature of our method is to exploit the potential
+structure in the input, we must also adopt all parts of the solver
+to be aware of the sought structure as part of our future work.
+%
+We are currently working to tag the added assertions such that they
+are neither simplified in pre-processing nor bit-blasted by the solver.
+%
+Instead, they should only contribute to the word-level reasoning.
+%
+Note that our current benchmarks are also limited in the sense that
+they do not include examples where multiplication is embedded deep in
+a large formula.
+%
+We are working to make our implementation robust such that
+it can reliably work on larger examples, in particular on all the 
+SMT-LIB benchmarks.
+%
+More results in this direction may be found at~\cite{arxiv-version}.
 
 
 %--------------------- DO NOT ERASE BELOW THIS LINE --------------------------
