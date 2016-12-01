@@ -191,7 +191,7 @@ The bit-blasted SAT problem is then solved using conflict driven clause
 learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
 %
 
-Below we present a generic bit-blasting algorithm to decide the satisfiability of the input formula $\phi$. Some terminology:
+Below we present a generic bit-blasting algorithm to decide the satisfiability of the input formula $\phi$ and also define some terminology used to to present the same.
 
 \begin{itemize}
 
@@ -256,7 +256,7 @@ The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ a
 
 \subsection{Full adder}
 
-The full adder adds three single binary digits a, b and c. It also has two outputs, $\sumOfFullAdder$ and $\carryOfFullAdder$. Both the outputs have the same meaning as that for a Half adder, the only difference being that full adder adds three digits. The simplest full adder design incorporates two XOR gate for $\sumOfFullAdder$ and, three AND and 2 OR gates for $\carryOfFullAdder$. 
+The full adder adds three single binary digits a, b and c. It also has two outputs, $\sumOfFullAdder$ and $\carryOfFullAdder$. Both the outputs have the same meaning as that for a half adder, the only difference being that full adder adds three digits. The simplest full adder design incorporates two XOR gate for $\sumOfFullAdder$ and, three AND and 2 OR gates for $\carryOfFullAdder$. 
 
 \[
 \sumOfFullAdder = a \oplus b \oplus c \hspace{3 cm} \carryOfFullAdder = (a \land b) \lor (a \land c) \lor (b \land c) 
@@ -322,56 +322,92 @@ Here, we will discuss long and Wallace tree multiplier.
 
 \subsection{Long multiplier}\label{sec:long-mult}
 
-Let us consider bit-vectors $x$ and $y$ that are accessed in the blocks of $w$
-bits and are of size $kw$.
-%
+Consider bit-vectors $x$ and $y$ that are partitioned into $k$ blocks of width $w$ bits each. Thus the total width of each bit-vector is $k \cdot w$. 
 % \ashu{Rahul: suggest a rewrite.}
-The long multiplier decomposes the $kw$ bits multiplication 
-into chunks of $w$ bits multiplications, called {\em partial products}.
+The long multiplier decomposes the multiplication of two $(k\cdot w)$-bit wide bit-vectors into $k^2$ multiplications of $w$-bit wide bit-vectors. The corresponding $k^2$ products, called {\em partial products}, are then added with appropriate left-shifts to obtain the final
+result. 
 %
-The partial products are summed with appropriate offsets to obtain
-the final result.
+%The partial products are summed with appropriate offsets to obtain
+%the final result.
 %
 The following notation is typically used to illustrate
-the long multiplication.
+long multiplication.
 %
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $x_{k}$ & ... & $x_1$&\\ 
-  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline
-  &&&$x_k*y_1$& ... & $x_1*y_1$&\\
+  &&& $y_{k}$ & ... & $y_1$&$*$\\ \hline\vspace{-2pt}
+  &&&$x_k*y_1$& ... & $x_1*y_1$&\\\vspace{-2pt}
   &&$\iddots$&$\vdots$& $\iddots$ && \\
   &$x_k*y_k$& ... &$x_1*y_k$&  & +&\\\hline
 \end{tabular}  
 \end{center}
-$x_i * y_j$s are the partial products.
+Here, the $x_i*y_j$s are the partial products. The partial product $x_i*y_j$ is left shifted $(i+j-2) \cdot w$ bits before being added. In the above representation, all partial
+products that are left-shifted by the same amount are aligned in a single column.
+After the left shifts, all the partial results are added in some order. 
 %
-Each $x_i*y_j$ is left shifted $(i+j-2)w$ bits. 
+%In the above scheme all the partial products that have same offset are 
+%aligned in single column.
 %
-In the above scheme all the partial products that have same offset are 
-aligned in single column.
+%After the shifts, all the partial results are added in some order.
 %
-After the shifts, all the partial results are added in some order.
+Note that the bit-width of each partial product is $2 \cdot w$.
 %
-The bit-width of the partial products is $2w$.
-%
-In the $\qfbv$ notation, $x_i * y_j$ is correctly denoted by
-$(0^w \concat x_i)*(0^w \concat y_j)$.
-%
-Therefore, the bits of the partial products in neighbouring columns overlap
-and they can not be simply concatenated.
-%
-The long multiplier does not specify the order of the addition
-of the shifted partial products.
-%
-Therefore, there are several possible designs for a given $k$ and $w$.
+Since the syntax of $\qfbv$ requires the bit-widths of the arguments
+and result of the $*$ operator to be the same, we denote the partial
+product $x_i * y_j$ as $(0^w \concat x_i)*(0^w \concat y_j)$ for our
+purposes. Note further that the bits of the partial products in
+neighbouring columns (in the above representation of long
+multiplication) overlap; hence the sums of the various columns can not
+be simply concatenated. The long multiplication algorithm does not
+specify the order of addition of the shifted partial
+products. Therefore, there are several possible implementations for a
+given $k$ and $w$.
 
 \begin{example}
-  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$ of length 2.
-  Let us apply long multiplication in multiplying
+  Consider bit-vectors $v_3,v_2,v_1$, $u_3,u_2$, and $u_1$, each of
+  bit-width 2.  Let us apply long multiplication on $v_3 \concat v_2
+  \concat v_1$ and $u_3 \concat u_2 \concat u_1$.  We obtain the
+  following partial products.
+\begin{center}
+\vspace{-2ex}
+\begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
+  &&& $v_3$ & $v_2$ & $v_1$&\\ 
+  &&& $u_3$ & $u_2$ & $u_1$&$*$\\ \hline
+  &&& $v_3*u_1$ & $v_2*u_1$ & $v_1*u_1$&\\
+  && $v_3*u_2$ & $v_2*u_2$ & $v_1*u_2$ && \\
+  & $v_3*u_3$ & $v_2*u_3$ &$v_1*u_3$&  & +&\\\hline
+\end{tabular}
+% \vspace{-1ex}
+\end{center}
+The following term is one (of several) possible combinations of the
+partial products using concatenations and summations to obtain the
+final product.
+\vspace{-1ex}
+\begin{align*}
+  ((v_3*u_3) \concat (v_3*u_1) \concat (v_1*u_1)) +
+  (0^2 \concat (v_2*u_3) \concat (v_2*u_1) \concat 0^2) +\\
+  (0^2 \concat (v_3*u_2) \concat (v_1*u_2) \concat 0^2) +
+  (0^4 \concat (v_2*u_2) \concat 0^4) + (0^4 \concat (v_1*u_3) \concat 0^4)
+\vspace{-1ex}
+\end{align*}
+%
+%Each partial product $x_i * y_j$ is 4 bit wide.
+%
+Note that we did not concatenate two partial products that appear next
+to each other in the tabular representation, because their bits can
+potentially overlap.
+
+\end{example}
+
+
+\begin{example}
+  Consider bit-vectors $v_1,v_2,u_1$, and $u_2$, each of bit-width 2.
+  Let us apply long multiplication on
   $v_2 \concat 0^2 \concat v_1$ and $u_2 \concat v_2 \concat u_1$.
   We obtain the following partial products.
 \begin{center}
+  \vspace{-2ex}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
   &&& $v_2$ & $0^2$ & $v_1$&\\ 
   &&& $u_2$ & $v_2$ & $u_1$&$*$\\ \hline
@@ -380,25 +416,28 @@ Therefore, there are several possible designs for a given $k$ and $w$.
   &$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-We need to sum the partial products. However, if their non-zero bits 
-do not overlap then we can simply concatenate them.
+Note that while adding the shifted partial products, if the non-zero
+bits of a subset of shifted partial products do not overlap, then we
+can simply concatenate them to obtain their sum. Finally, we can sum
+the concatenated vectors thus obtained to calculate the overall
+product. The following is one possible combination of 
+concatenations and summations for the long multiplication in this
+example.
 %
-And finally we may sum the concatenated vectors.
-%
-The following is one of the combination of the concatenations and 
-summations for the long multiplication.
+\vspace{-1ex}
 $$
-( 0^4 \concat v_1*u_2 \concat v_1*u_1) +
-(v_2*u_2 \concat v_2*u_1 \concat 0^4) +
-(0^2 \concat v_2*v_2 \concat v_1*v_2 \concat 0^2)
+( 0^4 \concat (v_1*u_2) \concat (v_1*u_1)) +
+((v_2*u_2) \concat (v_2*u_1) \concat 0^4) +
+(0^2 \concat (v_2*v_2) \concat (v_1*v_2) \concat 0^2)
+\vspace{-1ex}
 $$
 \end{example}
-
 
 \begin{example}
 
   As another interesting example, consider long multiplication applied to 
-  $v_2 \concat 0^2 \concat v_2$ and $0^2 \concat v_1 \concat v_1$.
+  $v_2 \concat 0^2 \concat v_2$ and $0^2 \concat v_1 \concat v_1$, where
+  $v_1$ and $v_2$ have bit-width $2$.
   We obtain the following partial products.
 \begin{center}
 \begin{tabular}{c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c}
@@ -409,14 +448,13 @@ $$
   %&$v_2*u_2$& $0^4$ &$v_1*u_2$&  & +&\\\hline
 \end{tabular}
 \end{center}
-
-
-Note that, if we had applied the long multiplication to $v_1 \concat
-0^2 \concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have got
-the same partial products. This shows that simply knowing the
-collections of partial products at different indexes does not allow us
-to uniquely determine the operands. Recall that this problem was
-alluded to in Chapter~\ref{sec:intro}
+Note that, if we had applied long multiplication to $v_1 \concat 0^2
+\concat v_1$ and $0^2 \concat v_2 \concat v_2$, we would have obtained
+the same set of shifted partial products. This shows that simply
+knowing the collections of shifted partial products does not permit
+uniquely determining the multiplier and multiplicand. Recall that
+this dilemma was alluded to in Section~\ref{sec:intro}, when discussing
+pattern-matching based re-writing.
 
 \end{example}
 
