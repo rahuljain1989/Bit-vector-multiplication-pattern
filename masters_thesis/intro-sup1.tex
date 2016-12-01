@@ -133,17 +133,17 @@ to bit-blast the formulas, leading to this dramatic run-time blowup. The corresp
 (declare-fun v7 () (_ BitVec 8))
 (declare-fun v8 () (_ BitVec 8))
 (define-fun e1 () (_ BitVec 16) (concat #b00000000 v1))
-(define-fun e6 () (_ BitVec 16) (concat #b00000000 v6))
-(define-fun e3 () (_ BitVec 16) (concat #b00000000 v3))
 (define-fun e2 () (_ BitVec 16) (concat #b00000000 v2))
+(define-fun e3 () (_ BitVec 16) (concat #b00000000 v3))
 (define-fun e4 () (_ BitVec 16) (concat #b00000000 v4))
-(define-fun e7 () (_ BitVec 16) (concat #b00000000 v7))
 (define-fun e5 () (_ BitVec 16) (concat #b00000000 v5))
+(define-fun e6 () (_ BitVec 16) (concat #b00000000 v6))
+(define-fun e7 () (_ BitVec 16) (concat #b00000000 v7))
 (define-fun e8 () (_ BitVec 16) (concat #b00000000 v8))
-(assert (not 
 
-(=    
- (bvmul (concat (concat (concat (concat #b00000000000000000000000000000000 v1) v2) v3) v4) 
+(assert
+(not (=
+ (bvmul (concat (concat (concat (concat #b00000000000000000000000000000000 v1) v2) v3) v4)
         (concat (concat (concat (concat #b00000000000000000000000000000000 v5) v6) v7) v8) )
 
  (bvadd  (concat         (bvmul e1 e5)     #b000000000000000000000000000000000000000000000000)
@@ -161,13 +161,26 @@ to bit-blast the formulas, leading to this dramatic run-time blowup. The corresp
  (bvadd  (concat (concat #b000000000000000000000000 (bvmul e4 e5)) #b000000000000000000000000)
  (bvadd  (concat (concat #b00000000000000000000000000000000 (bvmul e4 e6)) #b0000000000000000)
  (bvadd  (concat (concat #b0000000000000000000000000000000000000000 (bvmul e4 e7)) #b00000000)
-         (concat         #b000000000000000000000000000000000000000000000000    (bvmul e4 e8) )
+         (concat         #b000000000000000000000000000000000000000000000000 (bvmul e4 e8) )
 
  )))))))))))))))
-))) 
+)))
 (check-sat)
 \end{lstlisting}
 
+\noindent line 1: sets the background logic to QF\_BV.
+
+\noindent line 2-9: are the variable declarations. Each  $v_i$ is a 8 bit wide bit-vector.
+
+\noindent line 10-17: are variables $v_i$ padded with an equal number of zeroes to prevent overflow.
+
+\noindent line 19-20: assert statement which asserts the inequality of the following two arguments.
+
+\noindent line 21-22: Specification: multiplication of $(v_1 \concat v_2 \concat v_3 \concat v_4)$ with $(v_5 \concat v_6 \concat v_7 \concat v_8)$ using the SMT $bvmul$ operation with appropriate padding. Note that this corresponds to {\tt *} operator in $\sysver$.
+
+\noindent line 24-39: Implementation: corresponds to the long-multiplication implementation of $(v_1 \concat v_2 \concat v_3 \concat v_4)$ $*$ $(v_5 \concat v_6 \concat v_7 \concat v_8)$ with appropriate padding.
+
+\vspace{0.2 cm}
 \noindent {\bfseries \emph{Problem formulation:}} 
 The above example demonstrates that the inability to identify semantic
 equivalence of alternative representations of arithmetic operators
@@ -187,6 +200,7 @@ by {\cvcfour} in 0.017s, after application of our heuristic. However,
 Nevertheless, there are several other examples where {\boolector}
 benefits significantly, as discussed in Section~\ref{sec:experiments}.
 
+\vspace{0.2 cm}
 \noindent {\bfseries \emph{Term re-writing vs adding tautological assertions:}} 
 Prima facie, the above problem can be solved by reverse-engineering
 the lower-level implementation of a bit-vector arithmetic operator,
