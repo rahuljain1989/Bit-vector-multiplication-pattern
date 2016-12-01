@@ -46,7 +46,7 @@ In the process, $\boolector$ extensively simplifies the input formula but retain
 %
 We have generated benchmarks also for Wallace tree multiplier similar to the long multiplication.
 %
-For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were un-satisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
+For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as input and generates all the files needed as input by STEWord. All our benchmarks correspond to the system implementation satisfying the specified property: in other words, the generated SMT formulas were unsatisfiable. For satisfiable formulas the solver was able to find satisfying assignments relatively quickly, both with and without our heuristic. Hence, we do not report results on satisfiable formulas.
 %
 
 \section{\bf Results}
@@ -86,7 +86,7 @@ $\boolector$ and $\zthree$ bit blast the benchmarks having not been
 able to detect the structural similarity.
 %
 However, the added tautologies help $\boolector$ and $\zthree$ to
-reduce the search space, after the sat solver is invoked on the bit
+reduce the search space, after the SAT solver is invoked on the bit
 blasted formula.
 
 
@@ -119,17 +119,17 @@ $\cvcfour$ to make the above inference.
 We have seen that the solvers fail to apply the word level reasoning
 after adding the tautologies.
 %
-In the case, the solvers bit blast the formula and run a sat solver.
+In the case, the solvers bit blast the formula and run a SAT solver.
 %
 In Table~\ref{tbl:cd}, we present the number of conflicts and decisions within
-the sat solvers.
+the SAT solvers.
 %
 The number of conflicts and decisions on running $\ourtool$ with the
 three solvers, are considerably less than their $\textsc{SMTSolver}$
 counterparts in the most of the cases.
 %
 This demonstrates that the tautologies also help in reducing the
-search inside the sat solvers. 
+search inside the SAT solvers. 
 %
 $\ourtool$ with $\cvcfour$ has zero conflicts and
 decisions for all the long multiplication experiments, because the 
