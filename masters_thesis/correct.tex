@@ -15,16 +15,16 @@ $w$, respectively.
 \begin{proof}
   After each iteration of the loop at line 8,
   if no backtracking triggered, the loop body ensures
-  that the following holds at the end, which readers may easily check.
+  that the following holds at the end:
   \begin{equation}
     \label{eq:container-inv}
   \Lambda_i = \{ x_h*y_{i}, x_{h-1}*y_{i+1},....,x_{i}*y_h \}    
   \end{equation}
-  Due to the above equation,
+  This is because $h$ is the largest $j$ such that $\Lambda_j\neq \emptyset$. Due to the above equation,
   if $x_j*y_k \in \Lambda_i$, $ i = h-j-k$.
   %
   If the program enters at line 25, it has a successful match and $i=1$.
-  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_x}\}$
+  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_y}\}$
   and $l = h - l_x - l_y$.
   %
   We choose $o \leq l$, and shift $x$ and $y$ according to lines 26-27.
