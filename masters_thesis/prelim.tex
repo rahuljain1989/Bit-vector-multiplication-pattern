@@ -205,6 +205,13 @@ Below we present a generic bit-blasting algorithm to decide the satisfiability o
 
 \input{alg-bitblast}
 
+Constraint needed for a particular atom $a$ or term $t$ depends
+on the atom or term, respectively. In the case of a bit-vector or a Boolean
+variable, no constraint is needed, and $Constraint$ returns true. If $t$ is
+a bit-vector constant $C_{[l]}$, $Constraint$ function generates: $\bigwedge^{l-1}_{i=0}(C_i \leftrightarrow e(t)_i)$. Otherwise, $t$ must contain a bit-vector operator. The constraint that is needed
+depends on this operator. The constraints for the bitwise operators are
+straightforward. As an example, consider bitwise $OR$, and let $t = a \mid_{[l]} b$, $Constraint$ function generates: $\bigwedge^{l-1}_{i=0}((a_i \lor b_i) \leftrightarrow e(t)_i)$.
+
 For our work, we assume access to a generic $\qfbv$~SMT solver, called
 $\textsc{SMTSolver}$, with the standard interface.
 %
