@@ -1,6 +1,6 @@
 We look at an interesting approach which needs to be explored further. For long multiplication pattern detection problem, we wish to extract the two operands from the set of partial products. We presented Algorithm \ref{alg:long}, which, given the set of partial products tries to find the corresponding operands, if the partial products indeed represent a long multiplication. 
 
-Consider the following variant of the above stated problem: Given the set of partial products, we wish to extract the multiset of variables in operand1 and operand2 without bothering about the internal ordering of the variables. The following example looks at it from a graph theoretic point of view.
+Consider the following variant of the above stated problem: Given the set of partial products, we wish to extract the multiset of variables in operand1 and operand2 without bothering about the internal ordering of the variables within the operands. The following example looks at it from a graph theoretic point of view.
 
 Given the set of partial products:
 
@@ -92,4 +92,4 @@ For the above example, the complete bipartite representation of G that we are lo
 The problem of finding whether a graph G is a complete bipartite graph under the given conditions is equivalent to finding the factors(if they exist) of a multivariate polynomial of degree 2 with no constant terms. The polynomial corresponds to the graph G whereas the factors correspond to each partition of graph H. For the above example, the multivariate polynomial is:
 $(2 e_1^2 + e_1e_2 + e_2e_3 + 2 e_1e_3)$. The factors for this polynomial are $(2 e_1 + e_2)$ and $(e_1 + e_3)$.
 
-Solving the above stated problem would give us the variables present in each operand of the long multiplication. However, we still would not know the ordering of the variables(if it exists) i.e ordering of the concatenations. We are still exploring this approach and is part of our future work.
+Solving the above stated problem would give us the variables present in each operand of the long multiplication. However, we still would not know the ordering of the variables(if it exists) i.e concatenation order of the variables within the operands. We are still exploring this approach as part of our future work.
