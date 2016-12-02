@@ -51,7 +51,7 @@ Grammar for a subset of bit-vector arithmetic:
 
 $formula ::= formula \land formula \mid \lnot formula \mid (formula) \mid atom$
 
-$atom ::= term$ $rel$ $term \mid Boolean$ $Identifier \mid term[constant]$ 
+$atom ::= term$ $rel$ $term \mid Boolean$ $Identifier$
 
 $rel ::= $ $< \mid =$
 
@@ -103,11 +103,12 @@ Similarly, the notation $[x*y]$ is used to denote $x' * y'$, where $x'
 
 \subsection{Signature}
 
-A typical signature $\Sigma_{bv}$ for selected functions and predicates of the bit-vector theory is presented below. The set of sorts $\Sigma_{bv}^S$ contains
+A typical signature $\Sigma_{bv}$ for selected functions and predicates of the bit-vector theory is presented in Table~\ref{tbl:signature}. The set of sorts $\Sigma_{bv}^S$ contains
 infinitely many sort symbols $[n]$ where n is a strictly positive natural number. Formally, $\Sigma_{bv}^S = \{[n] \mid n > 0 $ and $ n \in \mathcal{Z}\}$.
-\begin{table}[h]
+\begin{table}[t]
 \centering
 \caption{$\Sigma_{bv}$}
+\label{tbl:signature}
 \begin{tabular}{c | l | c | l }
 Symbol & Name & Arity & Sort Map $\tau$  \\
 \hline \hline
@@ -191,7 +192,7 @@ The bit-blasted SAT problem is then solved using conflict driven clause
 learning (CDCL)\cite{cdcl1,cdcl2} based SAT procedures.
 %
 
-Below we present a generic bit-blasting algorithm to decide the satisfiability of the input formula $\phi$ and also define some terminology used to to present the same.
+In Algorithm~\ref{alg:bitblast}, we present a generic bit-blasting algorithm to decide the satisfiability of the input formula $\phi$ and also define some terminology used to to present the same.
 
 \begin{itemize}
 
@@ -238,7 +239,7 @@ The simplest half adder design, incorporates an XOR gate for $\sumOfHalfAdder$ a
 \sumOfHalfAdder = a \oplus b \hspace{3 cm} \carryOfHalfAdder = a \land b 
 \]
 
-\begin{figure}[h]
+\begin{figure}[t]
 \usetikzlibrary[arrows]
 \centering
 \begin{tikzpicture}[circuit logic US, minimum height=10mm]
@@ -269,7 +270,7 @@ The full adder adds three single binary digits a, b and c. It also has two outpu
 \sumOfFullAdder = a \oplus b \oplus c \hspace{3 cm} \carryOfFullAdder = (a \land b) \lor (a \land c) \lor (b \land c) 
 \]
 
-\begin{figure}[h]
+\begin{figure}[t]
 \usetikzlibrary[arrows]
 \centering
 \begin{tikzpicture}[circuit logic US, minimum height=10mm]
