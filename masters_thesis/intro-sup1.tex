@@ -112,7 +112,7 @@ algorithm~\cite{long}, where each $32$-bit operand is partitioned into
 $8$-bit blocks.  The corresponding WSTE run yields an SMT formula that
 contains terms with $32$-bit multiplication operator (derived from the
 property being checked), and also terms that encode the implementation
-of a $32$-bit multiplier using long-multiplication.  Surpisingly, none
+of a $32$-bit multiplier using long-multiplication.  Surprisingly, none
 of {\boolector}, {\cvcfour} and {\zthree} succeeded in deciding the
 satisfiability of the resulting formula even after $24$ hours on the
 same computing platform.  The heuristic strategies in these solvers
@@ -196,7 +196,7 @@ cannot guarantee that our pre-processing step helps in every case.
 The motivating example, that originally timed out after $24$ hours on
 three solvers, is shown to be unsatisfiable by {\zthree} in 0.073s and
 by {\cvcfour} in 0.017s, after application of our heuristic. However,
-{\boolector} does't benefit from our heuristic in this example.
+{\boolector} doesn't benefit from our heuristic in this example.
 Nevertheless, there are several other examples where {\boolector}
 benefits significantly, as discussed in Section~\ref{sec:experiments}.
 
@@ -224,7 +224,7 @@ performance for various reasons.  Indeed, re-writing one term by
 another is a ``peep-hole'' transformation that is oblivious of the
 overall context in which the terms appear in the SMT formula.  What
 appears beneficial locally may not be beneficial in the overall
-(un)satisfiability check.  In addition, syntactially distinct terms
+(un)satisfiability check.  In addition, syntactically distinct terms
 that are semantically equivalent may play different roles when
 reasoning about different sub-formulas of an SMT formula.  For
 example, one term may enable a re-write rule that helps simplify one
