@@ -685,6 +685,31 @@ Let us multiply two 4 bit bit-vectors $a_3a_2a_1a_0$ and $b_3b_2b_1b_0$ using th
 
 \draw (and33.output) |- (ha6);
 
+\draw (and00.output) -- ++(right:60mm) |- (adder.150);
+
+\draw[transform canvas={yshift=+5pt}] (ha1.east) -- ++(right:35mm) |- (adder.160);
+
+\draw[transform canvas={yshift=+5pt}] (ha3.east) -- ++(right:9mm) |- (adder.165);
+
+\draw[transform canvas={yshift=-5pt}] (ha3.east) -- ++(right:8mm) |- (adder.165);
+
+\draw[transform canvas={yshift=+5pt}] (fa4.east) -- ++(right:7mm) |- (adder.170);
+
+\draw[transform canvas={yshift=-5pt}] (fa4.east) -- ++(right:6mm) |- (adder.175);
+
+\draw[transform canvas={yshift=+5pt}] (ha5.east) -- ++(right:8mm) |- (adder.200);
+
+\draw[transform canvas={yshift=-5pt}] (ha5.east) -- ++(right:9mm) |- (adder.205);
+
+\draw[transform canvas={yshift=+5pt}] (ha4.east) -- ++(right:6mm) |- (adder.180);
+
+\draw[transform canvas={yshift=-5pt}] (ha4.east) -- ++(right:7mm) |- (adder.185);
+
+\draw[transform canvas={yshift=+5pt}] (ha6.east) -- ++(right:10mm) |- (adder.190);
+
+\draw[transform canvas={yshift=-5pt}] (ha6.east) -- ++(right:11mm) |- (adder.195);
+
+
 \end{tikzpicture}
 \caption{Example 4}
 \end{figure}
