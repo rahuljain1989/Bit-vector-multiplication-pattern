@@ -5,7 +5,7 @@
    \Require $\Lambda$ : array of multisets of the partial products
    \Ensure $M$ : matched multiplications := $\emptyset$
    \State Let $l$ and $h$ be the smallest and largest $i$ such that $\Lambda_i\neq \emptyset$, respectively.
-   \State $x,y$ : candidate operands that are accessed in block size $w$ and of size $hw$
+   \State $x,y$ : candidate operands of bit-width $h.w$ that are accessed in blocks of size $w$
    \If{$\Lambda_h == \{a*b\} $}
    \State $x_h := a; y_h := b$; $backtrack_h := \lfalse$; 
    \Else
@@ -23,20 +23,20 @@
    % \IIf{ $|C| > 2$} {\bf goto }{\textsc{Backtrack}}
    \State {\bf match} $C$ {\bf with}
    \State\quad $\mid$ $\{x_h*b,y_h*d\}$ $\rightarrow$ $x_i := d; y_i := b$;
-   $backtrack_i := (x_h == y_h)$; 
+   $backtrack_i := (x_h = y_h)$; 
    \State\quad $\mid$ $\{x_h*y_h\}$ $\rightarrow$ $x_i := 0; y_i := x_h;$
    $backtrack_i := \ltrue$; 
    \State \quad$\mid$ $\{x_h*b\}$ $\rightarrow$ $x_i := 0; y_i := b;$
-   $backtrack_i := (x_h == y_h)$; 
+   $backtrack_i := (x_h = y_h)$; 
    \State \quad $\mid$ $\{y_h*b\}$ $\rightarrow$ $x_i := b; y_i := 0;$\
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\{\}$ $\rightarrow$ $x_i := 0; y_i := 0;$\
    $backtrack_i := \lfalse$; 
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
-   \IIf{$x_i \neq 0$} $l_x = i$
-   \IIf{$y_i \neq 0$} $l_y = i$
+   \IIf{$x_i \neq 0$} $l_x := i$
+   \IIf{$y_i \neq 0$} $l_y := i$
    \IIf{ $h-l_x -l_y < 1$} {\bf goto }{\textsc{Backtrack}};
-   \If{ $i == 1 $}
+   \If{ $i = 1 $}
    \For{$o \in 0..(l-1)$} %\ashu{More constraints over $o$ needed?!!}
    \State $x'$ := Right shift $x$ until $o$ trailing $0$ blocks in $x$
    \State $y'$ := Right shift $y$ until $l-o$ trailing $0$ blocks in $y$
@@ -46,7 +46,7 @@
    \State {\bf continue;}
    \EndIf
    \State \textsc{Backtrack:}
-   \State \quad Choose smallest $i' \in h..(i+1)$ such that $backtrack_{i'} == \ltrue$
+   \State \quad Choose smallest $i' \in h..(i+1)$ such that $backtrack_{i'} = \ltrue$
    \State \quad {\bf if} no $i'$ found {\bf then} \Return{$M$}
    \State \quad $i := i'$; \textsc{SWAP}($x_i,y_i$); $backtrack_{i} := \lfalse$
    \EndWhile

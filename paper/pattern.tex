@@ -6,17 +6,17 @@ In this section, we %% will present our method for solving
 present algorithms that attempt to match multiplications that are
 decomposed using long or Wallace tree multiplication.
 %
-If we match some subterms of the input formula
+If we match some terms of the input formula
 as instances of 
 multiplication, we add tautologies stating that the terms are 
 equivalent to the product of the matched bit-vectors.
 %
-Our matching method may find multiple matches for a subterm.
+Our matching method may find multiple matches for a term.
 %
-We add a tautology for each match to the input and solve using
+We add a tautology for each match to the input formula, and solve using
 an available solver.
-%
-Let us first present our method of matching long multiplication. 
+% %
+% Let us first present our method of matching long multiplication. 
 
 \subsection{Matching long multiplication}
 \input{alg-match-long}
@@ -24,12 +24,13 @@ Let us first present our method of matching long multiplication.
 In Algorithm~\ref{alg:long}, we present a function $\textsc{MatchLong}$
 that takes a $\qfbv$ term $t$ and returns a set of matched multiplications.
 %
-The algorithm and the subsequent algorithms are written such that as soon
-as it becomes clear that no multiplication can be matched then
+This algorithm and the subsequent ones are written such that as soon
+as it becomes clear that no multiplication can be matched,
 they return the empty set. 
 %
-At line 1, we match $t$ with a sum of concatenations, and if the match fails
-then clearly $t$ is not a long multiplication.
+At line 1 of Algorithm~\ref{alg:long}, we match $t$ with a sum of
+concatenations, and if the match fails then we conclude that $t$ does not encode 
+a long multiplication.
 %
 At line 2, we find a partial product among $s_{ij}$ and extract
 the block size $w$ used by the long multiplication.
@@ -45,11 +46,11 @@ Otherwise, $t$ is declared unmatched at line 9.
 %
 At line 5, we have computed the alignment $o$ for $s_{ij}$.
 %
-If $s_{ij}$ happens to be a partial product, it is inserted in
+If $s_{ij}$ happens to be a non-zero partial product, it is inserted in
 $\Lambda_o$ at line 8.
 %
 At line 10, we call $\textsc{getMultOperands}$ to identify the operands
-of the long multiplication from $\Lambda$ if $t$ is indeed a long
+of the long multiplication from $\Lambda$ if $t$ indeed encodes a long
 multiplication.
 
 \subsection{Partial products to operands}
@@ -57,7 +58,7 @@ multiplication.
 
 In Algorithm~\ref{alg:operand}, we present a function
 $\textsc{getMultOperands}$ that takes a vector of multiset of partial
-products $\Lambda$ and block width $w$, and returns a set of matched
+products $\Lambda$ and a block-width $w$, and returns a set of matched
 multiplications.
 %
 The algorithm proceeds by incrementally choosing a pair of operands with
@@ -68,7 +69,7 @@ wrong.
 At line 1, we compute $h$ and $l$ that establishes the range of the
 search for the operands.
 %
-We maintain two candidate operands $x$ and $y$ of size $hw$.
+We maintain two candidate operands $x$ and $y$ of bit-width $h.w$.
 %
 We also maintain a vector of bits $backtrack$ that encodes 
 the possibility of flipping the uncertain decisions.
@@ -105,8 +106,8 @@ $\lfalse$.
 
 Let us look at the loop at line 8 again.
 %
-We also have variables $l_x$ and $l_y$ that contain the index of
-the least non-zero entries in $x$ and $y$, respectively.
+We also have variables $l_x$ and $l_y$ that contain the least index of
+the non-zero blocks in $x$ and $y$, respectively.
 %
 At line 9, we decrement $i$ and $\Lambda_i$ is copied to $C$.
 %
@@ -131,7 +132,7 @@ corresponding to $x_{h}*y_{i}$ and $x_{i}*y_{h}$.
 We match $C$ with the five patterns at lines 14-19 and
 update $x_i$, $y_i$, and $backtrack_i$ accordingly.
 %
-If none of the pattern match, we jump for backtracking at line 20.
+If none of the patterns match, we jump for backtracking at line 20.
 %
 In some cases we clearly determine the value of $x_i$ and $y_i$, and
 we are not certain in the other cases.
@@ -144,14 +145,14 @@ In the following list, we discuss the uncertain cases.
 \begin{itemize}
 \item[line 15:] If $C$ has two elements $x_h*b$ and $y_h*d$,
 there is an ambiguity in choosing $x_i$ and $y_i$
-if $x_h == y_h$.
+if $x_h = y_h$.
 %
 % Thus, if  $x_h == y_h$, we set $backtrack_i$ to $\ltrue$.
 \item[line 16:] If $C$ has a single element $x_h*y_h$, there  
 are two possibilities.
 \item[line 17:] If $C = \{x_h*b\}$ and $b$ is not $y_h$ then 
   similar to the first case there is an ambiguity in
-  choosing $x_i$ and $y_i$ if $x_h == y_h$. Line 18 is similar.
+  choosing $x_i$ and $y_i$ if $x_h = y_h$. Line 18 is similar.
 \item[line 19:] If $C$ is empty then there is no uncertainty. % $x_i = y_i = 0$.
 \end{itemize}
 %
@@ -160,7 +161,7 @@ At line 21-22, we update $l_x$ and $l_y$ appropriately.
 The condition at line 23 ensures that the expected
 least index $i$ such that $\Lambda_i \neq \emptyset$ is greater than 0.    
 %
-At line 24, we check if $i==1$, which means a match has been successful.
+At line 24, we check if $i=1$, which means a match has been successful.
 %
 To find the appropriate operands, we need to right shift $x$ and $y$
 such that the total number of their trailing zero blocks is $l-1$.
@@ -242,8 +243,7 @@ the matching multiplications.
 \input{alg-solver}
 
 Using the above pattern matching algorithms, we modify an existing
-solver $\textsc{SMTSolver}$, which
-is presented in Algorithm~\ref{alg:solver}.
+solver, generically called $\textsc{SMTSolver}$; as presented in Algorithm~\ref{alg:solver}.
 %
 $\textsc{OurSolver}$ adds the input formula $F$ in $\textsc{SMTSolver}$.
 %
@@ -251,7 +251,7 @@ For every subterm of $F$, we attempt to match with both long multiplication
 or Wallace tree multiplication.
 %
 For each discovered matching $x*y$, we add a bit-vector tautology $[x*y = t]$ 
-to the solvers, which is obtained after
+to the solver, which is obtained after
 appropriately zero-padding $x$, $y$, and $t$.
 %
 % \ashu{disjunctive assertion of the tautologies} 

@@ -3,7 +3,7 @@ is a tautology.
 %
 First we will prove the correctness of $\textsc{getMultOperands}$.
 %
-If either of $x$ or $y$ is zero, we assume term $x*y$ is also simplified to zero.
+If either of $x$ or $y$ is zero, we assume the term $x*y$ is also simplified to zero.
 \begin{thm}
  If $ x*y \in \textsc{getMultOperands}(\Lambda,w)$, then
  $$
@@ -14,7 +14,7 @@ $w$, respectively.
 \end{thm}
 \begin{proof}
   After each iteration of the loop at line 8,
-  if no backtracking triggered, the loop body ensures
+  if no backtracking is triggered, the loop body ensures
   that the following holds, which one may easily check.
   \begin{equation}
     \label{eq:container-inv}
@@ -24,7 +24,7 @@ $w$, respectively.
   if $x_j*y_k \in \Lambda_i$, $ i = h-j-k$.
   %
   If the program enters at line 25, it has a successful match and $i=1$.
-  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_x}\}$
+  Since $h-l_x -l_y \geq 1$, $\Lambda_l = \{x_{l_x}*y_{l_y}\}$
   and $l = h - l_x - l_y$.
   %
   We choose $o \leq l$, and shift $x$ and $y$ according to lines 26-27.
@@ -66,7 +66,7 @@ $w$, respectively.
 \end{thm}
 \begin{proof}
   %
-  All we need to show that $t$ is summing the partial products stored in
+  All we need to show is that $t$ sums the partial products stored in
   $\Lambda$.
   %
   The rest of the proof follows the previous theorem.

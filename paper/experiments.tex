@@ -1,16 +1,19 @@
 %
-We have implemented\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}} our algorithms as a part of $\zthree$ SMT solver.
+We have implemented\footnote{\url{https://github.com/rahuljain1989/Bit-vector-multiplication-pattern}} our algorithms as a part of the $\zthree$ SMT solver.
 %
-We evaluate the performance of our algorithms using benchmarks that are industrial and handcrafted hardware verification problems.
+We evaluate the performance of our algorithms using benchmarks that are
+derived from hardware verification problems.
 %
 We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
-Our experiments show that the solvers time out on most of the benchmarks and our tool produces results within the set time limit.
+Our experiments show that while the solvers time out on most of the
+benchmarks without our heuristic, a portfolio solver using our heuristic
+produces results within the prescribed time limit.
 
 \paragraph{\bf Implementation}
-We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows an easy access to the abstract syntax tree of the input formula. We call this version of $\zthree$ as instrumented-$\zthree$.
+We have added about 1500 lines of code in the bit vector rewrite module of $\zthree$ because it allows easy access to the abstract syntax tree of the input formula. We call this version of $\zthree$ as instrumented-$\zthree$.
 %
-An important aspect of the implementation is the ability to exit as early as possible if the match is going to fail.
+An important aspect of the implementation is its ability to exit early if the match is going to fail.
 %
 We implemented various preliminary checks including the ones mentioned in Algorithm 1. For example, we ensure that the size of $\Lambda_i$ is upper bounded appropriately as per the scheme of long multiplication. We exit as soon as the upper bound is violated. 
 %
@@ -23,22 +26,23 @@ In each case we stop the instrumented-$\zthree$ solver after running our matchin
 print the learned tautologies in a file along with the input formula, and
 run the solvers in a separate process on the pre-processed formula. 
 The time taken to run our matching algorithms and generate the pre-processed formula is less than one second across all our benchmarks, and hence is not reported. 
-We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to the above $\zthree$ case; hence the run times for instrumented-$\zthree$ are not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4).
+We also experimented by running instrumented-$\zthree$ standalone and found the run times to be similar to that of $\zthree$ running on the pre-processed formula; hence the run times for instrumented-$\zthree$ are not reported. We use the following versions of the solvers: $\zthree$(4.4.2), $\boolector$(2.2.0), $\cvcfour$(1.4) for our experiments.
 
 \paragraph{\bf Benchmarks}
 %
-Our experiments include 20 benchmarks. 
+Our experiments were run on 20 benchmarks. 
 %
-Initially, we received the motivating example described in Section~\ref{sec:intro} involving long multiplication that was not solved by any
+Initially, we considered the motivating example described in Section~\ref{sec:intro} involving long multiplication that was not solved by any
 of the solvers in 24 hours.
 %
 This example inspired our current work and to evaluate it we generated several similar benchmarks.
 %
-For long multiplication, we generated benchmarks by varying three characteristics, firstly the total bit length of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or setting them to zero.
+For long multiplication, we generated benchmarks by varying three characteristics. Firstly the total bit-width of the input bit-vectors, secondly the width of each block, and thirdly assigning specific blocks as equal or setting them to zero.
 %
 Our benchmarks were written in $\sysver$ and fed to STEWord~\cite{wste}, a hardware verification tool.
 %
-STEWord takes $\sysver$ design as input and generates the corresponding SMT1 formula.
+STEWord takes a $\sysver$ design and a specification of how it is to be driven
+as input, and generates an SMT formula in SMT1 format. %the corresponding SMT1 formula.
 %
 We convert the SMT1 formula to SMT2 format using $\boolector$.
 %
@@ -53,7 +57,7 @@ For $n$-bit Wallace tree multiplier, we have written a script that takes $n$ as 
 %
 We compare our tool with $\zthree$, $\boolector$ and $\cvcfour$.
 %
-In the Tables~\ref{tbl:time}-\ref{tbl:cd}, we present the results of the experiments.
+In Tables~\ref{tbl:time}-\ref{tbl:cd}, we present the results of the experiments.
 %
 We chose timeout to be 3600 seconds.
 %
@@ -64,9 +68,9 @@ The first 13 rows correspond to
 the long multiplication experiments.
 %
 The columns under $\textsc{SMTSolver}$ are the run times of the
-solvers to prove the satisfiability of the input benchmark.
+solvers to prove the unsatisfiability of the input benchmark.
 %
-The solvers timeout on most of the benchmarks.
+The solvers timed out on most of the benchmarks.
 %
 
 \input{tbl-long-time}
@@ -86,14 +90,14 @@ $\boolector$ and $\zthree$ bit blast the benchmarks having not been
 able to detect the structural similarity.
 %
 However, the added tautologies help $\boolector$ and $\zthree$ to
-reduce the search space, after the SAT solver is invoked on the bit
-blasted formula.
+reduce the search space, after the SAT solver is invoked on the
+bit-blasted formulas.
 
 
 The last 7 rows correspond to the Wallace tree multiplier experiments.
 %
 Since the multiplier involves a series of half and full adders, the
-size of the input formula increases rapidly as the bit vector size
+size of the input formula increases rapidly as the bit vector width
 increases.
 %
 Despite the blowup in the formula size, $\ourtool$ with $\zthree$ is
@@ -116,17 +120,17 @@ and the added tautology makes it difficult for $\boolector$ and
 $\cvcfour$ to make the above inference.
 %
 
-We have seen that the solvers fail to apply the word level reasoning
-after adding the tautologies.
+We have seen that the solvers sometimes fail to apply word level
+reasoning even after adding the tautologies.
 %
-In the case, the solvers bit blast the formula and run a SAT solver.
+In such cases, the solvers bit blast the formula and run a SAT solver.
 %
 In Table~\ref{tbl:cd}, we present the number of conflicts and decisions within
 the SAT solvers.
 %
 The number of conflicts and decisions on running $\ourtool$ with the
 three solvers, are considerably less than their $\textsc{SMTSolver}$
-counterparts in the most of the cases.
+counterparts in most of the cases.
 %
 This demonstrates that the tautologies also help in reducing the
 search inside the SAT solvers. 
@@ -180,7 +184,7 @@ passes of the solver, in which case they may not help in identifying
 sub-terms representing multiplication in the overall formula.
 %
 Since the nature of our method is to exploit the potential
-structure in the input, we must also adopt all parts of the solver
+structure in the input, we must also adapt all parts of the solver
 to be aware of the sought structure as part of our future work.
 %
 We are currently working to tag the added assertions such that they
