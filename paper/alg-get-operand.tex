@@ -35,7 +35,7 @@
    \State \quad $\mid$ $\_$ $\rightarrow$ {\bf goto }{\textsc{Backtrack}};
    \IIf{$x_i \neq 0$} $l_x := i$
    \IIf{$y_i \neq 0$} $l_y := i$
-   \IIf{ $h-l_x -l_y < 1$} {\bf goto }{\textsc{Backtrack}};
+   \IIf{ $l_x -l_y-h < 1$} {\bf goto }{\textsc{Backtrack}};
    \If{ $i = 1 $}
    \For{$o \in 0..(l-1)$} %\ashu{More constraints over $o$ needed?!!}
    \State $x'$ := Right shift $x$ until $o$ trailing $0$ blocks in $x$
