@@ -30,10 +30,10 @@ index 0365a26..7c44ea6 100644
          }
      });
 diff --git a/src/ast/rewriter/bv_rewriter.cpp b/src/ast/rewriter/bv_rewriter.cpp
-index def05f0..7847645 100644
+index def05f0..b077f72 100644
 --- a/src/ast/rewriter/bv_rewriter.cpp
 +++ b/src/ast/rewriter/bv_rewriter.cpp
-@@ -1634,10 +1634,1626 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
+@@ -1634,10 +1634,1632 @@ br_status bv_rewriter::mk_bv_comp(expr * arg1, expr * arg2, expr_ref & result) {
      return BR_REWRITE2;
  }
  
@@ -436,7 +436,7 @@ index def05f0..7847645 100644
 +      tout << "\n\n";
 +  }
 +
-+  return BR_FAILED;
++  return BR_CHANGED;
 +
 +  }
 +
@@ -1637,7 +1637,7 @@ index def05f0..7847645 100644
 +    tout << ")";
 +    tout << "\n\n";
 +
-+    return BR_FAILED;
++    return BR_CHANGED;
 +
 +}
 +
@@ -1646,21 +1646,27 @@ index def05f0..7847645 100644
      if (st != BR_FAILED && st != BR_DONE)
          return st;
 +
++    br_status old_st = st;
 +
++    st = check_pattern(num_args, args, result);
 +
-+   st = check_pattern(num_args, args, result);
-+       if (st != BR_FAILED && st != BR_DONE)
-+           return st;
++    if (st == BR_CHANGED)
++        return BR_FAILED;
++    else
++        st = old_st;
++
 +
 +    st = check_wallace(num_args, args, result);
-+        if (st != BR_FAILED && st != BR_DONE)
-+            return st;
++    if (st == BR_CHANGED)
++        return BR_FAILED;
++    else
++        st = old_st;
 +
 +
  #if 0
      expr * x;
      expr * y;
-@@ -1682,6 +3298,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
+@@ -1682,6 +3304,8 @@ br_status bv_rewriter::mk_bv_add(unsigned num_args, expr * const * args, expr_re
      }
      if (_num_args < 2)
          return st;
@@ -1748,6 +1754,20 @@ index 4d55632..78b9326 100644
          br_status st = m_cfg.reduce_app(f, new_num_args, new_args, m_r, m_pr2);
          SASSERT(st != BR_DONE || m().get_sort(m_r) == m().get_sort(t));
          TRACE("reduce_app", 
+diff --git a/src/ast/rewriter/rewriter_types.h b/src/ast/rewriter/rewriter_types.h
+index f5947eb..7745db5 100644
+--- a/src/ast/rewriter/rewriter_types.h
++++ b/src/ast/rewriter/rewriter_types.h
+@@ -31,7 +31,8 @@ enum br_status {
+     BR_REWRITE3,               // rewrite the result (bounded by depth 3)
+     BR_REWRITE_FULL,           // rewrite the result unbounded
+     BR_DONE,                   // done, the result is simplified
+-    BR_FAILED                  // no builtin rewrite is available
++    BR_FAILED,                  // no builtin rewrite is available
++    BR_CHANGED,
+ };
+ 
+ #define RW_UNBOUNDED_DEPTH 3
 diff --git a/src/ast/rewriter/th_rewriter.cpp b/src/ast/rewriter/th_rewriter.cpp
 index 6f6daf8..551b139 100644
 --- a/src/ast/rewriter/th_rewriter.cpp
